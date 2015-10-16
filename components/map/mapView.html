@@ -1,0 +1,15 @@
+<div class="column" ng-repeat="i in map" ng-init='f = $index' >
+  <div class="tile" ng-repeat="j in map[$index]" 
+        style="transform: translate({{(f * -25) }}%, 
+        {{ (map.length-i.length)/map.length/2 * 500}}%)" 
+        >
+    <div class="text">
+      <div class="stack">
+        <div class="txt" style="">
+          <p class="smallBreak"><br></p>
+          <p class="innerText">15<br>&#8226;&#8226;&#8226;&#8226;&#8226;</p>
+        </div>
+      </div>
+      <img class="sand" src="./images/grain.png" alt="" >
+    </div>
+  </div>

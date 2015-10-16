@@ -1,0 +1,89 @@
+/*
+ * Styling goes here!
+ */
+
+.header {
+  text-align: center;
+  width: 100%;
+}
+
+.mapContainer {
+  margin: 2% auto 0 auto;
+  height: 50%;
+  width: 50%;
+  position: relative;
+}
+
+body {
+  width: 100%;
+  text-align: center;
+  margin: 0px;
+  padding: 0px;
+}
+
+.tile {
+  position: relative;
+  width: 100%;
+  height: 20%;
+}
+
+div > img {
+  /*
+  width: auto;
+  height : auto;
+  */
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.stack {
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+}
+.div > p {
+}
+.innerText {
+  font-size: ; /* use js to auto fit size */
+  margin-top: 50%;
+  transform: translateY(-50%);
+  line-height: .95em;
+
+}
+.smallBreak {
+  line-height: .25em;
+}
+.txt {
+  font-size: 1em;
+  font-size: 1.5vw;
+  font-weight: bold;
+  background-color: white;
+  transform: translate(-50%, -50%);
+  height: 48%;
+  width: 40%;
+  z-index: 25;
+  position: absolute; 
+  border-radius: 50%;
+  border: solid black 2px;
+}
+.sand {
+  z-index: 1;
+  position: relative;
+}
+
+.text {
+  position: relative;
+  width:100%;
+  height: 100%;
+}
+
+.column {
+
+  height: 100%; 
+  width: 20%;
+  float: left;
+}
+
