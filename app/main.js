@@ -1,4 +1,4 @@
-import { Map } from './map';
+import { Map, Piece } from './map';
 
 (() => {
   let ele = document.getElementById('map');
@@ -6,6 +6,6 @@ import { Map } from './map';
   let map = new Map(800, 800);
   ele.width = `${map.width}`
   ele.height = `${map.height}`;
-  ctx.fillStyle = "red";
-  ctx.fillRect(0, 0, ele.width, ele.height);
+
+  Piece.drawHex(ctx, {x: 50, y: 50}, 50);
 })()
