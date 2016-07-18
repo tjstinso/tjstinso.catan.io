@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "28019d81d11c16955af3"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "e9f77002ed70d404d528"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -594,19 +594,18 @@
 	
 	var _map = __webpack_require__(2);
 	
+	var _MapView = __webpack_require__(3);
+	
 	(function () {
 	
 	  var ele = document.getElementById('map');
 	  var ctx = document.getElementById('map').getContext('2d');
-	  var map = new _map.Map(ctx, { x: 50, y: 50 }, 50);
-	  ele.width = '' + 500;
-	  ele.height = '' + 500;
+	  var map = new _map.Map();
+	  ele.width = '' + 750;
+	  ele.height = '' + 750;
 	
-	  map.drawMap();
-	
-	  //Piece.drawHex(ctx, {x: 50, y: 50}, 50);
-	  //Piece.drawHex(ctx, {x: 50, y: 50 + Math.sqrt(3) * 50}, 50);
-	  //Piece.drawHex(ctx, {x: 50, y: 50 + 2 * Math.sqrt(3) * 50}, 50);
+	  var mView = new _MapView.MapView(map, ctx, { x: 50, y: 50 }, 50);
+	  mView.draw();
 	})();
 
 /***/ },
@@ -624,76 +623,103 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var Map = exports.Map = function () {
-	  function Map(context, origin, width) {
+	  function Map() {
 	    _classCallCheck(this, Map);
 	
-	    this.width = width;
-	    this.context = context;
-	    this.origin = origin;
-	    this.ratio = width / 2;
-	    this.pieceHeight = width * Math.sqrt(3);
+	    this.pieces = [[0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0]];
 	  }
 	
 	  _createClass(Map, [{
-	    key: "calcY",
-	    value: function calcY(xOffset, yOffset) {
-	      var y = this.origin.y + yOffset * Math.sqrt(3) * this.width;
-	      switch (xOffset) {
-	        case 0:
-	          return y + this.pieceHeight;
-	        case 1:
-	          return y + this.pieceHeight / 2;
-	        case 2:
-	          return y;
-	      }
-	    }
-	  }, {
-	    key: "calcX",
-	    value: function calcX(xOffset) {
-	      return this.origin.x + xOffset * this.width * (3 / 2);
-	    }
-	  }, {
-	    key: "drawMap",
-	    value: function drawMap() {
-	
-	      for (var i = 0; i < 3; i++) {
-	        //Piece.drawHex(this.context, {x: this.origin.x, y: this.origin.y}, this.width)
-	        if (i === 0) {
-	          var x_1 = this.calcX(i);
-	          var x_2 = this.calcX(4);
-	          for (var j = 0; j < 3; j++) {
-	            var y = this.calcY(i, j);
-	            Piece.drawHex(this.context, { x: x_1, y: y }, this.width);
-	            Piece.drawHex(this.context, { x: x_2, y: y }, this.width);
-	          }
-	        } else if (i === 1) {
-	          var _x_ = this.calcX(i);
-	          var _x_2 = this.calcX(3);
-	          for (var _j = 0; _j < 4; _j++) {
-	            var _y = this.calcY(i, _j);
-	            Piece.drawHex(this.context, { x: _x_, y: _y }, this.width);
-	            Piece.drawHex(this.context, { x: _x_2, y: _y }, this.width);
-	          }
-	        } else {
-	          var x = this.calcX(i);
-	          for (var _j2 = 0; _j2 < 5; _j2++) {
-	            var _y2 = this.calcY(i, _j2);
-	            Piece.drawHex(this.context, { x: x, y: _y2 }, this.width);
-	          }
-	        }
-	      }
+	    key: "getPieces",
+	    value: function getPieces() {
+	      return this.pieces;
 	    }
 	  }]);
 	
 	  return Map;
 	}();
 	
-	var Piece = exports.Piece = function () {
-	  function Piece() {
-	    _classCallCheck(this, Piece);
+	var Piece = exports.Piece = function Piece() {
+	  _classCallCheck(this, Piece);
+	};
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var MapView = exports.MapView = function () {
+	  function MapView(map, context, origin, width) {
+	    _classCallCheck(this, MapView);
+	
+	    this.width = width;
+	    this.context = context;
+	    this.origin = origin;
+	    this.map = map;
+	    this.ratio = width / 2;
+	    this.pieceHeight = width * Math.sqrt(3);
 	  }
 	
-	  _createClass(Piece, null, [{
+	  _createClass(MapView, [{
+	    key: "calcX",
+	    value: function calcX(xOffset) {
+	      return this.origin.x + xOffset * this.width * (3 / 2);
+	    }
+	  }, {
+	    key: "calcY",
+	    value: function calcY(xOffset, yOffset) {
+	      var y = this.origin.y + yOffset * Math.sqrt(3) * this.width;
+	      switch (xOffset) {
+	        case 0:
+	          return y + this.pieceHeight * 3 / 2;
+	        case 1:
+	          return y + this.pieceHeight;
+	        case 2:
+	          return y + this.pieceHeight * 1 / 2;
+	        case 3:
+	          return y;
+	        case 4:
+	          return y + this.pieceHeight * 1 / 2;
+	        case 5:
+	          return y + this.pieceHeight;
+	        case 6:
+	          return y + this.pieceHeight * 3 / 2;
+	
+	      }
+	    }
+	  }, {
+	    key: "draw",
+	    value: function draw() {
+	      var pieces = this.map.getPieces();
+	      for (var i = 0; i < pieces.length; i++) {
+	        var x = this.calcX(i);
+	        var column = pieces[i];
+	        for (var j = 0; j < column.length; j++) {
+	          var y = this.calcY(i, j);
+	          PieceView.drawHex(this.context, { x: x, y: y }, this.width);
+	        }
+	      }
+	    }
+	  }]);
+	
+	  return MapView;
+	}();
+	
+	var PieceView = function () {
+	  function PieceView() {
+	    _classCallCheck(this, PieceView);
+	  }
+	
+	  _createClass(PieceView, null, [{
 	    key: "drawHex",
 	    value: function drawHex(context, origin, width) {
 	      var ratio = width / 2;
@@ -710,7 +736,7 @@
 	    }
 	  }]);
 
-	  return Piece;
+	  return PieceView;
 	}();
 
 /***/ }
