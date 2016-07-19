@@ -1,9 +1,8 @@
-import { Map, Piece, Enum } from './model/map';
+import { Map, Piece } from './model/map';
 
 import { MapView } from './view/MapView';
 
 (() => {
-  console.log(enums);
   let ele = document.getElementById('map');
   let ctx = document.getElementById('map').getContext('2d');
   let map = new Map();
