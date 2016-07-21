@@ -1,6 +1,6 @@
 import _enum from './enum';
 //Generate constants
-const Types = _enum([
+export const Types = _enum([
   'WHEAT',
   'SHEEP',
   'WOOD',
@@ -9,6 +9,7 @@ const Types = _enum([
   'DESERT',
   'WATER'
 ]);
+
 
 export class Map {
 
@@ -51,7 +52,8 @@ export class Map {
   initializeWaterPieces() {
     for (let i = 0; i < this.pieces.length; i++) {
       for (let j = 0; j < this.pieces[i].length; j++) {
-        if (i == 0 || j == 0) {
+        if (i == 0 || j == 0 || i == this.pieces.length - 1
+          || j == this.pieces[i].length - 1) {
           this.pieces[i][j] = new Piece(Types.WATER);
         }
       }
