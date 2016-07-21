@@ -6,6 +6,7 @@ export class MapView {
     this.map = map;
     this.ratio = width / 2;
     this.pieceHeight = width * Math.sqrt(3);
+    //context.rotate(60 * Math.PI / 180); //need to translate to to some degree to put board on stage
   }
 
   calcX(xOffset) {

@@ -20,6 +20,17 @@ export class Map {
          [0, 0, 0, 0, 0],
            [0, 0, 0, 0],
     ];
+
+    //let centerRow = this.pieces[this.pieces.length / 2];
+    //this.center = centerRow[centerRow.length / 2]; //center piece of hex board
+  }
+
+  traverseMap() {
+
+  }
+
+  traverseMapHelp(root) {
+    
   }
 
   getPieces() {
