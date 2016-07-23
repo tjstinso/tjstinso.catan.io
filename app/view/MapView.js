@@ -1,5 +1,6 @@
 import { Types } from '../model/map';
 
+
 export class MapView {
   constructor(map, context, origin, width) {
     this.width = width;
@@ -43,20 +44,36 @@ export class MapView {
       let x = this.calcX(i);
       let column = pieces[i];
       for (let j = 0; j < column.length; j++) {
+
         let y = this.calcY(i, j);
         this.context.fillStyle = this.setColor(column[j].type);
         PieceView.drawHex(this.context, {x, y}, this.width)
-      }
 
+        if (column[j].number > 0) {
+          this.context.fillStyle = 'white';
+          this.context.beginPath();
+          this.context.arc(x, y, this.width / 3, 0, 2 * Math.PI);
+          this.context.stroke();
+          this.context.fill();
+
+          //this.context.rotate(-30 * Math.PI / 180);
+          //let angleX = x * this.width / 2 * Math.sqrt(3) / 2;
+          //let angleY = x * this.width / 2;
+          this.context.fillStyle = 'black';
+          this.context.fillText(column[j].number, x, y);
+          //this.context.rotate(30 * Math.PI / 180);
+        }
+
+      }
     }
   }
 
   setColor(type) {
     switch(type) {
       case Types.WHEAT:
-        return "yellow";
+        return "lightgreen";
       case Types.SHEEP:
-        return "white";
+        return "green";
       case Types.WOOD:
         return "brown";
       case Types.BRICK:
