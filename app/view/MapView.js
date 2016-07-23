@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+import { Types } from '../model/map';
+
+>>>>>>> 20aa2940d911c886c733119dca60788119191abf
 export class MapView {
   constructor(map, context, origin, width) {
     this.width = width;
@@ -6,6 +11,10 @@ export class MapView {
     this.map = map;
     this.ratio = width / 2;
     this.pieceHeight = width * Math.sqrt(3);
+<<<<<<< HEAD
+=======
+    //context.rotate(60 * Math.PI / 180); //need to translate to to some degree to put board on stage
+>>>>>>> 20aa2940d911c886c733119dca60788119191abf
   }
 
   calcX(xOffset) {
@@ -34,18 +43,48 @@ export class MapView {
   }
 
   draw() {
+<<<<<<< HEAD
+=======
+    this.context.rotate(30 * Math.PI / 180);
+>>>>>>> 20aa2940d911c886c733119dca60788119191abf
     let pieces = this.map.getPieces();
     for (let i = 0; i < pieces.length; i++) {
       let x = this.calcX(i);
       let column = pieces[i];
       for (let j = 0; j < column.length; j++) {
         let y = this.calcY(i, j);
+<<<<<<< HEAD
+=======
+        this.context.fillStyle = this.setColor(column[j].type);
+>>>>>>> 20aa2940d911c886c733119dca60788119191abf
         PieceView.drawHex(this.context, {x, y}, this.width)
       }
 
     }
   }
 
+<<<<<<< HEAD
+=======
+  setColor(type) {
+    switch(type) {
+      case Types.WHEAT:
+        return "yellow";
+      case Types.SHEEP:
+        return "white";
+      case Types.WOOD:
+        return "brown";
+      case Types.BRICK:
+        return "red";
+      case Types.ORE:
+        return "black";
+      case Types.DESERT:
+        return "gray";
+      case Types.WATER:
+        return "blue";
+    }
+  }
+
+>>>>>>> 20aa2940d911c886c733119dca60788119191abf
 }
 
 class PieceView {
