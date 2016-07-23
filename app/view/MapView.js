@@ -1,3 +1,5 @@
+import { Types } from '../model/map';
+
 export class MapView {
   constructor(map, context, origin, width) {
     this.width = width;
@@ -6,6 +8,7 @@ export class MapView {
     this.map = map;
     this.ratio = width / 2;
     this.pieceHeight = width * Math.sqrt(3);
+    //context.rotate(60 * Math.PI / 180); //need to translate to to some degree to put board on stage
   }
 
   calcX(xOffset) {
@@ -34,15 +37,36 @@ export class MapView {
   }
 
   draw() {
+    this.context.rotate(30 * Math.PI / 180);
     let pieces = this.map.getPieces();
     for (let i = 0; i < pieces.length; i++) {
       let x = this.calcX(i);
       let column = pieces[i];
       for (let j = 0; j < column.length; j++) {
         let y = this.calcY(i, j);
+        this.context.fillStyle = this.setColor(column[j].type);
         PieceView.drawHex(this.context, {x, y}, this.width)
       }
 
+    }
+  }
+
+  setColor(type) {
+    switch(type) {
+      case Types.WHEAT:
+        return "yellow";
+      case Types.SHEEP:
+        return "white";
+      case Types.WOOD:
+        return "brown";
+      case Types.BRICK:
+        return "red";
+      case Types.ORE:
+        return "black";
+      case Types.DESERT:
+        return "gray";
+      case Types.WATER:
+        return "blue";
     }
   }
 
