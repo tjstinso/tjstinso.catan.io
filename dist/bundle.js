@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "3f92b3117894c49ce64b"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "dc05af44d2230a3c94b1"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -703,12 +703,23 @@
 	//Generate constants
 	var Types = exports.Types = (0, _enum3.default)(['WHEAT', 'SHEEP', 'WOOD', 'BRICK', 'ORE', 'DESERT', 'WATER']);
 	
+	Array.prototype.shuffleSort = function () {
+	  for (var i = 1; i < this.length; i++) {
+	    var swap = Math.floor(Math.random() * this.length - i) + i;
+	    var swapVal = this[i - 1];
+	    this[i - 1] = this[swap];
+	    this[swap] = swapVal;
+	  }
+	};
+	
 	var Map = exports.Map = function () {
 	  function Map() {
 	    _classCallCheck(this, Map);
 	
 	    //Tracks the number of hexes available per type
 	    this.typesAvailable = [this.makeTileCounter(4, Types.WHEAT), this.makeTileCounter(4, Types.SHEEP), this.makeTileCounter(4, Types.WOOD), this.makeTileCounter(3, Types.BRICK), this.makeTileCounter(3, Types.ORE), this.makeTileCounter(1, Types.DESERT)];
+	
+	    this.numbers = [8, 8, 6, 6, 12, 11, 11, 10, 10, 9, 9, 5, 5, 4, 4, 3, 3, 2];
 	
 	    this.typesAvailable = this.initializeArrayOfPieces();
 	    console.log(this.availablePieces);
@@ -756,28 +767,49 @@
 	  }, {
 	    key: 'shufflePieces',
 	    value: function shufflePieces() {
-	      console.log(this.typesAvailable.length);
-	      for (var i = 1; i < this.typesAvailable.length; i++) {
-	        var swap = Math.floor(Math.random() * (this.typesAvailable.length - i)) + i;
-	
-	        console.log(swap);
-	        var swapVal = this.typesAvailable[swap];
-	        this.typesAvailable[swap] = this.typesAvailable[i - 1];
-	        this.typesAvailable[i - 1] = swapVal;
+	      this.typesAvailable.shuffleSort();
+	    }
+	  }, {
+	    key: 'shuffleNumbers',
+	    value: function shuffleNumbers() {
+	      this.numbers.shuffleSort();
+	    }
+	  }, {
+	    key: 'addChits',
+	    value: function addChits() {}
+	  }, {
+	    key: 'distribute',
+	    value: function distribute(fr, to, func) {
+	      for (var i = 1; i < to.length - 1; i++) {
+	        for (var j = 1; j < to[i].length - 1; j++) {
+	          func(to, fr, i, j);
+	        }
 	      }
-	      console.log('hello world');
-	      console.log(this.typesAvailable);
+	    }
+	  }, {
+	    key: 'randomizeTypes',
+	    value: function randomizeTypes() {
+	      this.shufflePieces();
+	      this.distribute(this.typesAvailable, this.pieces, function (fr, to, i, j) {
+	        fr[i][j] = to.pop();
+	      });
+	    }
+	  }, {
+	    key: 'randomNumbers',
+	    value: function randomNumbers() {
+	      this.shuffleNumbers();
+	      this.distribute(this.numbers, this.pieces, function (fr, to, i, j) {
+	        if (fr[i][j].type != Types.DESERT) {
+	          fr[i][j].number = to.pop();
+	        }
+	      });
 	    }
 	  }, {
 	    key: 'randomDistro',
 	    value: function randomDistro() {
-	      //offset by 1 on either side to ignore water pieces
-	      this.shufflePieces();
-	      for (var i = 1; i < this.pieces.length - 1; i++) {
-	        for (var j = 1; j < this.pieces[i].length - 1; j++) {
-	          this.pieces[i][j] = this.typesAvailable.pop();
-	        }
-	      }
+	      this.randomizeTypes();
+	      this.randomNumbers();
+	      console.log(this.pieces);
 	    }
 	  }, {
 	    key: 'fairRandomDistro',
@@ -802,6 +834,7 @@
 	  _classCallCheck(this, Piece);
 	
 	  this.type = type;
+	  this.number = 0;
 	};
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
@@ -1909,9 +1942,9 @@
 	  var ele = document.getElementById('map');
 	  var ctx = document.getElementById('map').getContext('2d');
 	  var map = new _map.Map();
-	
 	  map.randomDistro();
 	  console.log(map);
+	
 	  ele.width = '' + 750;
 	  ele.height = '' + 750;
 	
@@ -1970,7 +2003,7 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -1997,12 +2030,12 @@
 	  }
 	
 	  _createClass(MapView, [{
-	    key: "calcX",
+	    key: 'calcX',
 	    value: function calcX(xOffset) {
 	      return this.origin.x + xOffset * this.width * (3 / 2);
 	    }
 	  }, {
-	    key: "calcY",
+	    key: 'calcY',
 	    value: function calcY(xOffset, yOffset) {
 	      var y = this.origin.y + yOffset * Math.sqrt(3) * this.width;
 	      switch (xOffset) {
@@ -2024,7 +2057,7 @@
 	      }
 	    }
 	  }, {
-	    key: "draw",
+	    key: 'draw',
 	    value: function draw() {
 	      this.context.rotate(30 * Math.PI / 180);
 	      var pieces = this.map.getPieces();
@@ -2032,20 +2065,36 @@
 	        var x = this.calcX(i);
 	        var column = pieces[i];
 	        for (var j = 0; j < column.length; j++) {
+	
 	          var y = this.calcY(i, j);
 	          this.context.fillStyle = this.setColor(column[j].type);
 	          PieceView.drawHex(this.context, { x: x, y: y }, this.width);
+	
+	          if (column[j].number > 0) {
+	            this.context.fillStyle = 'white';
+	            this.context.beginPath();
+	            this.context.arc(x, y, this.width / 3, 0, 2 * Math.PI);
+	            this.context.stroke();
+	            this.context.fill();
+	
+	            //this.context.rotate(-30 * Math.PI / 180);
+	            //let angleX = x * this.width / 2 * Math.sqrt(3) / 2;
+	            //let angleY = x * this.width / 2;
+	            this.context.fillStyle = 'black';
+	            this.context.fillText(column[j].number, x, y);
+	            //this.context.rotate(30 * Math.PI / 180);
+	          }
 	        }
 	      }
 	    }
 	  }, {
-	    key: "setColor",
+	    key: 'setColor',
 	    value: function setColor(type) {
 	      switch (type) {
 	        case _map.Types.WHEAT:
-	          return "yellow";
+	          return "lightgreen";
 	        case _map.Types.SHEEP:
-	          return "white";
+	          return "green";
 	        case _map.Types.WOOD:
 	          return "brown";
 	        case _map.Types.BRICK:
@@ -2069,7 +2118,7 @@
 	  }
 	
 	  _createClass(PieceView, null, [{
-	    key: "drawHex",
+	    key: 'drawHex',
 	    value: function drawHex(context, origin, width) {
 	      var ratio = width / 2;
 	      var offset = ratio * Math.sqrt(3);

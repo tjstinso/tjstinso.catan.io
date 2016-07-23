@@ -10,8 +10,6 @@ export const Types = _enum([
   'WATER'
 ]);
 
-<<<<<<< HEAD
-=======
 Array.prototype.shuffleSort = function() {
   for (let i = 1; i < this.length; i++) {
     let swap = Math.floor( Math.random() * this.length - i ) + i;
@@ -20,7 +18,6 @@ Array.prototype.shuffleSort = function() {
     this[swap] = swapVal;
   }
 }
->>>>>>> e4cebf6e7c4d8560a9f9bdf434f633ad90003f04
 
 export class Map {
 
@@ -36,11 +33,8 @@ export class Map {
       this.makeTileCounter(1, Types.DESERT),
     ];
 
-<<<<<<< HEAD
-=======
     this.numbers = [ 8,8,6,6,12,11,11,10,10,9,9,5,5,4,4,3,3,2 ]
 
->>>>>>> e4cebf6e7c4d8560a9f9bdf434f633ad90003f04
     this.typesAvailable = this.initializeArrayOfPieces();
     console.log(this.availablePieces);
 
@@ -88,29 +82,6 @@ export class Map {
   }
 
   shufflePieces() {
-<<<<<<< HEAD
-    console.log(this.typesAvailable.length);
-    for (let i = 1; i < this.typesAvailable.length; i++) {
-      let swap = Math.floor(Math.random() * (this.typesAvailable.length - i)) + i;
-
-      console.log(swap);
-      let swapVal = this.typesAvailable[swap];
-      this.typesAvailable[swap] = this.typesAvailable[i - 1];
-      this.typesAvailable[i - 1] = swapVal;
-    }
-    console.log('hello world');
-    console.log(this.typesAvailable);
-  }
-
-  randomDistro() {
-    //offset by 1 on either side to ignore water pieces
-    this.shufflePieces();
-    for (let i = 1; i < this.pieces.length - 1; i++) {
-      for (let j = 1; j < this.pieces[i].length - 1; j++) {
-        this.pieces[i][j] = this.typesAvailable.pop();
-      }
-    }
-=======
     this.typesAvailable.shuffleSort();
   }
 
@@ -151,7 +122,6 @@ export class Map {
     this.randomizeTypes();
     this.randomNumbers();
     console.log(this.pieces);
->>>>>>> e4cebf6e7c4d8560a9f9bdf434f633ad90003f04
   }
 
   fairRandomDistro() {
@@ -179,10 +149,7 @@ export class Piece {
 
   constructor(type) {
     this.type = type;
-<<<<<<< HEAD
-=======
     this.number = 0;
->>>>>>> e4cebf6e7c4d8560a9f9bdf434f633ad90003f04
   }
 
 }

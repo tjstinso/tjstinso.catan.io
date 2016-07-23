@@ -18,14 +18,7 @@
     "babel-loader": "^6.2.4",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-preset-es2015": "^6.9.0",
-<<<<<<< HEAD
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1"
-=======
-    "webpack-dev-server": "^1.14.1"
-  },
-  "dependencies": {
-    "core-js": "^2.4.1"
->>>>>>> e4cebf6e7c4d8560a9f9bdf434f633ad90003f04
   }
 }
