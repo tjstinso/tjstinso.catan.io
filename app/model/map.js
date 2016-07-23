@@ -10,6 +10,17 @@ export const Types = _enum([
   'WATER'
 ]);
 
+<<<<<<< HEAD
+=======
+Array.prototype.shuffleSort = function() {
+  for (let i = 1; i < this.length; i++) {
+    let swap = Math.floor( Math.random() * this.length - i ) + i;
+    let swapVal = this[i - 1];
+    this[i - 1] = this[swap];
+    this[swap] = swapVal;
+  }
+}
+>>>>>>> e4cebf6e7c4d8560a9f9bdf434f633ad90003f04
 
 export class Map {
 
@@ -25,6 +36,11 @@ export class Map {
       this.makeTileCounter(1, Types.DESERT),
     ];
 
+<<<<<<< HEAD
+=======
+    this.numbers = [ 8,8,6,6,12,11,11,10,10,9,9,5,5,4,4,3,3,2 ]
+
+>>>>>>> e4cebf6e7c4d8560a9f9bdf434f633ad90003f04
     this.typesAvailable = this.initializeArrayOfPieces();
     console.log(this.availablePieces);
 
@@ -72,6 +88,7 @@ export class Map {
   }
 
   shufflePieces() {
+<<<<<<< HEAD
     console.log(this.typesAvailable.length);
     for (let i = 1; i < this.typesAvailable.length; i++) {
       let swap = Math.floor(Math.random() * (this.typesAvailable.length - i)) + i;
@@ -93,6 +110,48 @@ export class Map {
         this.pieces[i][j] = this.typesAvailable.pop();
       }
     }
+=======
+    this.typesAvailable.shuffleSort();
+  }
+
+  shuffleNumbers() {
+    this.numbers.shuffleSort();
+  }
+
+  addChits() {
+
+  }
+
+  distribute(fr, to, func) {
+    for (let i = 1; i < to.length - 1; i++) {
+      for (let j = 1; j < to[i].length - 1; j++) {
+        func(to, fr, i, j);
+      }
+    }
+  }
+
+  randomizeTypes() {
+    this.shufflePieces();
+    this.distribute(this.typesAvailable, this.pieces, (fr, to, i, j) => {
+      fr[i][j] = to.pop();
+    });
+
+  }
+
+  randomNumbers() {
+    this.shuffleNumbers();
+    this.distribute(this.numbers, this.pieces, (fr, to, i, j) => {
+      if (fr[i][j].type != Types.DESERT) {
+        fr[i][j].number = to.pop();
+      }
+    });
+  }
+
+  randomDistro() {
+    this.randomizeTypes();
+    this.randomNumbers();
+    console.log(this.pieces);
+>>>>>>> e4cebf6e7c4d8560a9f9bdf434f633ad90003f04
   }
 
   fairRandomDistro() {
@@ -120,6 +179,10 @@ export class Piece {
 
   constructor(type) {
     this.type = type;
+<<<<<<< HEAD
+=======
+    this.number = 0;
+>>>>>>> e4cebf6e7c4d8560a9f9bdf434f633ad90003f04
   }
 
 }

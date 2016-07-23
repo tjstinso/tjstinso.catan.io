@@ -1,5 +1,9 @@
 import { Types } from '../model/map';
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> e4cebf6e7c4d8560a9f9bdf434f633ad90003f04
 export class MapView {
   constructor(map, context, origin, width) {
     this.width = width;
@@ -43,20 +47,50 @@ export class MapView {
       let x = this.calcX(i);
       let column = pieces[i];
       for (let j = 0; j < column.length; j++) {
+<<<<<<< HEAD
         let y = this.calcY(i, j);
         this.context.fillStyle = this.setColor(column[j].type);
         PieceView.drawHex(this.context, {x, y}, this.width)
       }
 
+=======
+
+        let y = this.calcY(i, j);
+        this.context.fillStyle = this.setColor(column[j].type);
+        PieceView.drawHex(this.context, {x, y}, this.width)
+
+        if (column[j].number > 0) {
+          this.context.fillStyle = 'white';
+          this.context.beginPath();
+          this.context.arc(x, y, this.width / 3, 0, 2 * Math.PI);
+          this.context.stroke();
+          this.context.fill();
+
+          //this.context.rotate(-30 * Math.PI / 180);
+          //let angleX = x * this.width / 2 * Math.sqrt(3) / 2;
+          //let angleY = x * this.width / 2;
+          this.context.fillStyle = 'black';
+          this.context.fillText(column[j].number, x, y);
+          //this.context.rotate(30 * Math.PI / 180);
+        }
+
+      }
+>>>>>>> e4cebf6e7c4d8560a9f9bdf434f633ad90003f04
     }
   }
 
   setColor(type) {
     switch(type) {
       case Types.WHEAT:
+<<<<<<< HEAD
         return "yellow";
       case Types.SHEEP:
         return "white";
+=======
+        return "lightgreen";
+      case Types.SHEEP:
+        return "green";
+>>>>>>> e4cebf6e7c4d8560a9f9bdf434f633ad90003f04
       case Types.WOOD:
         return "brown";
       case Types.BRICK:

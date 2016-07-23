@@ -1,2 +1,7 @@
 node_modules
+<<<<<<< HEAD
 gh-pages-dep.sh
+=======
+dist
+npm-debug.log
+>>>>>>> e4cebf6e7c4d8560a9f9bdf434f633ad90003f04
