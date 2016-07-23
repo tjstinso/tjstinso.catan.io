@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-export class Map {
-
-  constructor() {
-    this.pieces = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ]
-=======
 import _enum from './enum';
 //Generate constants
 export const Types = _enum([
@@ -121,7 +107,6 @@ export class Map {
 
   traverseMapHelp(root) {
 
->>>>>>> 20aa2940d911c886c733119dca60788119191abf
   }
 
   getPieces() {
@@ -130,18 +115,11 @@ export class Map {
 
 }
 
-<<<<<<< HEAD
-export class Piece {
-  
-  constructor() {
-
-=======
 
 export class Piece {
 
   constructor(type) {
     this.type = type;
->>>>>>> 20aa2940d911c886c733119dca60788119191abf
   }
 
 }
