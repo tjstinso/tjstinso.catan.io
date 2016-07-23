@@ -37,6 +37,7 @@ export class MapView {
   }
 
   draw() {
+    this.context.rotate(30 * Math.PI / 180);
     let pieces = this.map.getPieces();
     for (let i = 0; i < pieces.length; i++) {
       let x = this.calcX(i);

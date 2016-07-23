@@ -11,7 +11,7 @@ import { MapView } from './view/MapView';
   ele.width = `${750}`;
   ele.height = `${750}`;
 
-  let mView = new MapView(map, ctx, {x: 50, y: 50}, 50);
+  let mView = new MapView(map, ctx, {x: 250, y: -150}, 50);
   mView.draw();
 
 
