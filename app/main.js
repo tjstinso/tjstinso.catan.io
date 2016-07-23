@@ -10,7 +10,6 @@ import { MapView } from './view/MapView';
   console.log(map);
   ele.width = `${750}`;
   ele.height = `${750}`;
-
   let mView = new MapView(map, ctx, {x: 250, y: -150}, 50);
   mView.draw();
 
