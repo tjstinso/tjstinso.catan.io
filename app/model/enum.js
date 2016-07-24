@@ -1,7 +1,12 @@
 class Enum {
   constructor(arr) {
     arr.forEach(arg => {
-      this[arg] = arg;
+      if (arg instanceof Object) {
+        this[arg.name] = arg;
+        delete arg.name;
+      } else {
+        this[arg] = arg;
+      }
     });
   }
   enumerate() {
