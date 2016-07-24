@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "3402df975f0df65c0853"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "35f0feea6da11d2932cb"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -851,6 +851,12 @@
 	//mView.draw();
 	
 	//PieceView.drawHex(ctx, {x: 50, y: 50}, 50);
+	
+	var button = document.getElementById('test-button');
+	button.addEventListener('click', function () {
+	  map = new _map.Map();
+	  map.randomDistro();
+	});
 
 /***/ },
 /* 3 */
