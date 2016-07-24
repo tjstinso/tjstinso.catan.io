@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "1ec12a20e9dc5b2c9b31"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "ec0fe97a6b04f8788d13"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -615,10 +615,10 @@
 	var NeighborsNeg = (0, _enum3.default)([{ name: 'TOP_RIGHT', x: 1, y: -1 }, { name: 'RIGHT', x: 1, y: 0 }, { name: 'BOTTOM_RIGHT', x: 0, y: 1 }, { name: 'BOTTOM_LEFT', x: -1, y: 1 }, { name: 'LEFT', x: -1, y: 0 }, { name: 'TOP_LEFT', x: 0, y: -1 }]);
 	
 	Array.prototype.shuffleSort = function () {
-	  for (var i = 1; i < this.length; i++) {
+	  for (var i = 0; i < this.length - 1; i++) {
 	    var swap = Math.floor(Math.random() * this.length - i) + i;
-	    var swapVal = this[i - 1];
-	    this[i - 1] = this[swap];
+	    var swapVal = this[i];
+	    this[i] = this[swap];
 	    this[swap] = swapVal;
 	  }
 	};
@@ -706,12 +706,11 @@
 	
 	      var enums = Neighbors.enumerate();
 	      for (var i = 1; i < this.pieces.length - 1; i++) {
-	        var bool = void 0;
 	        for (var j = 1; j < this.pieces[i].length - 1; j++) {
 	
+	          //iterate over neighbor nodes
 	          for (var k = 0; k < this.pieces[i][j].neighbors.length; k++) {
-	            bool = cb(this.pieces[i][j], this.pieces[i][j].neighbors[k]);
-	            if (!bool) return false;
+	            if (!cb(this.pieces[i][j], this.pieces[i][j].neighbors[k])) return false;
 	          }
 	        }
 	      }
