@@ -88,7 +88,6 @@ export class Map {
         if (enums.includes(false)) return false;
       }
     }
-    console.log(this.pieces);
     return true;
   }
 
@@ -174,7 +173,6 @@ export class Map {
       this.setTypes();
       this.randomizeTypes();
       test = this.checkTypes();
-      console.log(test);
     } while (!test);
   }
 
