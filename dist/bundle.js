@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "a8499f11d667657af819"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "a0d85680ebbb18e2ddaf"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -2096,10 +2096,10 @@
 	            this.context.stroke();
 	            this.context.fill();
 	
-	            var str = '' + column[j].number;
+	            var num = column[j].number;
 	            this.context.textAlign = 'center';
 	            this.context.textBaseline = 'middle';
-	            this.context.fillStyle = 'black';
+	            this.context.fillStyle = num === 6 || num === 8 ? 'red' : 'black';
 	            this.context.fillText(column[j].number, x, y);
 	          }
 	        }
