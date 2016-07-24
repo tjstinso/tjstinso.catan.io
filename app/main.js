@@ -1,4 +1,4 @@
-import { Map, Piece } from './model/map';
+import { Map } from './model/map';
 
 import { MapView, PieceView } from './view/MapView';
 
