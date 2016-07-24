@@ -59,7 +59,7 @@ export class Map {
 
 
   setNumbers() {
-    this.numbers = [ 8,8,6,6,12,11,11,10,10,9,9,5,5,4,4,3,3,2 ];
+    this.numbers = [ 8,8,6,6,12,11,11,10,10,9,9,5,5,4,4,3,3,2,0 ];
   }
 
   setTypes() {
@@ -69,7 +69,7 @@ export class Map {
       this.makeTileCounter(4, Types.WOOD),
       this.makeTileCounter(3, Types.BRICK),
       this.makeTileCounter(3, Types.ORE),
-      this.makeTileCounter(1, Types.DESERT),
+      //this.makeTileCounter(1, Types.DESERT),
     ].map(arr => {
       let temp = [];
       for (let i = 0; i < arr.count; i++) {
@@ -163,6 +163,7 @@ export class Map {
 
   randomDistro() {
     let test;
+
     do {
       this.setNumbers();
       this.randomNumbers();
