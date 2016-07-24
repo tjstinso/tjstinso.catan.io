@@ -40,12 +40,16 @@ export class Map {
       this.makeTileCounter(3, Types.BRICK),
       this.makeTileCounter(3, Types.ORE),
       this.makeTileCounter(1, Types.DESERT),
-    ];
+    ].map(arr => {
+      let temp = [];
+      for (let i = 0; i < arr.count; i++) {
+        temp = temp.concat(arr.type);
+      }
+      return temp;
+    }).reduce((prev, curr) => prev.concat(curr));
 
-    this.numbers = [ 8,8,6,6,12,11,11,10,10,9,9,5,5,4,4,3,3,2 ]
+    this.numbers = [ 8,8,6,6,12,11,11,10,10,9,9,5,5,4,4,3,3,2 ];
 
-    this.typesAvailable = this.initializeArrayOfPieces();
-    console.log(this.availablePieces);
 
     this.pieces = [
            [0, 0, 0, 0],
@@ -54,42 +58,23 @@ export class Map {
        [0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0],
          [0, 0, 0, 0, 0],
-           [0, 0, 0, 0],
+           [0, 0, 0, 0]
     ];
 
-    this.initializeWaterPieces();
+    this.pieces = this.pieces.map((row, i) => {
+      return row.map((column, j) => {
+        return i === 0 || j === 0 || i === this.pieces.length - 1 || j === this.pieces[i].length - 1
+          ? new Piece(Types.WATER) : new Piece();
+      }, this);
+    }, this);
 
-    //let centerRow = this.pieces[this.pieces.length / 2];
-    //this.center = centerRow[centerRow.length / 2]; //center piece of hex board
   }
 
   //helper method used to instantiate
   makeTileCounter(count, type) {
     return { count, type };
   }
-
-  initializeWaterPieces() {
-    for (let i = 0; i < this.pieces.length; i++) {
-      for (let j = 0; j < this.pieces[i].length; j++) {
-        if (i == 0 || j == 0 || i == this.pieces.length - 1
-          || j == this.pieces[i].length - 1) {
-          this.pieces[i][j] = new Piece(Types.WATER);
-        }
-      }
-    }
-  }
-
-  initializeArrayOfPieces() {
-    return this.typesAvailable.map(type => {
-      let arr = [];
-      for (let i = 0; i < type.count; i++) {
-        arr = arr.concat(new Piece(type.type))
-      }
-      return arr;
-    })
-    .reduce((first, second) => { return first.concat(second) });
-  }
-
+  
   shufflePieces() {
     this.typesAvailable.shuffleSort();
   }
@@ -105,7 +90,7 @@ export class Map {
   distribute(fr, to, func) {
     for (let i = 1; i < to.length - 1; i++) {
       for (let j = 1; j < to[i].length - 1; j++) {
-        func(to, fr, i, j);
+        func(fr, to, i, j);
       }
     }
   }
@@ -113,7 +98,7 @@ export class Map {
   randomizeTypes() {
     this.shufflePieces();
     this.distribute(this.typesAvailable, this.pieces, (fr, to, i, j) => {
-      fr[i][j] = to.pop();
+      to[i][j].type = fr.pop();
     });
 
   }
@@ -121,8 +106,8 @@ export class Map {
   randomNumbers() {
     this.shuffleNumbers();
     this.distribute(this.numbers, this.pieces, (fr, to, i, j) => {
-      if (fr[i][j].type != Types.DESERT) {
-        fr[i][j].number = to.pop();
+      if (to[i][j].type != Types.DESERT) {
+        to[i][j].number = fr.pop();
       }
     });
   }
@@ -130,7 +115,6 @@ export class Map {
   randomDistro() {
     this.randomizeTypes();
     this.randomNumbers();
-    console.log(this.pieces);
   }
 
   fairRandomDistro() {
@@ -156,9 +140,9 @@ export class Map {
 
 export class Piece {
 
-  constructor(type) {
+  constructor(type = null, number = 0) {
     this.type = type;
-    this.number = 0;
+    this.number = number;
   }
 
 }
