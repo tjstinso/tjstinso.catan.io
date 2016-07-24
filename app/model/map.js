@@ -19,6 +19,14 @@ const Neighbors = _enum([
   { name: 'TOP_LEFT', x: -1, y: -1},
 ]);
 
+const NeighborsNeg = _enum([
+  { name: 'TOP_RIGHT', x: 1, y: -1},
+  { name: 'RIGHT', x: 1, y: 0},
+  { name: 'BOTTOM_RIGHT', x: 0, y: 1},
+  { name: 'BOTTOM_LEFT', x: -1, y: 1},
+  { name: 'LEFT', x: -1, y: 0},
+  { name: 'TOP_LEFT', x: 0, y: -1},
+])
 
 Array.prototype.shuffleSort = function() {
   for (let i = 1; i < this.length; i++) {
@@ -63,12 +71,48 @@ export class Map {
 
   }
 
+  dfBuild() {
+    let origin = Math.floor(this.pieces.length / 2);
+    let stepSize = 37;
+    origin = this.pieces[origin][origin];
+    return this.dfHelp(origin, 0, 0, stepSize);
+  }
+
+  dfHelp(origin, index, step, stepSize) {
+    if (this.typesAvailable.length === 0 ) return true;
+    if (step === this.typesAvailable.length) return false;
+    if (origin.isVisited) return;
+
+    let rand;
+    if (index === 0) rand = Math.floor(Math.random() * this.typesAvailable.length);
+    else rand = index;
+
+    let check = true;
+
+    for (let i = 0; i < origin.neighbors.length; i++) {
+      if (this.typesAvailable[rand] === origin.neighbors.type) check = false;
+    }
+
+    if (check) {
+      console.log(step);
+      origin.type = this.typesAvailable[rand];
+      this.typesAvailable = this.typesAvailable.splice(rand, 1);
+      origin.neighbors.forEach(neighbor => {
+        this.dfHelp(neighbor, 0, 0, stepSize);
+      });
+    } else {
+      return this.dfHelp(origin, (index + stepSize) % this.typesAvailable.size , step, stepSize);
+    }
+
+
+  }
+
   findNeighbors(i, j) {
     Neighbors.enumerate().forEach(neighbor => {
-      let yOffset = i > this.pieces.length / 2 ? -Neighbors[neighbor].y : Neighbors[neighbor].y
-      let xOffset = Neighbors[neighbor].x + j;
+      let yOffset = i > this.pieces.length / 2 ? i + NeighborsNeg[neighbor].y : i + Neighbors[neighbor].y;
+      let xOffset = j > this.pieces.length / 2 ? j + NeighborsNeg[neighbor].x : j + Neighbors[neighbor].x;
       if (yOffset >= 0 && yOffset < this.pieces.length && xOffset >= 0 && xOffset < this.pieces[yOffset].length
-          && this.pieces[yOffset][xOffset]) {
+        && this.pieces[yOffset][xOffset]) {
 
         this.pieces[i][j].neighbors.push(this.pieces[yOffset][xOffset]);
       }
@@ -143,7 +187,7 @@ export class Map {
       let piece = this.pieces[i][j];
       let yOffset = i > this.pieces.length / 2 ? - neighbor.y : neighbor.y
       let neighborPiece = this.pieces[i + yOffset][j + neighbor.x];
-      if (neighborPiece.type !== Types.WATER && piece && neighborPiece
+      if (neighborPiece && neighborPiece.type !== Types.WATER && piece && neighborPiece
         //&& piece.type && neighborPiece.type
       ) {
         return piece.type !== neighborPiece.type;
@@ -194,10 +238,15 @@ export class Map {
       this.randomNumbers();
     } while (!this.checkNumbers());
 
+    let test;
     do {
       this.setTypes();
+      //test = this.dfBuild();
       this.randomizeTypes();
-    } while (!this.checkTypes());
+      test = this.checkTypes();
+    } while (!test);
+    console.log(this.pieces);
+    //} while (!this.checkTypes());
   }
 
   fairRandomDistro() {
@@ -227,6 +276,9 @@ export class Piece {
     this.type = type;
     this.number = number;
     this.neighbors = [];
+    this.visited = false;
   }
+
+  //implement recursive checking strategy
 
 }
