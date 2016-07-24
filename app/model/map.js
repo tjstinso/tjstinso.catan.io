@@ -26,7 +26,7 @@ const NeighborsNeg = _enum([
   { name: 'BOTTOM_LEFT', x: -1, y: 1},
   { name: 'LEFT', x: -1, y: 0},
   { name: 'TOP_LEFT', x: 0, y: -1},
-])
+]);
 
 Array.prototype.shuffleSort = function() {
   for (let i = 1; i < this.length; i++) {
@@ -80,7 +80,7 @@ export class Map {
 
   dfHelp(origin, index, step, stepSize) {
     if (this.typesAvailable.length === 0 ) return true;
-    if (step === this.typesAvailable.length) return false;
+    if (step > this.typesAvailable.length * 5) return false;
     if (origin.isVisited) return;
 
     let rand;
@@ -94,11 +94,10 @@ export class Map {
     }
 
     if (check) {
-      console.log(step);
       origin.type = this.typesAvailable[rand];
       this.typesAvailable = this.typesAvailable.splice(rand, 1);
       origin.neighbors.forEach(neighbor => {
-        this.dfHelp(neighbor, 0, 0, stepSize);
+        this.dfHelp(neighbor, 0, step++, stepSize);
       });
     } else {
       return this.dfHelp(origin, (index + stepSize) % this.typesAvailable.size , step, stepSize);
@@ -131,7 +130,6 @@ export class Map {
       this.makeTileCounter(4, Types.WOOD),
       this.makeTileCounter(3, Types.BRICK),
       this.makeTileCounter(3, Types.ORE),
-      //this.makeTileCounter(1, Types.DESERT),
     ].map(arr => {
       let temp = [];
       for (let i = 0; i < arr.count; i++) {
@@ -153,45 +151,26 @@ export class Map {
       let bool;
       for (let j = 1; j < this.pieces[i].length - 1; j++) {
         for (let k = 0; k < this.pieces[i][j].neighbors.length; k++) {
-          bool = cb(i, j, Neighbors[enums[k]]);
+          bool = cb(this.pieces[i][j], Neighbors[enums[k]]);
           if (!bool) return false;
         }
-
-      //  for (let k = 0; k < enums.length; k++) {
-      //    bool = cb(i, j, Neighbors[enums[k]]);
-      //    if (!bool) return false;
-      //  }
-        //enums = enums.map(neighbor => cb(i, j, Neighbors[neighbor]));
-        //if (enums.includes(false)) return false;
       }
     }
     return true;
   }
 
   checkNumbers() {
-    return this.checkNeighbors((i, j, neighbor) => {
-      let piece = this.pieces[i][j];
-      let yOffset = i > this.pieces.length / 2 ? - neighbor.y : neighbor.y
-      let neighborPiece = this.pieces[i + yOffset][j + neighbor.x];
-      if (piece && neighborPiece && neighborPiece.type !== Types.WATER
-        //&& piece.number && neighborPiece.number
-      ) {
+    return this.checkNeighbors((piece, neighbor) => {
+      if (piece && neighbor.type !== Types.WATER) {
         return !((piece.number === 6 || piece.number === 8) &&
-          (neighborPiece.number === 6 || neighborPiece.number === 8));
+          (neighbor.number === 6 || neighbor.number === 8));
       } return true;
     });
   }
 
   checkTypes() {
-    return this.checkNeighbors((i, j, neighbor) => {
-      let piece = this.pieces[i][j];
-      let yOffset = i > this.pieces.length / 2 ? - neighbor.y : neighbor.y
-      let neighborPiece = this.pieces[i + yOffset][j + neighbor.x];
-      if (neighborPiece && neighborPiece.type !== Types.WATER && piece && neighborPiece
-        //&& piece.type && neighborPiece.type
-      ) {
-        return piece.type !== neighborPiece.type;
-      } return true;
+    return this.checkNeighbors((piece, neighbor) => {
+      return piece.type != neighbor.type
     });
   }
 
@@ -239,13 +218,15 @@ export class Map {
     } while (!this.checkNumbers());
 
     let test;
+    let count = 0;
     do {
       this.setTypes();
-      //test = this.dfBuild();
       this.randomizeTypes();
+      //test = this.dfBuild();
       test = this.checkTypes();
+      count++;
     } while (!test);
-    console.log(this.pieces);
+    console.log(count);
     //} while (!this.checkTypes());
   }
 
@@ -281,4 +262,9 @@ export class Piece {
 
   //implement recursive checking strategy
 
+}
+
+let m = new Map();
+for (let i = 0; i < 1000; i++) {
+  m.randomDistro();
 }
