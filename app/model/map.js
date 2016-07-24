@@ -71,48 +71,25 @@ export class Map {
 
   }
 
-  dfBuild() {
-    let origin = Math.floor(this.pieces.length / 2);
-    let stepSize = 37;
-    origin = this.pieces[origin][origin];
-    return this.dfHelp(origin, 0, 0, stepSize);
-  }
-
-  dfHelp(origin, index, step, stepSize) {
-    if (this.typesAvailable.length === 0 ) return true;
-    if (step > this.typesAvailable.length * 5) return false;
-    if (origin.isVisited) return;
-
-    let rand;
-    if (index === 0) rand = Math.floor(Math.random() * this.typesAvailable.length);
-    else rand = index;
-
-    let check = true;
-
-    for (let i = 0; i < origin.neighbors.length; i++) {
-      if (this.typesAvailable[rand] === origin.neighbors.type) check = false;
-    }
-
-    if (check) {
-      origin.type = this.typesAvailable[rand];
-      this.typesAvailable = this.typesAvailable.splice(rand, 1);
-      origin.neighbors.forEach(neighbor => {
-        this.dfHelp(neighbor, 0, step++, stepSize);
-      });
-    } else {
-      return this.dfHelp(origin, (index + stepSize) % this.typesAvailable.size , step, stepSize);
-    }
-
-
-  }
 
   findNeighbors(i, j) {
+    
     Neighbors.enumerate().forEach(neighbor => {
-      let yOffset = i > this.pieces.length / 2 ? i + NeighborsNeg[neighbor].y : i + Neighbors[neighbor].y;
-      let xOffset = j > this.pieces.length / 2 ? j + NeighborsNeg[neighbor].x : j + Neighbors[neighbor].x;
-      if (yOffset >= 0 && yOffset < this.pieces.length && xOffset >= 0 && xOffset < this.pieces[yOffset].length
-        && this.pieces[yOffset][xOffset]) {
+      let yOffset;
+      let xOffset;
 
+      if (i === Math.floor(this.pieces.length / 2) && (neighbor == Neighbors.BOTTOM_LEFT || neighbor == Neighbors.BOTTOM_RIGHT)) {
+        yOffset = i + NeighborsNeg[neighbor].y;
+        xOffset = j + NeighborsNeg[neighbor].x;
+      } else if (i > Math.floor(this.pieces.length / 2)) {
+        yOffset = i + NeighborsNeg[neighbor].y;
+        xOffset = j + NeighborsNeg[neighbor].x;
+      } else {
+        yOffset = i + Neighbors[neighbor].y;
+        xOffset = j + Neighbors[neighbor].x;
+      }
+
+      if (yOffset >= 0 && yOffset < this.pieces.length && xOffset >= 0 && xOffset < this.pieces[yOffset].length) {
         this.pieces[i][j].neighbors.push(this.pieces[yOffset][xOffset]);
       }
     });
@@ -130,16 +107,18 @@ export class Map {
       this.makeTileCounter(4, Types.WOOD),
       this.makeTileCounter(3, Types.BRICK),
       this.makeTileCounter(3, Types.ORE),
-    ].map(arr => {
+    ]
+    .map(arr => {
       let temp = [];
       for (let i = 0; i < arr.count; i++) {
         temp.push(arr.type);
       }
       return temp;
-    }).reduce((prev, curr) => prev.concat(curr));
+    })
+    .reduce((prev, curr) => prev.concat(curr));
   }
 
-  //helper method used to instantiate set of Types
+  //helper method used to insta/ntiate set of Types
   makeTileCounter(count, type) {
     return { count, type };
   }
@@ -150,10 +129,12 @@ export class Map {
     for (let i = 1; i < this.pieces.length - 1; i++) {
       let bool;
       for (let j = 1; j < this.pieces[i].length - 1; j++) {
+
         for (let k = 0; k < this.pieces[i][j].neighbors.length; k++) {
-          bool = cb(this.pieces[i][j], Neighbors[enums[k]]);
+          bool = cb(this.pieces[i][j], this.pieces[i][j].neighbors[k]);
           if (!bool) return false;
         }
+
       }
     }
     return true;
@@ -161,16 +142,14 @@ export class Map {
 
   checkNumbers() {
     return this.checkNeighbors((piece, neighbor) => {
-      if (piece && neighbor.type !== Types.WATER) {
-        return !((piece.number === 6 || piece.number === 8) &&
-          (neighbor.number === 6 || neighbor.number === 8));
-      } return true;
+      return !((piece.number === 6 || piece.number === 8) &&
+        (neighbor.number === 6 || neighbor.number === 8));
     });
   }
 
   checkTypes() {
     return this.checkNeighbors((piece, neighbor) => {
-      return piece.type != neighbor.type
+      return piece.type !== neighbor.type
     });
   }
 
@@ -217,17 +196,10 @@ export class Map {
       this.randomNumbers();
     } while (!this.checkNumbers());
 
-    let test;
-    let count = 0;
     do {
       this.setTypes();
       this.randomizeTypes();
-      //test = this.dfBuild();
-      test = this.checkTypes();
-      count++;
-    } while (!test);
-    console.log(count);
-    //} while (!this.checkTypes());
+    } while (!this.checkTypes());
   }
 
   fairRandomDistro() {
@@ -262,9 +234,4 @@ export class Piece {
 
   //implement recursive checking strategy
 
-}
-
-let m = new Map();
-for (let i = 0; i < 1000; i++) {
-  m.randomDistro();
 }
