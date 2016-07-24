@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "35f0feea6da11d2932cb"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "b8b4e4befddac9e1a6c8"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -595,9 +595,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.Piece = exports.Map = exports.Neighbors = exports.Types = undefined;
-	
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	exports.Piece = exports.Map = exports.Types = undefined;
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
@@ -612,7 +610,7 @@
 	//Generate constants
 	var Types = exports.Types = (0, _enum3.default)(['WHEAT', 'SHEEP', 'WOOD', 'BRICK', 'ORE', 'DESERT', 'WATER']);
 	
-	var Neighbors = exports.Neighbors = (0, _enum3.default)([{ name: 'TOP_RIGHT', x: 0, y: -1 }, { name: 'RIGHT', x: 1, y: 0 }, { name: 'BOTTOM_RIGHT', x: 1, y: 1 }, { name: 'BOTTOM_LEFT', x: 0, y: 1 }, { name: 'LEFT', x: -1, y: 0 }, { name: 'TOP_LEFT', x: -1, y: -1 }]);
+	var Neighbors = (0, _enum3.default)([{ name: 'TOP_RIGHT', x: 0, y: -1 }, { name: 'RIGHT', x: 1, y: 0 }, { name: 'BOTTOM_RIGHT', x: 1, y: 1 }, { name: 'BOTTOM_LEFT', x: 0, y: 1 }, { name: 'LEFT', x: -1, y: 0 }, { name: 'TOP_LEFT', x: -1, y: -1 }]);
 	
 	Array.prototype.shuffleSort = function () {
 	  for (var i = 1; i < this.length; i++) {
@@ -638,12 +636,32 @@
 	
 	    this.pieces = this.pieces.map(function (row, i) {
 	      return row.map(function (column, j) {
-	        return i === 0 || j === 0 || i === _this.pieces.length - 1 || j === _this.pieces[i].length - 1 ? new Piece(Types.WATER) : new Piece();
+	        return i === 0 || j === 0 || i === _this.pieces.length - 1 || j === _this.pieces[i].length - 1 ? new Piece(Types.WATER, 0) : new Piece();
 	      }, _this);
 	    }, this);
+	
+	    this.pieces.forEach(function (row, i) {
+	      row.forEach(function (piece, j) {
+	        _this.findNeighbors(i, j);
+	      });
+	    });
 	  }
 	
 	  _createClass(Map, [{
+	    key: 'findNeighbors',
+	    value: function findNeighbors(i, j) {
+	      var _this2 = this;
+	
+	      Neighbors.enumerate().forEach(function (neighbor) {
+	        var yOffset = i > _this2.pieces.length / 2 ? -Neighbors[neighbor].y : Neighbors[neighbor].y;
+	        var xOffset = Neighbors[neighbor].x + j;
+	        if (yOffset >= 0 && yOffset < _this2.pieces.length && xOffset >= 0 && xOffset < _this2.pieces[yOffset].length && _this2.pieces[yOffset][xOffset]) {
+	
+	          _this2.pieces[i][j].neighbors.push(_this2.pieces[yOffset][xOffset]);
+	        }
+	      });
+	    }
+	  }, {
 	    key: 'setNumbers',
 	    value: function setNumbers() {
 	      this.numbers = [8, 8, 6, 6, 12, 11, 11, 10, 10, 9, 9, 5, 5, 4, 4, 3, 3, 2, 0];
@@ -654,44 +672,41 @@
 	      this.typesAvailable = [this.makeTileCounter(4, Types.WHEAT), this.makeTileCounter(4, Types.SHEEP), this.makeTileCounter(4, Types.WOOD), this.makeTileCounter(3, Types.BRICK), this.makeTileCounter(3, Types.ORE)].map(function (arr) {
 	        var temp = [];
 	        for (var i = 0; i < arr.count; i++) {
-	          temp = temp.concat(arr.type);
+	          temp.push(arr.type);
 	        }
 	        return temp;
 	      }).reduce(function (prev, curr) {
 	        return prev.concat(curr);
 	      });
 	    }
+	
+	    //helper method used to instantiate set of Types
+	
+	  }, {
+	    key: 'makeTileCounter',
+	    value: function makeTileCounter(count, type) {
+	      return { count: count, type: type };
+	    }
 	  }, {
 	    key: 'checkNeighbors',
 	    value: function checkNeighbors(cb) {
-	      var _this2 = this;
 	
-	      var _loop = function _loop(i) {
-	        var enums = void 0;
-	
-	        var _loop2 = function _loop2(j) {
-	          enums = Neighbors.enumerate();
-	          enums = enums.map(function (neighbor) {
-	            return cb(i, j, Neighbors[neighbor]);
-	          });
-	          if (enums.includes(false)) return {
-	              v: {
-	                v: false
-	              }
-	            };
-	        };
-	
-	        for (var j = 1; j < _this2.pieces[i].length - 1; j++) {
-	          var _ret2 = _loop2(j);
-	
-	          if ((typeof _ret2 === 'undefined' ? 'undefined' : _typeof(_ret2)) === "object") return _ret2.v;
-	        }
-	      };
-	
+	      var enums = Neighbors.enumerate();
 	      for (var i = 1; i < this.pieces.length - 1; i++) {
-	        var _ret = _loop(i);
+	        var bool = void 0;
+	        for (var j = 1; j < this.pieces[i].length - 1; j++) {
+	          for (var k = 0; k < this.pieces[i][j].neighbors.length; k++) {
+	            bool = cb(i, j, Neighbors[enums[k]]);
+	            if (!bool) return false;
+	          }
 	
-	        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+	          //  for (let k = 0; k < enums.length; k++) {
+	          //    bool = cb(i, j, Neighbors[enums[k]]);
+	          //    if (!bool) return false;
+	          //  }
+	          //enums = enums.map(neighbor => cb(i, j, Neighbors[neighbor]));
+	          //if (enums.includes(false)) return false;
+	        }
 	      }
 	      return true;
 	    }
@@ -704,11 +719,11 @@
 	        var piece = _this3.pieces[i][j];
 	        var yOffset = i > _this3.pieces.length / 2 ? -neighbor.y : neighbor.y;
 	        var neighborPiece = _this3.pieces[i + yOffset][j + neighbor.x];
-	        if (piece && neighborPiece && piece.number && neighborPiece.number) {
-	          return !((piece.number === 6 || piece.number === 8) && (neighborPiece.number === 6 || neighborPiece.number === 8));
-	        } else {
-	          return true;
-	        }
+	        if (piece && neighborPiece && neighborPiece.type !== Types.WATER
+	        //&& piece.number && neighborPiece.number
+	        ) {
+	            return !((piece.number === 6 || piece.number === 8) && (neighborPiece.number === 6 || neighborPiece.number === 8));
+	          }return true;
 	      });
 	    }
 	  }, {
@@ -720,20 +735,12 @@
 	        var piece = _this4.pieces[i][j];
 	        var yOffset = i > _this4.pieces.length / 2 ? -neighbor.y : neighbor.y;
 	        var neighborPiece = _this4.pieces[i + yOffset][j + neighbor.x];
-	        if (piece && neighborPiece && piece.type && neighborPiece.type) {
-	          return piece.type !== neighborPiece.type;
-	        } else {
-	          return true;
-	        }
+	        if (neighborPiece.type !== Types.WATER && piece && neighborPiece
+	        //&& piece.type && neighborPiece.type
+	        ) {
+	            return piece.type !== neighborPiece.type;
+	          }return true;
 	      });
-	    }
-	
-	    //helper method used to instantiate
-	
-	  }, {
-	    key: 'makeTileCounter',
-	    value: function makeTileCounter(count, type) {
-	      return { count: count, type: type };
 	    }
 	  }, {
 	    key: 'shufflePieces',
@@ -745,9 +752,6 @@
 	    value: function shuffleNumbers() {
 	      this.numbers.shuffleSort();
 	    }
-	  }, {
-	    key: 'addChits',
-	    value: function addChits() {}
 	  }, {
 	    key: 'distribute',
 	    value: function distribute(fr, to, func) {
@@ -780,19 +784,15 @@
 	  }, {
 	    key: 'randomDistro',
 	    value: function randomDistro() {
-	      var test = void 0;
-	
 	      do {
 	        this.setNumbers();
 	        this.randomNumbers();
-	        test = this.checkNumbers();
-	      } while (!test);
+	      } while (!this.checkNumbers());
 	
 	      do {
 	        this.setTypes();
 	        this.randomizeTypes();
-	        test = this.checkTypes();
-	      } while (!test);
+	      } while (!this.checkTypes());
 	    }
 	  }, {
 	    key: 'fairRandomDistro',
@@ -821,6 +821,7 @@
 	
 	  this.type = type;
 	  this.number = number;
+	  this.neighbors = [];
 	};
 
 /***/ },
