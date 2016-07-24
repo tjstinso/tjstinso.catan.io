@@ -88,6 +88,7 @@ export class Map {
         if (enums.includes(false)) return false;
       }
     }
+    console.log(this.pieces);
     return true;
   }
 
@@ -99,6 +100,19 @@ export class Map {
       if (piece && neighborPiece && piece.number && neighborPiece.number) {
         return !((piece.number === 6 || piece.number === 8) &&
           (neighborPiece.number === 6 || neighborPiece.number === 8));
+      } else {
+        return true;
+      }
+    });
+  }
+
+  checkTypes() {
+    return this.checkNeighbors((i, j, neighbor) => {
+      let piece = this.pieces[i][j];
+      let yOffset = i > this.pieces.length / 2 ? - neighbor.y : neighbor.y
+      let neighborPiece = this.pieces[i + yOffset][j + neighbor.x];
+      if (piece && neighborPiece && piece.type && neighborPiece.type) {
+        return piece.type !== neighborPiece.type;
       } else {
         return true;
       }
@@ -133,28 +147,35 @@ export class Map {
   randomizeTypes() {
     this.shufflePieces();
     this.distribute(this.typesAvailable, this.pieces, (fr, to, i, j) => {
-      to[i][j].type = fr.pop();
+      if (to[i][j].number === 0) {
+        to[i][j].type = Types.DESERT;
+      } else to[i][j].type = fr.pop();
     });
-
   }
 
   randomNumbers() {
     this.shuffleNumbers();
     this.distribute(this.numbers, this.pieces, (fr, to, i, j) => {
-      if (to[i][j].type != Types.DESERT) {
+      if (to[i][j].type !== Types.DESERT) {
         to[i][j].number = fr.pop();
       }
     });
   }
 
   randomDistro() {
-    this.randomizeTypes();
-
+    let test;
     do {
       this.setNumbers();
       this.randomNumbers();
-    } while (!this.checkNumbers());
+      test = this.checkNumbers();
+    } while (!test);
 
+    do {
+      this.setTypes();
+      this.randomizeTypes();
+      test = this.checkTypes();
+      console.log(test);
+    } while (!test);
   }
 
   fairRandomDistro() {

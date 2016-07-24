@@ -2,14 +2,11 @@ import { Types } from '../model/map';
 
 
 export class MapView {
-  constructor(map, context, origin, width) {
-    this.width = width;
-    this.context = context;
-    this.origin = origin;
+  constructor(origin, width, map) {
     this.map = map;
+    this.width = width;
+    this.origin = origin;
     this.pieceHeight = width //* Math.sqrt(3);
-    //this.context.font = "20px Verdana"
-    this.context.font = `${this.width / 3}px Verdana`;
   }
 
   calcX(xOffset) {
@@ -51,34 +48,38 @@ export class MapView {
     }
   }
 
-  draw() {
-    let pieces = this.map.getPieces();
+  draw(map) {
+    let context = document.getElementById('map').getContext('2d');
+    context.save();
+    context.font = `${this.width / 3}px Verdana`;
+    let pieces = map.pieces;
     for (let i = 0; i < pieces.length; i++) {
-      //let x = this.origin.x + i * this.width * Math.sqrt(3)
+
       let y = this.calcX(i);
       let column = pieces[i];
       for (let j = 0; j < column.length; j++) {
 
         let x = this.calcY(i, j);
-        this.context.fillStyle = this.setColor(column[j].type);
-        PieceView.drawHex(this.context, {x, y}, this.width)
+        context.fillStyle = this.setColor(column[j].type);
+        PieceView.drawHex(context, {x, y}, this.width)
 
         if (column[j].number > 0) {
-          this.context.fillStyle = 'white';
-          this.context.beginPath();
-          this.context.arc(x, y, this.width / 3, 0, 2 * Math.PI);
-          this.context.stroke();
-          this.context.fill();
+          context.fillStyle = 'white';
+          context.beginPath();
+          context.arc(x, y, this.width / 3, 0, 2 * Math.PI);
+          context.stroke();
+          context.fill();
 
           let num = column[j].number;
-          this.context.textAlign = 'center'
-          this.context.textBaseline = 'middle'
-          this.context.fillStyle = num === 6 || num === 8 ? 'red' : 'black';
-          this.context.fillText(column[j].number, x, y);
+          context.textAlign = 'center'
+          context.textBaseline = 'middle'
+          context.fillStyle = num === 6 || num === 8 ? 'red' : 'black';
+          context.fillText(column[j].number, x, y);
         }
 
       }
     }
+    context.restore();
   }
 
   getDistance(x, y) {
@@ -109,19 +110,11 @@ export class MapView {
 export class PieceView {
 
   static drawHex(context, origin, width) {
+    context.save();
     let ratio = width * Math.sqrt(3) / 2
     let xOff = 3 / 2 * width / 2;
     let offset = ratio * Math.sqrt(3);
     context.beginPath();
-    //context.moveTo(origin.x + ratio, origin.y + offset);
-  //  context.lineTo(origin.x + width, origin.y);
-  //  context.lineTo(origin.x + ratio, origin.y - offset);
-  //  context.lineTo(origin.x - ratio, origin.y - offset);
-  //  context.lineTo(origin.x - width, origin.y);
-  //  context.lineTo(origin.x - ratio, origin.y + offset);
-  //  context.lineTo(origin.x + ratio, origin.y + offset);
-  //  context.fill()
-
 
     context.moveTo(origin.x, origin.y)
     context.lineTo(origin.x, origin.y - width);
@@ -134,16 +127,8 @@ export class PieceView {
     context.lineTo(origin.x - ratio, origin.y - width / 2)
     context.lineTo(origin.x, origin.y - width);
 
-    //context.lineTo(origin.x, origin.y - ratio;)
-
-    //context.lineTo(origin.x - (origin.x + ratio * Math.sqrt(3) / 2), origin.y - ratio / 2);
-
-    //context.lineTo(origin.x, origin.y + ratio)
-    //context.lineTo(origin.x - width * Math.cos(30), origin.y + width * Math.sin(30));
-  //  context.lineTo(origin.x - width * Math.cos(30), origin.y - width * Math.sin(30));
-  //  context.lineTo(origin.x, origin.y - width * Math.sin(30));
-  //  context.lineTo(origin.x + width * Math.cos(30), origin.y - width * Math.sin(30));
     context.fill();
+    context.restore();
   }
 
 }
