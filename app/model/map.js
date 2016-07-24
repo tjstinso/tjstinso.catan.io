@@ -29,10 +29,10 @@ const NeighborsNeg = _enum([
 ]);
 
 Array.prototype.shuffleSort = function() {
-  for (let i = 1; i < this.length; i++) {
+  for (let i = 0; i < this.length - 1; i++) {
     let swap = Math.floor( Math.random() * this.length - i ) + i;
-    let swapVal = this[i - 1];
-    this[i - 1] = this[swap];
+    let swapVal = this[i];
+    this[i] = this[swap];
     this[swap] = swapVal;
   }
 }
@@ -73,12 +73,13 @@ export class Map {
 
 
   findNeighbors(i, j) {
-    
+
     Neighbors.enumerate().forEach(neighbor => {
       let yOffset;
       let xOffset;
 
-      if (i === Math.floor(this.pieces.length / 2) && (neighbor == Neighbors.BOTTOM_LEFT || neighbor == Neighbors.BOTTOM_RIGHT)) {
+      if (i === Math.floor(this.pieces.length / 2) && (neighbor == Neighbors.BOTTOM_LEFT
+          || neighbor == Neighbors.BOTTOM_RIGHT)) {
         yOffset = i + NeighborsNeg[neighbor].y;
         xOffset = j + NeighborsNeg[neighbor].x;
       } else if (i > Math.floor(this.pieces.length / 2)) {
@@ -127,12 +128,11 @@ export class Map {
 
     let enums = Neighbors.enumerate();
     for (let i = 1; i < this.pieces.length - 1; i++) {
-      let bool;
       for (let j = 1; j < this.pieces[i].length - 1; j++) {
 
+        //iterate over neighbor nodes
         for (let k = 0; k < this.pieces[i][j].neighbors.length; k++) {
-          bool = cb(this.pieces[i][j], this.pieces[i][j].neighbors[k]);
-          if (!bool) return false;
+          if (!cb(this.pieces[i][j], this.pieces[i][j].neighbors[k])) return false;
         }
 
       }
