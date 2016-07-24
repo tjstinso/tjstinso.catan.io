@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "35c9a57df4475298c083"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "4299b00b0957a813c79b"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -663,7 +663,7 @@
 	      var _this2 = this;
 	
 	      if (this.typesAvailable.length === 0) return true;
-	      if (step === this.typesAvailable.length) return false;
+	      if (step > this.typesAvailable.length * 5) return false;
 	      if (origin.isVisited) return;
 	
 	      var rand = void 0;
@@ -676,11 +676,10 @@
 	      }
 	
 	      if (check) {
-	        console.log(step);
 	        origin.type = this.typesAvailable[rand];
 	        this.typesAvailable = this.typesAvailable.splice(rand, 1);
 	        origin.neighbors.forEach(function (neighbor) {
-	          _this2.dfHelp(neighbor, 0, 0, stepSize);
+	          _this2.dfHelp(neighbor, 0, step++, stepSize);
 	        });
 	      } else {
 	        return this.dfHelp(origin, (index + stepSize) % this.typesAvailable.size, step, stepSize);
@@ -735,16 +734,9 @@
 	        var bool = void 0;
 	        for (var j = 1; j < this.pieces[i].length - 1; j++) {
 	          for (var k = 0; k < this.pieces[i][j].neighbors.length; k++) {
-	            bool = cb(i, j, Neighbors[enums[k]]);
+	            bool = cb(this.pieces[i][j], Neighbors[enums[k]]);
 	            if (!bool) return false;
 	          }
-	
-	          //  for (let k = 0; k < enums.length; k++) {
-	          //    bool = cb(i, j, Neighbors[enums[k]]);
-	          //    if (!bool) return false;
-	          //  }
-	          //enums = enums.map(neighbor => cb(i, j, Neighbors[neighbor]));
-	          //if (enums.includes(false)) return false;
 	        }
 	      }
 	      return true;
@@ -752,33 +744,17 @@
 	  }, {
 	    key: 'checkNumbers',
 	    value: function checkNumbers() {
-	      var _this4 = this;
-	
-	      return this.checkNeighbors(function (i, j, neighbor) {
-	        var piece = _this4.pieces[i][j];
-	        var yOffset = i > _this4.pieces.length / 2 ? -neighbor.y : neighbor.y;
-	        var neighborPiece = _this4.pieces[i + yOffset][j + neighbor.x];
-	        if (piece && neighborPiece && neighborPiece.type !== Types.WATER
-	        //&& piece.number && neighborPiece.number
-	        ) {
-	            return !((piece.number === 6 || piece.number === 8) && (neighborPiece.number === 6 || neighborPiece.number === 8));
-	          }return true;
+	      return this.checkNeighbors(function (piece, neighbor) {
+	        if (piece && neighbor.type !== Types.WATER) {
+	          return !((piece.number === 6 || piece.number === 8) && (neighbor.number === 6 || neighbor.number === 8));
+	        }return true;
 	      });
 	    }
 	  }, {
 	    key: 'checkTypes',
 	    value: function checkTypes() {
-	      var _this5 = this;
-	
-	      return this.checkNeighbors(function (i, j, neighbor) {
-	        var piece = _this5.pieces[i][j];
-	        var yOffset = i > _this5.pieces.length / 2 ? -neighbor.y : neighbor.y;
-	        var neighborPiece = _this5.pieces[i + yOffset][j + neighbor.x];
-	        if (neighborPiece && neighborPiece.type !== Types.WATER && piece && neighborPiece
-	        //&& piece.type && neighborPiece.type
-	        ) {
-	            return piece.type !== neighborPiece.type;
-	          }return true;
+	      return this.checkNeighbors(function (piece, neighbor) {
+	        return piece.type != neighbor.type;
 	      });
 	    }
 	  }, {
@@ -829,13 +805,15 @@
 	      } while (!this.checkNumbers());
 	
 	      var test = void 0;
+	      var count = 0;
 	      do {
 	        this.setTypes();
-	        //test = this.dfBuild();
 	        this.randomizeTypes();
+	        //test = this.dfBuild();
 	        test = this.checkTypes();
+	        count++;
 	      } while (!test);
-	      console.log(this.pieces);
+	      console.log(count);
 	      //} while (!this.checkTypes());
 	    }
 	  }, {
@@ -872,6 +850,11 @@
 	//implement recursive checking strategy
 	
 	;
+	
+	var m = new Map();
+	for (var i = 0; i < 1000; i++) {
+	  m.randomDistro();
+	}
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
