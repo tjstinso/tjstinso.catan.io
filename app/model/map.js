@@ -10,7 +10,7 @@ export const Types = _enum([
   'WATER'
 ]);
 
-export const Neighbors = _enum([
+const Neighbors = _enum([
   { name: 'TOP_RIGHT', x: 0, y: -1},
   { name: 'RIGHT', x: 1, y: 0},
   { name: 'BOTTOM_RIGHT', x: 1, y: 1},
@@ -19,6 +19,14 @@ export const Neighbors = _enum([
   { name: 'TOP_LEFT', x: -1, y: -1},
 ]);
 
+const NeighborsNeg = _enum([
+  { name: 'TOP_RIGHT', x: 1, y: -1},
+  { name: 'RIGHT', x: 1, y: 0},
+  { name: 'BOTTOM_RIGHT', x: 0, y: 1},
+  { name: 'BOTTOM_LEFT', x: -1, y: 1},
+  { name: 'LEFT', x: -1, y: 0},
+  { name: 'TOP_LEFT', x: 0, y: -1},
+]);
 
 Array.prototype.shuffleSort = function() {
   for (let i = 1; i < this.length; i++) {
@@ -51,10 +59,40 @@ export class Map {
     this.pieces = this.pieces.map((row, i) => {
       return row.map((column, j) => {
         return i === 0 || j === 0 || i === this.pieces.length - 1 || j === this.pieces[i].length - 1
-          ? new Piece(Types.WATER) : new Piece();
+          ? new Piece(Types.WATER, 0) : new Piece();
       }, this);
     }, this);
 
+    this.pieces.forEach((row, i) => {
+      row.forEach((piece, j) => {
+        this.findNeighbors(i, j);
+      })
+    })
+
+  }
+
+
+  findNeighbors(i, j) {
+    
+    Neighbors.enumerate().forEach(neighbor => {
+      let yOffset;
+      let xOffset;
+
+      if (i === Math.floor(this.pieces.length / 2) && (neighbor == Neighbors.BOTTOM_LEFT || neighbor == Neighbors.BOTTOM_RIGHT)) {
+        yOffset = i + NeighborsNeg[neighbor].y;
+        xOffset = j + NeighborsNeg[neighbor].x;
+      } else if (i > Math.floor(this.pieces.length / 2)) {
+        yOffset = i + NeighborsNeg[neighbor].y;
+        xOffset = j + NeighborsNeg[neighbor].x;
+      } else {
+        yOffset = i + Neighbors[neighbor].y;
+        xOffset = j + Neighbors[neighbor].x;
+      }
+
+      if (yOffset >= 0 && yOffset < this.pieces.length && xOffset >= 0 && xOffset < this.pieces[yOffset].length) {
+        this.pieces[i][j].neighbors.push(this.pieces[yOffset][xOffset]);
+      }
+    });
   }
 
 
@@ -69,71 +107,62 @@ export class Map {
       this.makeTileCounter(4, Types.WOOD),
       this.makeTileCounter(3, Types.BRICK),
       this.makeTileCounter(3, Types.ORE),
-      //this.makeTileCounter(1, Types.DESERT),
-    ].map(arr => {
+    ]
+    .map(arr => {
       let temp = [];
       for (let i = 0; i < arr.count; i++) {
-        temp = temp.concat(arr.type);
+        temp.push(arr.type);
       }
       return temp;
-    }).reduce((prev, curr) => prev.concat(curr));
+    })
+    .reduce((prev, curr) => prev.concat(curr));
+  }
+
+  //helper method used to insta/ntiate set of Types
+  makeTileCounter(count, type) {
+    return { count, type };
   }
 
   checkNeighbors(cb) {
+
+    let enums = Neighbors.enumerate();
     for (let i = 1; i < this.pieces.length - 1; i++) {
-      let enums;
+      let bool;
       for (let j = 1; j < this.pieces[i].length - 1; j++) {
-        enums = Neighbors.enumerate();
-        enums = enums.map(neighbor => cb(i, j, Neighbors[neighbor]));
-        if (enums.includes(false)) return false;
+
+        for (let k = 0; k < this.pieces[i][j].neighbors.length; k++) {
+          bool = cb(this.pieces[i][j], this.pieces[i][j].neighbors[k]);
+          if (!bool) return false;
+        }
+
       }
     }
     return true;
   }
 
   checkNumbers() {
-    return this.checkNeighbors((i, j, neighbor) => {
-      let piece = this.pieces[i][j];
-      let yOffset = i > this.pieces.length / 2 ? - neighbor.y : neighbor.y
-      let neighborPiece = this.pieces[i + yOffset][j + neighbor.x];
-      if (piece && neighborPiece && piece.number && neighborPiece.number) {
-        return !((piece.number === 6 || piece.number === 8) &&
-          (neighborPiece.number === 6 || neighborPiece.number === 8));
-      } else {
-        return true;
-      }
+    return this.checkNeighbors((piece, neighbor) => {
+      return !((piece.number === 6 || piece.number === 8) &&
+        (neighbor.number === 6 || neighbor.number === 8));
     });
   }
 
   checkTypes() {
-    return this.checkNeighbors((i, j, neighbor) => {
-      let piece = this.pieces[i][j];
-      let yOffset = i > this.pieces.length / 2 ? - neighbor.y : neighbor.y
-      let neighborPiece = this.pieces[i + yOffset][j + neighbor.x];
-      if (piece && neighborPiece && piece.type && neighborPiece.type) {
-        return piece.type !== neighborPiece.type;
-      } else {
-        return true;
-      }
+    return this.checkNeighbors((piece, neighbor) => {
+      return piece.type !== neighbor.type
     });
   }
 
-  //helper method used to instantiate
-  makeTileCounter(count, type) {
-    return { count, type };
-  }
 
   shufflePieces() {
     this.typesAvailable.shuffleSort();
   }
 
+
   shuffleNumbers() {
     this.numbers.shuffleSort();
   }
 
-  addChits() {
-
-  }
 
   distribute(fr, to, func) {
     for (let i = 1; i < to.length - 1; i++) {
@@ -162,19 +191,15 @@ export class Map {
   }
 
   randomDistro() {
-    let test;
-
     do {
       this.setNumbers();
       this.randomNumbers();
-      test = this.checkNumbers();
-    } while (!test);
+    } while (!this.checkNumbers());
 
     do {
       this.setTypes();
       this.randomizeTypes();
-      test = this.checkTypes();
-    } while (!test);
+    } while (!this.checkTypes());
   }
 
   fairRandomDistro() {
@@ -203,6 +228,10 @@ export class Piece {
   constructor(type = null, number = 0) {
     this.type = type;
     this.number = number;
+    this.neighbors = [];
+    this.visited = false;
   }
+
+  //implement recursive checking strategy
 
 }
