@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "dc05af44d2230a3c94b1"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "a8499f11d667657af819"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -1947,9 +1947,11 @@
 	
 	  ele.width = '' + 750;
 	  ele.height = '' + 750;
-	
-	  var mView = new _MapView.MapView(map, ctx, { x: 250, y: -150 }, 50);
+	  var mView = new _MapView.MapView(map, ctx, { x: 100, y: 175 }, 50);
 	  mView.draw();
+	
+	  //PieceView.drawHex(ctx, {x: 50, y: 50}, 50);
+	
 	})();
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
@@ -2008,7 +2010,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.MapView = undefined;
+	exports.PieceView = exports.MapView = undefined;
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
@@ -2024,49 +2026,66 @@
 	    this.context = context;
 	    this.origin = origin;
 	    this.map = map;
-	    this.ratio = width / 2;
-	    this.pieceHeight = width * Math.sqrt(3);
-	    //context.rotate(60 * Math.PI / 180); //need to translate to to some degree to put board on stage
+	    this.pieceHeight = width; //* Math.sqrt(3);
+	    //this.context.font = "20px Verdana"
+	    this.context.font = this.width / 3 + 'px Verdana';
 	  }
 	
 	  _createClass(MapView, [{
 	    key: 'calcX',
 	    value: function calcX(xOffset) {
-	      return this.origin.x + xOffset * this.width * (3 / 2);
+	      return this.origin.x + xOffset * this.width * 3 / 2;
+	    }
+	  }, {
+	    key: 'invX',
+	    value: function invX(xOffset) {
+	      return this.origin.x + xOffset * this.width * (3 / 2) - this.width;
+	    }
+	  }, {
+	    key: 'invY',
+	    value: function invY(xOffset, yOffset) {
+	      this.origin + xOffset * this.width;
+	    }
+	  }, {
+	    key: 'invX',
+	    value: function invX(xOffset, yOffset) {
+	      this.origin.x + xOffset * this.width * (3 / 2) - this.width;
 	    }
 	  }, {
 	    key: 'calcY',
 	    value: function calcY(xOffset, yOffset) {
-	      var y = this.origin.y + yOffset * Math.sqrt(3) * this.width;
+	      //return this.origin.y + yOffset * this.width * 2
+	      var y = this.origin.y + yOffset * this.width * Math.sqrt(3);
+	      //let y = this.origin.y //+ yOffset * Math.sqrt(3) * this.width;
 	      switch (xOffset) {
 	        case 0:
-	          return y + this.pieceHeight * 3 / 2;
-	        case 1:
-	          return y + this.pieceHeight;
-	        case 2:
-	          return y + this.pieceHeight * 1 / 2;
-	        case 3:
 	          return y;
+	        case 1:
+	          return y - this.pieceHeight * Math.sqrt(3) / 2;
+	        case 2:
+	          return y - this.pieceHeight * Math.sqrt(3);
+	        case 3:
+	          return y - this.pieceHeight * Math.sqrt(3) * 3 / 2;
 	        case 4:
-	          return y + this.pieceHeight * 1 / 2;
+	          return y - this.pieceHeight * Math.sqrt(3);
 	        case 5:
-	          return y + this.pieceHeight;
+	          return y - this.pieceHeight * Math.sqrt(3) / 2;
 	        case 6:
-	          return y + this.pieceHeight * 3 / 2;
+	          return y;
 	
 	      }
 	    }
 	  }, {
 	    key: 'draw',
 	    value: function draw() {
-	      this.context.rotate(30 * Math.PI / 180);
 	      var pieces = this.map.getPieces();
 	      for (var i = 0; i < pieces.length; i++) {
-	        var x = this.calcX(i);
+	        //let x = this.origin.x + i * this.width * Math.sqrt(3)
+	        var y = this.calcX(i);
 	        var column = pieces[i];
 	        for (var j = 0; j < column.length; j++) {
 	
-	          var y = this.calcY(i, j);
+	          var x = this.calcY(i, j);
 	          this.context.fillStyle = this.setColor(column[j].type);
 	          PieceView.drawHex(this.context, { x: x, y: y }, this.width);
 	
@@ -2077,15 +2096,19 @@
 	            this.context.stroke();
 	            this.context.fill();
 	
-	            //this.context.rotate(-30 * Math.PI / 180);
-	            //let angleX = x * this.width / 2 * Math.sqrt(3) / 2;
-	            //let angleY = x * this.width / 2;
+	            var str = '' + column[j].number;
+	            this.context.textAlign = 'center';
+	            this.context.textBaseline = 'middle';
 	            this.context.fillStyle = 'black';
 	            this.context.fillText(column[j].number, x, y);
-	            //this.context.rotate(30 * Math.PI / 180);
 	          }
 	        }
 	      }
+	    }
+	  }, {
+	    key: 'getDistance',
+	    value: function getDistance(x, y) {
+	      return Math.sqrt(x * x + y + y);
 	    }
 	  }, {
 	    key: 'setColor',
@@ -2112,7 +2135,7 @@
 	  return MapView;
 	}();
 	
-	var PieceView = function () {
+	var PieceView = exports.PieceView = function () {
 	  function PieceView() {
 	    _classCallCheck(this, PieceView);
 	  }
@@ -2120,16 +2143,40 @@
 	  _createClass(PieceView, null, [{
 	    key: 'drawHex',
 	    value: function drawHex(context, origin, width) {
-	      var ratio = width / 2;
+	      var ratio = width * Math.sqrt(3) / 2;
+	      var xOff = 3 / 2 * width / 2;
 	      var offset = ratio * Math.sqrt(3);
 	      context.beginPath();
-	      context.moveTo(origin.x + ratio, origin.y + offset);
-	      context.lineTo(origin.x + width, origin.y);
-	      context.lineTo(origin.x + ratio, origin.y - offset);
-	      context.lineTo(origin.x - ratio, origin.y - offset);
-	      context.lineTo(origin.x - width, origin.y);
-	      context.lineTo(origin.x - ratio, origin.y + offset);
-	      context.lineTo(origin.x + ratio, origin.y + offset);
+	      //context.moveTo(origin.x + ratio, origin.y + offset);
+	      //  context.lineTo(origin.x + width, origin.y);
+	      //  context.lineTo(origin.x + ratio, origin.y - offset);
+	      //  context.lineTo(origin.x - ratio, origin.y - offset);
+	      //  context.lineTo(origin.x - width, origin.y);
+	      //  context.lineTo(origin.x - ratio, origin.y + offset);
+	      //  context.lineTo(origin.x + ratio, origin.y + offset);
+	      //  context.fill()
+	
+	
+	      context.moveTo(origin.x, origin.y);
+	      context.lineTo(origin.x, origin.y - width);
+	
+	      context.lineTo(origin.x + ratio, origin.y - width / 2);
+	      context.lineTo(origin.x + ratio, origin.y + width / 2);
+	      context.lineTo(origin.x, origin.y + width);
+	
+	      context.lineTo(origin.x - ratio, origin.y + width / 2);
+	      context.lineTo(origin.x - ratio, origin.y - width / 2);
+	      context.lineTo(origin.x, origin.y - width);
+	
+	      //context.lineTo(origin.x, origin.y - ratio;)
+	
+	      //context.lineTo(origin.x - (origin.x + ratio * Math.sqrt(3) / 2), origin.y - ratio / 2);
+	
+	      //context.lineTo(origin.x, origin.y + ratio)
+	      //context.lineTo(origin.x - width * Math.cos(30), origin.y + width * Math.sin(30));
+	      //  context.lineTo(origin.x - width * Math.cos(30), origin.y - width * Math.sin(30));
+	      //  context.lineTo(origin.x, origin.y - width * Math.sin(30));
+	      //  context.lineTo(origin.x + width * Math.cos(30), origin.y - width * Math.sin(30));
 	      context.fill();
 	    }
 	  }]);
