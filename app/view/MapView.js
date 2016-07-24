@@ -7,45 +7,59 @@ export class MapView {
     this.context = context;
     this.origin = origin;
     this.map = map;
-    this.ratio = width / 2;
-    this.pieceHeight = width * Math.sqrt(3);
-    //context.rotate(60 * Math.PI / 180); //need to translate to to some degree to put board on stage
+    this.pieceHeight = width //* Math.sqrt(3);
+    //this.context.font = "20px Verdana"
+    this.context.font = `${this.width / 3}px Verdana`;
   }
 
   calcX(xOffset) {
-    return this.origin.x + xOffset * this.width * (3/2);
+    return this.origin.x + xOffset * this.width * 3 / 2
+  }
+
+  invX(xOffset) {
+    return this.origin.x + xOffset * this.width * (3/2) - this.width;
+  }
+
+  invY(xOffset, yOffset) {
+    this.origin + xOffset * this.width
+  }
+
+  invX(xOffset, yOffset) {
+    this.origin.x + xOffset * this.width * (3/2) - this.width;
   }
 
   calcY(xOffset, yOffset) {
-    let y = this.origin.y + yOffset * Math.sqrt(3) * this.width;
+    //return this.origin.y + yOffset * this.width * 2
+    let y = this.origin.y + yOffset * this.width * Math.sqrt(3);
+    //let y = this.origin.y //+ yOffset * Math.sqrt(3) * this.width;
     switch (xOffset) {
       case 0:
-        return y + this.pieceHeight * 3 / 2;
+        return y
       case 1:
-        return y + this.pieceHeight;
+        return y - this.pieceHeight * Math.sqrt(3) / 2
       case 2:
-        return y + this.pieceHeight * 1 / 2;
+        return y - this.pieceHeight * Math.sqrt(3)
       case 3:
-        return y;
+        return y - this.pieceHeight * Math.sqrt(3) * 3 / 2;
       case 4:
-        return y + this.pieceHeight * 1 / 2;
+        return y - this.pieceHeight * Math.sqrt(3)
       case 5:
-        return y + this.pieceHeight;
+        return y - this.pieceHeight *  Math.sqrt(3) / 2;
       case 6:
-        return y + this.pieceHeight * 3 / 2;
+        return y
 
     }
   }
 
   draw() {
-    this.context.rotate(30 * Math.PI / 180);
     let pieces = this.map.getPieces();
     for (let i = 0; i < pieces.length; i++) {
-      let x = this.calcX(i);
+      //let x = this.origin.x + i * this.width * Math.sqrt(3)
+      let y = this.calcX(i);
       let column = pieces[i];
       for (let j = 0; j < column.length; j++) {
 
-        let y = this.calcY(i, j);
+        let x = this.calcY(i, j);
         this.context.fillStyle = this.setColor(column[j].type);
         PieceView.drawHex(this.context, {x, y}, this.width)
 
@@ -56,16 +70,19 @@ export class MapView {
           this.context.stroke();
           this.context.fill();
 
-          //this.context.rotate(-30 * Math.PI / 180);
-          //let angleX = x * this.width / 2 * Math.sqrt(3) / 2;
-          //let angleY = x * this.width / 2;
+          let str = `${column[j].number}`;
+          this.context.textAlign = 'center'
+          this.context.textBaseline = 'middle'
           this.context.fillStyle = 'black';
           this.context.fillText(column[j].number, x, y);
-          //this.context.rotate(30 * Math.PI / 180);
         }
 
       }
     }
+  }
+
+  getDistance(x, y) {
+    return Math.sqrt(x*x + y+y);
   }
 
   setColor(type) {
@@ -89,20 +106,44 @@ export class MapView {
 
 }
 
-class PieceView {
+export class PieceView {
 
   static drawHex(context, origin, width) {
-    let ratio = width / 2;
+    let ratio = width * Math.sqrt(3) / 2
+    let xOff = 3 / 2 * width / 2;
     let offset = ratio * Math.sqrt(3);
     context.beginPath();
-    context.moveTo(origin.x + ratio, origin.y + offset);
-    context.lineTo(origin.x + width, origin.y);
-    context.lineTo(origin.x + ratio, origin.y - offset);
-    context.lineTo(origin.x - ratio, origin.y - offset);
-    context.lineTo(origin.x - width, origin.y);
-    context.lineTo(origin.x - ratio, origin.y + offset);
-    context.lineTo(origin.x + ratio, origin.y + offset);
-    context.fill()
+    //context.moveTo(origin.x + ratio, origin.y + offset);
+  //  context.lineTo(origin.x + width, origin.y);
+  //  context.lineTo(origin.x + ratio, origin.y - offset);
+  //  context.lineTo(origin.x - ratio, origin.y - offset);
+  //  context.lineTo(origin.x - width, origin.y);
+  //  context.lineTo(origin.x - ratio, origin.y + offset);
+  //  context.lineTo(origin.x + ratio, origin.y + offset);
+  //  context.fill()
+
+
+    context.moveTo(origin.x, origin.y)
+    context.lineTo(origin.x, origin.y - width);
+
+    context.lineTo(origin.x + ratio , origin.y - width / 2);
+    context.lineTo(origin.x + ratio, origin.y + width / 2)
+    context.lineTo(origin.x, origin.y + width);
+
+    context.lineTo(origin.x - ratio , origin.y + width / 2);
+    context.lineTo(origin.x - ratio, origin.y - width / 2)
+    context.lineTo(origin.x, origin.y - width);
+
+    //context.lineTo(origin.x, origin.y - ratio;)
+
+    //context.lineTo(origin.x - (origin.x + ratio * Math.sqrt(3) / 2), origin.y - ratio / 2);
+
+    //context.lineTo(origin.x, origin.y + ratio)
+    //context.lineTo(origin.x - width * Math.cos(30), origin.y + width * Math.sin(30));
+  //  context.lineTo(origin.x - width * Math.cos(30), origin.y - width * Math.sin(30));
+  //  context.lineTo(origin.x, origin.y - width * Math.sin(30));
+  //  context.lineTo(origin.x + width * Math.cos(30), origin.y - width * Math.sin(30));
+    context.fill();
   }
 
 }
