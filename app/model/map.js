@@ -9,6 +9,15 @@ export const Types = _enum([
   'DESERT',
   'WATER'
 ]);
+export const Neighbors = _enum([
+  { name: 'TOP_RIGHT', x: 0, y: 1},
+  { name: 'RIGHT', x: 1, y: 0},
+  { name: 'BOTTOM_RIGHT', x: 1, y: -1},
+  { name: 'BOTTOM_LEFT', x: 0, y: -1},
+  { name: 'LEFT', x: -1, y: 0},
+  { name: 'TOP_LEFT', x: -1, y: 1},
+]);
+
 
 Array.prototype.shuffleSort = function() {
   for (let i = 1; i < this.length; i++) {
