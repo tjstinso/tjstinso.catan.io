@@ -70,10 +70,10 @@ export class MapView {
           this.context.stroke();
           this.context.fill();
 
-          let str = `${column[j].number}`;
+          let num = column[j].number;
           this.context.textAlign = 'center'
           this.context.textBaseline = 'middle'
-          this.context.fillStyle = 'black';
+          this.context.fillStyle = num === 6 || num === 8 ? 'red' : 'black';
           this.context.fillText(column[j].number, x, y);
         }
 
