@@ -10,7 +10,10 @@ import { MapView, PieceView } from './view/MapView';
   ele.width = `${750}`;
   ele.height = `${750}`;
   let mView = new MapView(map, ctx, {x: 100, y: 175}, 50);
-  mView.draw();
+  //setInterval(() => {
+    mView.draw()
+  //}, 500)
+  //mView.draw();
 
   //PieceView.drawHex(ctx, {x: 50, y: 50}, 50);
 
