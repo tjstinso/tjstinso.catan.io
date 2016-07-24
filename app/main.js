@@ -20,3 +20,9 @@ import { MapView, PieceView } from './view/MapView';
   //mView.draw();
 
   //PieceView.drawHex(ctx, {x: 50, y: 50}, 50);
+
+  let button = document.getElementById('test-button');
+  button.addEventListener('click', () => {
+    map = new Map();
+    map.randomDistro();
+  });
