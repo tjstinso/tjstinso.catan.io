@@ -1,4 +1,6 @@
 import _enum from './enum';
+
+const env = process.env.NODE_ENV;
 //Generate constants
 export const Types = _enum([
   'WHEAT',
@@ -41,6 +43,8 @@ export class Map {
 
   constructor() {
 
+    this.count = 0;
+
     //Tracks the number of hexes available per type
 
     this.numbers = [];
@@ -59,7 +63,7 @@ export class Map {
     this.pieces = this.pieces.map((row, i) => {
       return row.map((column, j) => {
         return i === 0 || j === 0 || i === this.pieces.length - 1 || j === this.pieces[i].length - 1
-          ? new Piece(Types.WATER, 0) : new Piece();
+          ? new Piece(Types.WATER, -1) : new Piece();
       }, this);
     }, this);
 
@@ -112,27 +116,29 @@ export class Map {
     .map(arr => {
       let temp = [];
       for (let i = 0; i < arr.count; i++) {
-        temp.push(arr.type);
+        temp = temp.concat(arr.type);
       }
       return temp;
     })
-    .reduce((prev, curr) => prev.concat(curr));
+    .reduce((prev, curr) => prev.concat(curr)); //flatten array into list of types
   }
 
-  //helper method used to insta/ntiate set of Types
+  //helper method used to instantiate set of Types
   makeTileCounter(count, type) {
     return { count, type };
   }
 
   checkNeighbors(cb) {
 
-    let enums = Neighbors.enumerate();
     for (let i = 1; i < this.pieces.length - 1; i++) {
       for (let j = 1; j < this.pieces[i].length - 1; j++) {
 
         //iterate over neighbor nodes
         for (let k = 0; k < this.pieces[i][j].neighbors.length; k++) {
-          if (!cb(this.pieces[i][j], this.pieces[i][j].neighbors[k])) return false;
+          if (!cb(this.pieces[i][j], this.pieces[i][j].neighbors[k])) {
+            //if (env == 'test') console.log(this.pieces[i][j]);
+            return false;
+          }
         }
 
       }
@@ -149,7 +155,7 @@ export class Map {
 
   checkTypes() {
     return this.checkNeighbors((piece, neighbor) => {
-      return piece.type !== neighbor.type
+      return piece['type'] !== neighbor['type'];
     });
   }
 
@@ -172,47 +178,64 @@ export class Map {
     }
   }
 
+  clearField(field) {
+    for (let i = 1; i < this.pieces.length - 1; i++) {
+      for (let j = 1; j < this.pieces[i].length - 1; j++) {
+        this.pieces[i][j][field] = null;
+      }
+    }
+  }
+
   randomizeTypes() {
     this.shufflePieces();
     this.distribute(this.typesAvailable, this.pieces, (fr, to, i, j) => {
-      if (to[i][j].number === 0) {
+
+      //this.pieces[i][j].type = null;
+      if (to[i][j].number === 0 || this.typesAvailable.length === 0) {
         to[i][j].type = Types.DESERT;
-      } else to[i][j].type = fr.pop();
+      } else {
+        to[i][j].type = fr.pop();
+      }
+
+      //} else if (this.typesAvailable.length > 0){
+      //  to[i][j].type = fr.pop();
+      //}
+
     });
   }
+
+  setRandomDesert() {}
 
   randomNumbers() {
     this.shuffleNumbers();
     this.distribute(this.numbers, this.pieces, (fr, to, i, j) => {
-      if (to[i][j].type !== Types.DESERT) {
-        to[i][j].number = fr.pop();
-      }
+      to[i][j].number = fr.pop();
     });
   }
 
   randomDistro() {
+    this.count = 0;
     do {
       this.setNumbers();
       this.randomNumbers();
+      if (env == 'test') this.count++;
     } while (!this.checkNumbers());
 
+    let test = false;
     do {
       this.setTypes();
       this.randomizeTypes();
+
+      //if (env == 'test')
+      //if (this.count > 30000) console.log(this);
+      this.count++;
+
     } while (!this.checkTypes());
+    console.log(this.pieces);
+    console.log(this.count);
   }
 
   fairRandomDistro() {
-
-  }
-
-
-
-  traverseMap() {
-
-  }
-
-  traverseMapHelp(root) {
 
   }
 
@@ -234,4 +257,30 @@ export class Piece {
 
   //implement recursive checking strategy
 
+}
+
+if (env == 'test') {
+  let map = new Map()
+  let total = 0;
+  let i;
+  for (i = 0; i < 1000; i++) {
+    map.randomDistro()
+    total += map.count;
+    map = new Map();
+  }
+  console.log(total / i);
+}
+
+if (env == 'checkType') {
+  let map = new Map();
+  for (let i = 0; i < 1000; i++) {
+    map.setNumbers();
+    map.randomNumbers()
+    map.setTypes();
+    map.randomizeTypes()
+    let arr = map.pieces.reduce((prev, curr) => prev.concat(curr));
+    arr = arr.map(piece => piece.type);
+    console.log(arr);
+  }
+  //console.log(map);
 }
