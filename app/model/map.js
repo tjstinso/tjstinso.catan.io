@@ -32,11 +32,11 @@ const NeighborsNeg = _enum([
 ]);
 
 Array.prototype.shuffleSort = function() {
-  for (let i = 0; i < this.length - 1; i++) {
-    let swap = Math.floor( Math.random() * (this.length - i) ) + i;
-    let swapVal = this[i];
-    this[i] = this[swap];
-    this[swap] = swapVal;
+  for (let i = this.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      let temp = this[i];
+      this[i] = this[j];
+      this[j] = temp;
   }
 }
 
@@ -64,7 +64,7 @@ export class Map {
     this.pieces = this.pieces.map((row, i) => {
       return row.map((column, j) => {
         return i === 0 || j === 0 || i === this.pieces.length - 1 || j === this.pieces[i].length - 1
-          ? new Piece(Types.WATER, -1) : new Piece();
+          ? new Piece(Types.WATER, -1) : new Piece(null, -1);
       }, this);
     }, this);
 
@@ -176,7 +176,6 @@ export class Map {
         func(fr, to, i, j);
       }
     }
-    console.log();
   }
 
   clearField(field) {
@@ -217,7 +216,7 @@ export class Map {
     do {
       this.setNumbers();
       this.randomNumbers();
-      if (env == 'test') this.count++;
+      ////if (env == 'test') this.count++;
     } while (!this.checkNumbers());
 
 
@@ -228,7 +227,7 @@ export class Map {
 
       //if (env == 'test')
       //if (this.count > 30000) console.log(this);
-      //this.count++;
+      this.count++;
 
     } while (!this.checkTypes());
   }
