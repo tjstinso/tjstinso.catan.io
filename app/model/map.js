@@ -2,6 +2,7 @@ import _enum from './enum';
 
 const env = process.env.NODE_ENV;
 //Generate constants
+
 export const Types = _enum([
   'WHEAT',
   'SHEEP',
@@ -32,7 +33,7 @@ const NeighborsNeg = _enum([
 
 Array.prototype.shuffleSort = function() {
   for (let i = 0; i < this.length - 1; i++) {
-    let swap = Math.floor( Math.random() * this.length - i ) + i;
+    let swap = Math.floor( Math.random() * (this.length - i) ) + i;
     let swapVal = this[i];
     this[i] = this[swap];
     this[swap] = swapVal;
@@ -94,7 +95,7 @@ export class Map {
         xOffset = j + Neighbors[neighbor].x;
       }
 
-      if (yOffset >= 0 && yOffset < this.pieces.length && xOffset >= 0 && xOffset < this.pieces[yOffset].length) {
+      if (yOffset > 0 && yOffset < this.pieces.length - 1 && xOffset > 0 && xOffset < this.pieces[yOffset].length - 1) {
         this.pieces[i][j].neighbors.push(this.pieces[yOffset][xOffset]);
       }
     });
@@ -136,7 +137,6 @@ export class Map {
         //iterate over neighbor nodes
         for (let k = 0; k < this.pieces[i][j].neighbors.length; k++) {
           if (!cb(this.pieces[i][j], this.pieces[i][j].neighbors[k])) {
-            //if (env == 'test') console.log(this.pieces[i][j]);
             return false;
           }
         }
@@ -176,6 +176,7 @@ export class Map {
         func(fr, to, i, j);
       }
     }
+    console.log();
   }
 
   clearField(field) {
@@ -204,8 +205,6 @@ export class Map {
     });
   }
 
-  setRandomDesert() {}
-
   randomNumbers() {
     this.shuffleNumbers();
     this.distribute(this.numbers, this.pieces, (fr, to, i, j) => {
@@ -221,6 +220,7 @@ export class Map {
       if (env == 'test') this.count++;
     } while (!this.checkNumbers());
 
+
     let test = false;
     do {
       this.setTypes();
@@ -228,11 +228,9 @@ export class Map {
 
       //if (env == 'test')
       //if (this.count > 30000) console.log(this);
-      this.count++;
+      //this.count++;
 
     } while (!this.checkTypes());
-    console.log(this.pieces);
-    console.log(this.count);
   }
 
   fairRandomDistro() {
@@ -263,11 +261,20 @@ if (env == 'test') {
   let map = new Map()
   let total = 0;
   let i;
+  let std = [];
   for (i = 0; i < 1000; i++) {
     map.randomDistro()
+    std.push(map.count)
     total += map.count;
     map = new Map();
   }
+  let avg = total / i
+  console.log(
+    Math.sqrt(
+        ( std.map(num => (num - avg) * (num - avg))
+          .reduce((prev, next) => prev + next) / std.length)
+        )
+)
   console.log(total / i);
 }
 
