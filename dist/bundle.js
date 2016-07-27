@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "3d136eb246093b508a8d"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "ca63c1422cbd5d8c1c15"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -608,9 +608,11 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var env = ("development");
-	//Generate constants
 	
+	//Generate constants
 	var Types = exports.Types = (0, _enum3.default)(['WHEAT', 'SHEEP', 'WOOD', 'BRICK', 'ORE', 'DESERT', 'WATER']);
+	
+	var Dir = (0, _enum3.default)(['BOTTOM_RIGHT', 'BOTTOM_LEFT', 'TOP', 'BOTTOM', 'TOP_RIGHT', 'TOP_LEFT']);
 	
 	var Neighbors = (0, _enum3.default)([{ name: 'TOP_RIGHT', x: 0, y: -1 }, { name: 'RIGHT', x: 1, y: 0 }, { name: 'BOTTOM_RIGHT', x: 1, y: 1 }, { name: 'BOTTOM_LEFT', x: 0, y: 1 }, { name: 'LEFT', x: -1, y: 0 }, { name: 'TOP_LEFT', x: -1, y: -1 }]);
 	
@@ -662,7 +664,7 @@
 	        var yOffset = void 0;
 	        var xOffset = void 0;
 	
-	        if (i === Math.floor(_this2.pieces.length / 2) && (neighbor == Neighbors.BOTTOM_LEFT || neighbor == Neighbors.BOTTOM_RIGHT)) {
+	        if (i === Math.floor(_this2.pieces.length / 2) && (neighbor == Dir.BOTTOM_LEFT || neighbor == Dir.BOTTOM_RIGHT)) {
 	          yOffset = i + NeighborsNeg[neighbor].y;
 	          xOffset = j + NeighborsNeg[neighbor].x;
 	        } else if (i > Math.floor(_this2.pieces.length / 2)) {
@@ -771,16 +773,11 @@
 	      this.shufflePieces();
 	      this.distribute(this.typesAvailable, this.pieces, function (fr, to, i, j) {
 	
-	        //this.pieces[i][j].type = null;
 	        if (to[i][j].number === 0 || _this3.typesAvailable.length === 0) {
 	          to[i][j].type = Types.DESERT;
 	        } else {
 	          to[i][j].type = fr.pop();
 	        }
-	
-	        //} else if (this.typesAvailable.length > 0){
-	        //  to[i][j].type = fr.pop();
-	        //}
 	      });
 	    }
 	  }, {
@@ -798,16 +795,12 @@
 	      do {
 	        this.setNumbers();
 	        this.randomNumbers();
-	        ////if (env == 'test') this.count++;
 	      } while (!this.checkNumbers());
 	
 	      var test = false;
 	      do {
 	        this.setTypes();
 	        this.randomizeTypes();
-	
-	        //if (env == 'test')
-	        //if (this.count > 30000) console.log(this);
 	        this.count++;
 	      } while (!this.checkTypes());
 	    }
