@@ -1,8 +1,8 @@
 import _enum from './enum';
 
 const env = process.env.NODE_ENV;
-//Generate constants
 
+//Generate constants
 export const Types = _enum([
   'WHEAT',
   'SHEEP',
@@ -12,6 +12,15 @@ export const Types = _enum([
   'DESERT',
   'WATER'
 ]);
+
+const Dir = _enum([
+  'BOTTOM_RIGHT',
+  'BOTTOM_LEFT',
+  'TOP',
+  'BOTTOM',
+  'TOP_RIGHT',
+  'TOP_LEFT',
+])
 
 const Neighbors = _enum([
   { name: 'TOP_RIGHT', x: 0, y: -1},
@@ -63,7 +72,7 @@ export class Map {
 
     this.pieces = this.pieces.map((row, i) => {
       return row.map((column, j) => {
-        return i === 0 || j === 0 || i === this.pieces.length - 1 || j === this.pieces[i].length - 1
+        return i === 0 || j === 0 || i === (this.pieces.length - 1) || j === (this.pieces[i].length - 1)
           ? new Piece(Types.WATER, -1) : new Piece(null, -1);
       }, this);
     }, this);
@@ -83,8 +92,8 @@ export class Map {
       let yOffset;
       let xOffset;
 
-      if (i === Math.floor(this.pieces.length / 2) && (neighbor == Neighbors.BOTTOM_LEFT
-          || neighbor == Neighbors.BOTTOM_RIGHT)) {
+      if (i === Math.floor(this.pieces.length / 2) && (neighbor == Dir.BOTTOM_LEFT
+          || neighbor == Dir.BOTTOM_RIGHT)) {
         yOffset = i + NeighborsNeg[neighbor].y;
         xOffset = j + NeighborsNeg[neighbor].x;
       } else if (i > Math.floor(this.pieces.length / 2)) {
@@ -170,7 +179,7 @@ export class Map {
   }
 
 
-  distribute(fr, to, func) {
+distribute(fr, to, func) {
     for (let i = 1; i < to.length - 1; i++) {
       for (let j = 1; j < to[i].length - 1; j++) {
         func(fr, to, i, j);
@@ -190,16 +199,11 @@ export class Map {
     this.shufflePieces();
     this.distribute(this.typesAvailable, this.pieces, (fr, to, i, j) => {
 
-      //this.pieces[i][j].type = null;
       if (to[i][j].number === 0 || this.typesAvailable.length === 0) {
         to[i][j].type = Types.DESERT;
       } else {
         to[i][j].type = fr.pop();
       }
-
-      //} else if (this.typesAvailable.length > 0){
-      //  to[i][j].type = fr.pop();
-      //}
 
     });
   }
@@ -216,7 +220,6 @@ export class Map {
     do {
       this.setNumbers();
       this.randomNumbers();
-      ////if (env == 'test') this.count++;
     } while (!this.checkNumbers());
 
 
@@ -224,9 +227,6 @@ export class Map {
     do {
       this.setTypes();
       this.randomizeTypes();
-
-      //if (env == 'test')
-      //if (this.count > 30000) console.log(this);
       this.count++;
 
     } while (!this.checkTypes());
