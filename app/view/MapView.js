@@ -157,9 +157,12 @@ class DockView {
     context.fillStyle = color;
     context.beginPath();
 
-    context.lineTo(width / 4, 0);
-    context.lineTo(0, width / 2);
-    context.lineTo(- width / 4, 0);
+    const newWidth = 3/4 * width;
+    let xDir = newWidth / 2;
+    let yDir = newWidth * Math.sqrt(3) / 2
+    context.lineTo(xDir, yDir);
+    context.lineTo(-xDir, yDir);
+    context.lineTo(0, 0);
 
     context.fill();
     context.restore();
