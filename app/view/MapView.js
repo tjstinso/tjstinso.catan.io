@@ -61,7 +61,10 @@ export class MapView {
 
         let x = this.calcY(i, j);
         context.fillStyle = this.setColor(column[j].type);
+
+
         PieceView.drawHex(context, {x, y}, this.width)
+        this.drawDock(context, {x, y}, column[j]);
 
         if (column[j].number > 0) {
           context.fillStyle = 'white';
@@ -77,6 +80,10 @@ export class MapView {
           context.fillText(column[j].number, x, y);
         }
 
+        if (column[j].type == Types.WATER) {
+          this.drawDock(context, {x, y}, column[j]);
+        }
+
       }
     }
     context.restore();
@@ -84,6 +91,13 @@ export class MapView {
 
   getDistance(x, y) {
     return Math.sqrt(x*x + y+y);
+  }
+
+  drawDock(context, origin, piece) {
+    //this.context.save();
+    if (piece && piece.dockType) {
+      DockView.drawDock(context, origin, this.width, piece.dockType === 1 ? 'white' : this.setColor(piece.dockType), piece.dockDir);
+    }
   }
 
   setColor(type) {
@@ -131,4 +145,45 @@ export class PieceView {
     context.restore();
   }
 
+}
+
+class DockView {
+  static drawDock(context, origin, width, color, dockDir) {
+    context.save();
+
+    context.translate(origin.x, origin.y);
+    context.rotate(DockView.calcDir(dockDir) * Math.PI / 180)
+    //context.moveTo(origin.x, origin.y);
+    context.fillStyle = color;
+    context.beginPath();
+
+    context.lineTo(width / 4, 0);
+    context.lineTo(0, width / 2);
+    context.lineTo(- width / 4, 0);
+
+    context.fill();
+    context.restore();
+
+  }
+  static calcDir(dir) {
+    switch(dir) {
+      case "TOP_RIGHT":
+        return -150;
+      case "TOP_LEFT":
+        return 150;
+      case "RIGHT":
+        console.log('getting HERE EY?');
+        return -90;
+      case "LEFT":
+        console.log('getting HERE EY?');
+        return 90;
+      case "BOTTOM_RIGHT":
+        return -30;
+      case "BOTTOM_LEFT":
+        return 30;
+      default:
+        return 0;
+    }
+
+  }
 }
