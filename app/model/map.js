@@ -63,6 +63,7 @@ export class Map {
 
     this.numbers = [];
     this.typesAvailable = [];
+    this.docks = [];
 
     this.pieces = [
            [0, 0, 0, 0],
@@ -79,15 +80,14 @@ export class Map {
     //.map((dock, i) => i < 5 ? DockType["2:1"] : DockType["3:1"]).shuffleSort();
 
     this.initPieces();
-    this.setDocks();
+    //this.setDocks();
 
     this.pieces.forEach((row, i) => {
       row.forEach((piece, j) => {
-        if (piece instanceof Dock) piece.calcDir(j, i, this);
+        //if (piece instanceof Dock) piece.calcDir(j, i, this);
         this.findNeighbors(i, j);
       })
-    })
-
+    });
 
   }
 
@@ -113,8 +113,11 @@ export class Map {
     this.numbers = [ 8,8,6,6,12,11,11,10,10,9,9,5,5,4,4,3,3,2,0 ];
   }
 
-  //Initialization code
-  setDocks() {
+  //Initialization code: randomize the palcement of docks amongst water pieces
+  randomizeDocks() {
+
+    //initialize array of dock types and shuffle array
+    this.docks = [Types.WHEAT, Types.BRICK, Types.ORE, Types.WOOD, Types.SHEEP, 1, 1, 1, 1].shuffleSort();
     let docks = [];
     //push first row
     docks.push.apply(docks, this.pieces[0]);
@@ -139,10 +142,15 @@ export class Map {
     //either 1st or second block
     let chance = Math.floor(Math.random() * 2);
     for (let i = chance; i < docks.length; i+=2) docks[i].flag = true;
-    console.log(docks);
 
     //create a new set of pieces: replace those that have been flagged with docks
     this.pieces = this.pieces.map(row => row.map(piece => piece.flag ? new Dock(this.docks.pop()) : piece));
+
+    //calculate dock direction
+    this.pieces.forEach((row, i) => row.forEach((piece, j) => {
+      if (piece instanceof Dock) piece.calcDir(j, i, this);
+    }));
+
   }
 
   //Initialization code
@@ -280,7 +288,11 @@ export class Map {
       this.randomizeTypes();
       if (process.env.NODE_ENV === 'test') this.count++;
     } while (!this.checkTypes());
-    console.log(this.pieces);
+
+    do {
+      this.randomizeDocks();
+    } while(false);
+
   }
 
   getPieces() {
