@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "ca63c1422cbd5d8c1c15"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "0ee82697555b8e3964d3"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -590,294 +590,6 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(console) {'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.Piece = exports.Map = exports.Types = undefined;
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _enum2 = __webpack_require__(6);
-	
-	var _enum3 = _interopRequireDefault(_enum2);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var env = ("development");
-	
-	//Generate constants
-	var Types = exports.Types = (0, _enum3.default)(['WHEAT', 'SHEEP', 'WOOD', 'BRICK', 'ORE', 'DESERT', 'WATER']);
-	
-	var Dir = (0, _enum3.default)(['BOTTOM_RIGHT', 'BOTTOM_LEFT', 'TOP', 'BOTTOM', 'TOP_RIGHT', 'TOP_LEFT']);
-	
-	var Neighbors = (0, _enum3.default)([{ name: 'TOP_RIGHT', x: 0, y: -1 }, { name: 'RIGHT', x: 1, y: 0 }, { name: 'BOTTOM_RIGHT', x: 1, y: 1 }, { name: 'BOTTOM_LEFT', x: 0, y: 1 }, { name: 'LEFT', x: -1, y: 0 }, { name: 'TOP_LEFT', x: -1, y: -1 }]);
-	
-	var NeighborsNeg = (0, _enum3.default)([{ name: 'TOP_RIGHT', x: 1, y: -1 }, { name: 'RIGHT', x: 1, y: 0 }, { name: 'BOTTOM_RIGHT', x: 0, y: 1 }, { name: 'BOTTOM_LEFT', x: -1, y: 1 }, { name: 'LEFT', x: -1, y: 0 }, { name: 'TOP_LEFT', x: 0, y: -1 }]);
-	
-	Array.prototype.shuffleSort = function () {
-	  for (var i = this.length - 1; i > 0; i--) {
-	    var j = Math.floor(Math.random() * (i + 1));
-	    var temp = this[i];
-	    this[i] = this[j];
-	    this[j] = temp;
-	  }
-	};
-	
-	var Map = exports.Map = function () {
-	  function Map() {
-	    var _this = this;
-	
-	    _classCallCheck(this, Map);
-	
-	    this.count = 0;
-	
-	    //Tracks the number of hexes available per type
-	
-	    this.numbers = [];
-	    this.typesAvailable = [];
-	
-	    this.pieces = [[0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0]];
-	
-	    this.pieces = this.pieces.map(function (row, i) {
-	      return row.map(function (column, j) {
-	        return i === 0 || j === 0 || i === _this.pieces.length - 1 || j === _this.pieces[i].length - 1 ? new Piece(Types.WATER, -1) : new Piece(null, -1);
-	      }, _this);
-	    }, this);
-	
-	    this.pieces.forEach(function (row, i) {
-	      row.forEach(function (piece, j) {
-	        _this.findNeighbors(i, j);
-	      });
-	    });
-	  }
-	
-	  _createClass(Map, [{
-	    key: 'findNeighbors',
-	    value: function findNeighbors(i, j) {
-	      var _this2 = this;
-	
-	      Neighbors.enumerate().forEach(function (neighbor) {
-	        var yOffset = void 0;
-	        var xOffset = void 0;
-	
-	        if (i === Math.floor(_this2.pieces.length / 2) && (neighbor == Dir.BOTTOM_LEFT || neighbor == Dir.BOTTOM_RIGHT)) {
-	          yOffset = i + NeighborsNeg[neighbor].y;
-	          xOffset = j + NeighborsNeg[neighbor].x;
-	        } else if (i > Math.floor(_this2.pieces.length / 2)) {
-	          yOffset = i + NeighborsNeg[neighbor].y;
-	          xOffset = j + NeighborsNeg[neighbor].x;
-	        } else {
-	          yOffset = i + Neighbors[neighbor].y;
-	          xOffset = j + Neighbors[neighbor].x;
-	        }
-	
-	        if (yOffset > 0 && yOffset < _this2.pieces.length - 1 && xOffset > 0 && xOffset < _this2.pieces[yOffset].length - 1) {
-	          _this2.pieces[i][j].neighbors.push(_this2.pieces[yOffset][xOffset]);
-	        }
-	      });
-	    }
-	  }, {
-	    key: 'setNumbers',
-	    value: function setNumbers() {
-	      this.numbers = [8, 8, 6, 6, 12, 11, 11, 10, 10, 9, 9, 5, 5, 4, 4, 3, 3, 2, 0];
-	    }
-	  }, {
-	    key: 'setTypes',
-	    value: function setTypes() {
-	      this.typesAvailable = [this.makeTileCounter(4, Types.WHEAT), this.makeTileCounter(4, Types.SHEEP), this.makeTileCounter(4, Types.WOOD), this.makeTileCounter(3, Types.BRICK), this.makeTileCounter(3, Types.ORE)].map(function (arr) {
-	        var temp = [];
-	        for (var i = 0; i < arr.count; i++) {
-	          temp = temp.concat(arr.type);
-	        }
-	        return temp;
-	      }).reduce(function (prev, curr) {
-	        return prev.concat(curr);
-	      }); //flatten array into list of types
-	    }
-	
-	    //helper method used to instantiate set of Types
-	
-	  }, {
-	    key: 'makeTileCounter',
-	    value: function makeTileCounter(count, type) {
-	      return { count: count, type: type };
-	    }
-	  }, {
-	    key: 'checkNeighbors',
-	    value: function checkNeighbors(cb) {
-	
-	      for (var i = 1; i < this.pieces.length - 1; i++) {
-	        for (var j = 1; j < this.pieces[i].length - 1; j++) {
-	
-	          //iterate over neighbor nodes
-	          for (var k = 0; k < this.pieces[i][j].neighbors.length; k++) {
-	            if (!cb(this.pieces[i][j], this.pieces[i][j].neighbors[k])) {
-	              return false;
-	            }
-	          }
-	        }
-	      }
-	      return true;
-	    }
-	  }, {
-	    key: 'checkNumbers',
-	    value: function checkNumbers() {
-	      return this.checkNeighbors(function (piece, neighbor) {
-	        return !((piece.number === 6 || piece.number === 8) && (neighbor.number === 6 || neighbor.number === 8));
-	      });
-	    }
-	  }, {
-	    key: 'checkTypes',
-	    value: function checkTypes() {
-	      return this.checkNeighbors(function (piece, neighbor) {
-	        return piece['type'] !== neighbor['type'];
-	      });
-	    }
-	  }, {
-	    key: 'shufflePieces',
-	    value: function shufflePieces() {
-	      this.typesAvailable.shuffleSort();
-	    }
-	  }, {
-	    key: 'shuffleNumbers',
-	    value: function shuffleNumbers() {
-	      this.numbers.shuffleSort();
-	    }
-	  }, {
-	    key: 'distribute',
-	    value: function distribute(fr, to, func) {
-	      for (var i = 1; i < to.length - 1; i++) {
-	        for (var j = 1; j < to[i].length - 1; j++) {
-	          func(fr, to, i, j);
-	        }
-	      }
-	    }
-	  }, {
-	    key: 'clearField',
-	    value: function clearField(field) {
-	      for (var i = 1; i < this.pieces.length - 1; i++) {
-	        for (var j = 1; j < this.pieces[i].length - 1; j++) {
-	          this.pieces[i][j][field] = null;
-	        }
-	      }
-	    }
-	  }, {
-	    key: 'randomizeTypes',
-	    value: function randomizeTypes() {
-	      var _this3 = this;
-	
-	      this.shufflePieces();
-	      this.distribute(this.typesAvailable, this.pieces, function (fr, to, i, j) {
-	
-	        if (to[i][j].number === 0 || _this3.typesAvailable.length === 0) {
-	          to[i][j].type = Types.DESERT;
-	        } else {
-	          to[i][j].type = fr.pop();
-	        }
-	      });
-	    }
-	  }, {
-	    key: 'randomNumbers',
-	    value: function randomNumbers() {
-	      this.shuffleNumbers();
-	      this.distribute(this.numbers, this.pieces, function (fr, to, i, j) {
-	        to[i][j].number = fr.pop();
-	      });
-	    }
-	  }, {
-	    key: 'randomDistro',
-	    value: function randomDistro() {
-	      this.count = 0;
-	      do {
-	        this.setNumbers();
-	        this.randomNumbers();
-	      } while (!this.checkNumbers());
-	
-	      var test = false;
-	      do {
-	        this.setTypes();
-	        this.randomizeTypes();
-	        this.count++;
-	      } while (!this.checkTypes());
-	    }
-	  }, {
-	    key: 'fairRandomDistro',
-	    value: function fairRandomDistro() {}
-	  }, {
-	    key: 'getPieces',
-	    value: function getPieces() {
-	      return this.pieces;
-	    }
-	  }]);
-	
-	  return Map;
-	}();
-	
-	var Piece = exports.Piece = function Piece() {
-	  var type = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-	  var number = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
-	
-	  _classCallCheck(this, Piece);
-	
-	  this.type = type;
-	  this.number = number;
-	  this.neighbors = [];
-	  this.visited = false;
-	}
-	
-	//implement recursive checking strategy
-	
-	;
-	
-	if (env == 'test') {
-	  (function () {
-	    var map = new Map();
-	    var total = 0;
-	    var i = void 0;
-	    var std = [];
-	    for (i = 0; i < 1000; i++) {
-	      map.randomDistro();
-	      std.push(map.count);
-	      total += map.count;
-	      map = new Map();
-	    }
-	    var avg = total / i;
-	    console.log(Math.sqrt(std.map(function (num) {
-	      return (num - avg) * (num - avg);
-	    }).reduce(function (prev, next) {
-	      return prev + next;
-	    }) / std.length));
-	    console.log(total / i);
-	  })();
-	}
-	
-	if (env == 'checkType') {
-	  var _map = new Map();
-	  for (var _i = 0; _i < 1000; _i++) {
-	    _map.setNumbers();
-	    _map.randomNumbers();
-	    _map.setTypes();
-	    _map.randomizeTypes();
-	    var arr = _map.pieces.reduce(function (prev, curr) {
-	      return prev.concat(curr);
-	    });
-	    arr = arr.map(function (piece) {
-	      return piece.type;
-	    });
-	    console.log(arr);
-	  }
-	  //console.log(map);
-	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
-
-/***/ },
-/* 2 */
-/***/ function(module, exports, __webpack_require__) {
-
 	/* WEBPACK VAR INJECTION */(function(global) {/*global window, global*/
 	var util = __webpack_require__(3)
 	var assert = __webpack_require__(4)
@@ -966,6 +678,371 @@
 	}
 	
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(console) {'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.Dock = exports.Piece = exports.Map = exports.Dir = exports.Types = undefined;
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _enum2 = __webpack_require__(6);
+	
+	var _enum3 = _interopRequireDefault(_enum2);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var env = ("development");
+	
+	//Generate constants
+	var Types = exports.Types = (0, _enum3.default)(['WHEAT', 'SHEEP', 'WOOD', 'BRICK', 'ORE', 'DESERT', 'WATER']);
+	
+	var Dir = exports.Dir = (0, _enum3.default)(['BOTTOM_RIGHT', 'BOTTOM_LEFT', 'TOP', 'BOTTOM', 'TOP_RIGHT', 'TOP_LEFT', 'RIGHT', 'LEFT']);
+	
+	var Neighbors = (0, _enum3.default)([{ name: 'TOP_RIGHT', x: 0, y: -1 }, { name: 'RIGHT', x: 1, y: 0 }, { name: 'BOTTOM_RIGHT', x: 1, y: 1 }, { name: 'BOTTOM_LEFT', x: 0, y: 1 }, { name: 'LEFT', x: -1, y: 0 }, { name: 'TOP_LEFT', x: -1, y: -1 }]);
+	
+	var NeighborsNeg = (0, _enum3.default)([{ name: 'TOP_RIGHT', x: 1, y: -1 }, { name: 'RIGHT', x: 1, y: 0 }, { name: 'BOTTOM_RIGHT', x: 0, y: 1 }, { name: 'BOTTOM_LEFT', x: -1, y: 1 }, { name: 'LEFT', x: -1, y: 0 }, { name: 'TOP_LEFT', x: 0, y: -1 }]);
+	
+	var DockType = (0, _enum3.default)(["3:1", "2:1"]);
+	
+	Array.prototype.shuffleSort = function () {
+	  for (var i = this.length - 1; i > 0; i--) {
+	    var j = Math.floor(Math.random() * (i + 1));
+	    var temp = this[i];
+	    this[i] = this[j];
+	    this[j] = temp;
+	  }
+	  return this;
+	};
+	
+	var Map = exports.Map = function () {
+	  function Map() {
+	    var _this = this;
+	
+	    _classCallCheck(this, Map);
+	
+	    this.numbers = [];
+	    this.typesAvailable = [];
+	
+	    this.pieces = [[0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0]];
+	
+	    //initialize array of dock types and shuffle array
+	    this.docks = [Types.WHEAT, Types.BRICK, Types.ORE, Types.WOOD, Types.SHEEP, 1, 1, 1, 1].shuffleSort();
+	    //.map((dock, i) => i < 5 ? DockType["2:1"] : DockType["3:1"]).shuffleSort();
+	
+	    this.initPieces();
+	    this.setDocks();
+	
+	    this.pieces.forEach(function (row, i) {
+	      row.forEach(function (piece, j) {
+	        if (piece instanceof Dock) piece.calcDir(j, i, _this);
+	        _this.findNeighbors(i, j);
+	      });
+	    });
+	  }
+	
+	  //Initialization code
+	
+	
+	  _createClass(Map, [{
+	    key: 'initPieces',
+	    value: function initPieces() {
+	      var _this2 = this;
+	
+	      this.pieces = this.pieces.map(function (row, i) {
+	        return row.map(function (column, j) {
+	          if (i === 0 || j === 0 || i === _this2.pieces.length - 1 || j === _this2.pieces[i].length - 1) {
+	            return new Piece(Types.WATER, -1);
+	          } else {
+	            return new Piece(null, -1);
+	          }
+	        }, _this2);
+	      }, this);
+	    }
+	
+	    //Initialization code
+	
+	  }, {
+	    key: 'setNumbers',
+	    value: function setNumbers() {
+	      this.numbers = [8, 8, 6, 6, 12, 11, 11, 10, 10, 9, 9, 5, 5, 4, 4, 3, 3, 2, 0];
+	    }
+	
+	    //Initialization code
+	
+	  }, {
+	    key: 'setDocks',
+	    value: function setDocks() {
+	      var _this3 = this;
+	
+	      var docks = [];
+	      //push first row
+	      docks.push.apply(docks, this.pieces[0]);
+	
+	      //push right column
+	      for (var i = 1; i < this.pieces.length - 1; i++) {
+	        var j = this.pieces[i].length - 1;
+	        docks.push(this.pieces[i][j]);
+	      }
+	
+	      //push bottom row: reverse
+	      for (var _i = this.pieces[this.pieces.length - 1].length - 1; _i >= 0; _i--) {
+	        docks.push(this.pieces[this.pieces.length - 1][_i]);
+	      }
+	      //docks.push.apply(docks, this.pieces[this.pieces.length - 1]);
+	
+	      //push left column
+	      for (var _i2 = this.pieces.length - 2; _i2 > 0; _i2--) {
+	        docks.push(this.pieces[_i2][0]);
+	      }
+	
+	      //either 1st or second block
+	      var chance = Math.floor(Math.random() * 2);
+	      for (var _i3 = chance; _i3 < docks.length; _i3 += 2) {
+	        docks[_i3].flag = true;
+	      }console.log(docks);
+	
+	      //create a new set of pieces: replace those that have been flagged with docks
+	      this.pieces = this.pieces.map(function (row) {
+	        return row.map(function (piece) {
+	          return piece.flag ? new Dock(_this3.docks.pop()) : piece;
+	        });
+	      });
+	    }
+	
+	    //Initialization code
+	
+	  }, {
+	    key: 'setTypes',
+	    value: function setTypes() {
+	      this.typesAvailable = [this.makeTileCounter(4, Types.WHEAT), this.makeTileCounter(4, Types.SHEEP), this.makeTileCounter(4, Types.WOOD), this.makeTileCounter(3, Types.BRICK), this.makeTileCounter(3, Types.ORE)].map(function (arr) {
+	        var temp = [];
+	        for (var i = 0; i < arr.count; i++) {
+	          temp = temp.concat(arr.type);
+	        }
+	        return temp;
+	      }).reduce(function (prev, curr) {
+	        return prev.concat(curr);
+	      }); //flatten array into list of types
+	    }
+	
+	    //Initialization code
+	    //helper method used to instantiate set of Types
+	
+	  }, {
+	    key: 'makeTileCounter',
+	    value: function makeTileCounter(count, type) {
+	      return { count: count, type: type };
+	    }
+	
+	    //find all neighbors of piece at location[i][j]
+	
+	  }, {
+	    key: 'findNeighbors',
+	    value: function findNeighbors(i, j) {
+	      var _this4 = this;
+	
+	      Neighbors.enumerate().forEach(function (neighbor) {
+	        var yOffset = void 0;
+	        var xOffset = void 0;
+	
+	        if (i === Math.floor(_this4.pieces.length / 2) && (neighbor == Dir.BOTTOM_LEFT || neighbor == Dir.BOTTOM_RIGHT)) {
+	          yOffset = i + NeighborsNeg[neighbor].y;
+	          xOffset = j + NeighborsNeg[neighbor].x;
+	        } else if (i > Math.floor(_this4.pieces.length / 2)) {
+	          yOffset = i + NeighborsNeg[neighbor].y;
+	          xOffset = j + NeighborsNeg[neighbor].x;
+	        } else {
+	          yOffset = i + Neighbors[neighbor].y;
+	          xOffset = j + Neighbors[neighbor].x;
+	        }
+	
+	        if (yOffset > 0 && yOffset < _this4.pieces.length - 1 && xOffset > 0 && xOffset < _this4.pieces[yOffset].length - 1) {
+	          _this4.pieces[i][j].neighbors.push(_this4.pieces[yOffset][xOffset]);
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'checkNeighbors',
+	    value: function checkNeighbors(cb) {
+	
+	      for (var i = 1; i < this.pieces.length - 1; i++) {
+	        for (var j = 1; j < this.pieces[i].length - 1; j++) {
+	
+	          //iterate over neighbor nodes
+	          for (var k = 0; k < this.pieces[i][j].neighbors.length; k++) {
+	            if (!cb(this.pieces[i][j], this.pieces[i][j].neighbors[k])) {
+	              return false;
+	            }
+	          }
+	        }
+	      }
+	      return true;
+	    }
+	  }, {
+	    key: 'checkNumbers',
+	    value: function checkNumbers() {
+	      return this.checkNeighbors(function (piece, neighbor) {
+	        return !((piece.number === 6 || piece.number === 8) && (neighbor.number === 6 || neighbor.number === 8));
+	      });
+	    }
+	  }, {
+	    key: 'checkTypes',
+	    value: function checkTypes() {
+	      return this.checkNeighbors(function (piece, neighbor) {
+	        return piece['type'] !== neighbor['type'];
+	      });
+	    }
+	  }, {
+	    key: 'shufflePieces',
+	    value: function shufflePieces() {
+	      this.typesAvailable.shuffleSort();
+	    }
+	  }, {
+	    key: 'shuffleNumbers',
+	    value: function shuffleNumbers() {
+	      this.numbers.shuffleSort();
+	    }
+	  }, {
+	    key: 'distribute',
+	    value: function distribute(fr, to, func) {
+	      for (var i = 1; i < to.length - 1; i++) {
+	        for (var j = 1; j < to[i].length - 1; j++) {
+	          func(fr, to, i, j);
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'randomizeTypes',
+	    value: function randomizeTypes() {
+	      var _this5 = this;
+	
+	      this.shufflePieces();
+	      this.distribute(this.typesAvailable, this.pieces, function (fr, to, i, j) {
+	
+	        if (to[i][j].number === 0 || _this5.typesAvailable.length === 0) {
+	          to[i][j].type = Types.DESERT;
+	        } else {
+	          to[i][j].type = fr.pop();
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'randomNumbers',
+	    value: function randomNumbers() {
+	      this.shuffleNumbers();
+	      this.distribute(this.numbers, this.pieces, function (fr, to, i, j) {
+	        to[i][j].number = fr.pop();
+	      });
+	    }
+	  }, {
+	    key: 'randomDistro',
+	    value: function randomDistro() {
+	      if (false) this.count = 0;
+	      do {
+	        this.setNumbers();
+	        this.randomNumbers();
+	        //if (process.env.NODE_ENV === 'test') this.count++;
+	      } while (!this.checkNumbers());
+	
+	      var test = false;
+	      do {
+	        this.setTypes();
+	        this.randomizeTypes();
+	        if (false) this.count++;
+	      } while (!this.checkTypes());
+	      console.log(this.pieces);
+	    }
+	  }, {
+	    key: 'getPieces',
+	    value: function getPieces() {
+	      return this.pieces;
+	    }
+	  }]);
+	
+	  return Map;
+	}();
+	
+	var Piece = exports.Piece = function Piece() {
+	  var type = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+	  var number = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+	
+	  _classCallCheck(this, Piece);
+	
+	  this.type = type;
+	  this.number = number;
+	  this.neighbors = [];
+	}
+	
+	//implement recursive checking strategy
+	
+	;
+	
+	var Dock = exports.Dock = function (_Piece) {
+	  _inherits(Dock, _Piece);
+	
+	  function Dock(dockType) {
+	    _classCallCheck(this, Dock);
+	
+	    var _this6 = _possibleConstructorReturn(this, Object.getPrototypeOf(Dock).call(this, Types.WATER, -1));
+	
+	    _this6.dockType = dockType;
+	    _this6.dockDir = null;
+	    return _this6;
+	  }
+	
+	  _createClass(Dock, [{
+	    key: 'calcDir',
+	    value: function calcDir(x, y, map) {
+	      if (y === 0) {
+	        if (x < map.pieces[y].length / 2) {
+	          this.dockDir = Dir.BOTTOM_RIGHT;
+	        } else {
+	          this.dockDir = Dir.BOTTOM_LEFT;
+	        }
+	      } else if (y === map.pieces.length - 1) {
+	        if (x < map.pieces[y].length / 2) {
+	          this.dockDir = Dir.TOP_RIGHT;
+	        } else {
+	          this.dockDir = Dir.TOP_LEFT;
+	        }
+	      } else if (map.pieces[y].length - 2 > map.pieces.length / 2) {
+	        if (x === 0) {
+	          this.dockDir = Dir.RIGHT;
+	        } else {
+	          this.dockDir = Dir.LEFT;
+	        }
+	      } else if (x === 0) {
+	        if (y < map.pieces.length / 2) {
+	          this.dockDir = Dir.BOTTOM_RIGHT;
+	        } else {
+	          this.dockDir = Dir.TOP_RIGHT;
+	        }
+	      } else {
+	        if (y < map.pieces.length / 2) {
+	          this.dockDir = Dir.BOTTOM_LEFT;
+	        } else {
+	          this.dockDir = Dir.TOP_LEFT;
+	        }
+	      }
+	    }
+	  }]);
+	
+	  return Dock;
+	}(Piece);
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
 /* 3 */
@@ -1558,7 +1635,7 @@
 	  return Object.prototype.hasOwnProperty.call(obj, prop);
 	}
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(10), __webpack_require__(2)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(10), __webpack_require__(1)))
 
 /***/ },
 /* 4 */
@@ -2063,7 +2140,7 @@
 
 	'use strict';
 	
-	var _map = __webpack_require__(1);
+	var _map = __webpack_require__(2);
 	
 	var _MapView = __webpack_require__(7);
 	
@@ -2147,7 +2224,7 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(console) {'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -2156,7 +2233,7 @@
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _map = __webpack_require__(1);
+	var _map = __webpack_require__(2);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -2229,7 +2306,9 @@
 	
 	          var x = this.calcY(i, j);
 	          context.fillStyle = this.setColor(column[j].type);
+	
 	          PieceView.drawHex(context, { x: x, y: y }, this.width);
+	          this.drawDock(context, { x: x, y: y }, column[j]);
 	
 	          if (column[j].number > 0) {
 	            context.fillStyle = 'white';
@@ -2244,6 +2323,10 @@
 	            context.fillStyle = num === 6 || num === 8 ? 'red' : 'black';
 	            context.fillText(column[j].number, x, y);
 	          }
+	
+	          if (column[j].type == _map.Types.WATER) {
+	            this.drawDock(context, { x: x, y: y }, column[j]);
+	          }
 	        }
 	      }
 	      context.restore();
@@ -2252,6 +2335,14 @@
 	    key: 'getDistance',
 	    value: function getDistance(x, y) {
 	      return Math.sqrt(x * x + y + y);
+	    }
+	  }, {
+	    key: 'drawDock',
+	    value: function drawDock(context, origin, piece) {
+	      //this.context.save();
+	      if (piece && piece.dockType) {
+	        DockView.drawDock(context, origin, this.width, piece.dockType === 1 ? 'white' : this.setColor(piece.dockType), piece.dockDir);
+	      }
 	    }
 	  }, {
 	    key: 'setColor',
@@ -2307,9 +2398,60 @@
 	      context.restore();
 	    }
 	  }]);
-
+	
 	  return PieceView;
 	}();
+	
+	var DockView = function () {
+	  function DockView() {
+	    _classCallCheck(this, DockView);
+	  }
+	
+	  _createClass(DockView, null, [{
+	    key: 'drawDock',
+	    value: function drawDock(context, origin, width, color, dockDir) {
+	      context.save();
+	
+	      context.translate(origin.x, origin.y);
+	      context.rotate(DockView.calcDir(dockDir) * Math.PI / 180);
+	      //context.moveTo(origin.x, origin.y);
+	      context.fillStyle = color;
+	      context.beginPath();
+	
+	      context.lineTo(width / 4, 0);
+	      context.lineTo(0, width / 2);
+	      context.lineTo(-width / 4, 0);
+	
+	      context.fill();
+	      context.restore();
+	    }
+	  }, {
+	    key: 'calcDir',
+	    value: function calcDir(dir) {
+	      switch (dir) {
+	        case "TOP_RIGHT":
+	          return -150;
+	        case "TOP_LEFT":
+	          return 150;
+	        case "RIGHT":
+	          console.log('getting HERE EY?');
+	          return -90;
+	        case "LEFT":
+	          console.log('getting HERE EY?');
+	          return 90;
+	        case "BOTTOM_RIGHT":
+	          return -30;
+	        case "BOTTOM_LEFT":
+	          return 30;
+	        default:
+	          return 0;
+	      }
+	    }
+	  }]);
+
+	  return DockView;
+	}();
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
 /* 8 */
