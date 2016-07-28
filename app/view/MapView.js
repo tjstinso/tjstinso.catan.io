@@ -175,10 +175,8 @@ class DockView {
       case "TOP_LEFT":
         return 150;
       case "RIGHT":
-        console.log('getting HERE EY?');
         return -90;
       case "LEFT":
-        console.log('getting HERE EY?');
         return 90;
       case "BOTTOM_RIGHT":
         return -30;
