@@ -13,13 +13,15 @@ export const Types = _enum([
   'WATER'
 ]);
 
-const Dir = _enum([
+export const Dir = _enum([
   'BOTTOM_RIGHT',
   'BOTTOM_LEFT',
   'TOP',
   'BOTTOM',
   'TOP_RIGHT',
   'TOP_LEFT',
+  'RIGHT',
+  'LEFT',
 ])
 
 const Neighbors = _enum([
@@ -40,6 +42,11 @@ const NeighborsNeg = _enum([
   { name: 'TOP_LEFT', x: 0, y: -1},
 ]);
 
+const DockType = _enum([
+  "3:1",
+  "2:1",
+]);
+
 Array.prototype.shuffleSort = function() {
   for (let i = this.length - 1; i > 0; i--) {
       let j = Math.floor(Math.random() * (i + 1));
@@ -47,15 +54,12 @@ Array.prototype.shuffleSort = function() {
       this[i] = this[j];
       this[j] = temp;
   }
+  return this;
 }
 
 export class Map {
 
   constructor() {
-
-    this.count = 0;
-
-    //Tracks the number of hexes available per type
 
     this.numbers = [];
     this.typesAvailable = [];
@@ -70,22 +74,103 @@ export class Map {
            [0, 0, 0, 0]
     ];
 
-    this.pieces = this.pieces.map((row, i) => {
-      return row.map((column, j) => {
-        return i === 0 || j === 0 || i === (this.pieces.length - 1) || j === (this.pieces[i].length - 1)
-          ? new Piece(Types.WATER, -1) : new Piece(null, -1);
-      }, this);
-    }, this);
+    //initialize array of dock types and shuffle array
+    this.docks = [Types.WHEAT, Types.BRICK, Types.ORE, Types.WOOD, Types.SHEEP, 1, 1, 1, 1].shuffleSort();
+    //.map((dock, i) => i < 5 ? DockType["2:1"] : DockType["3:1"]).shuffleSort();
+
+    this.initPieces();
+    this.setDocks();
 
     this.pieces.forEach((row, i) => {
       row.forEach((piece, j) => {
+        if (piece instanceof Dock) piece.calcDir(j, i, this);
         this.findNeighbors(i, j);
       })
     })
 
+
   }
 
 
+  //Initialization code
+  initPieces() {
+    this.pieces = this.pieces.map((row, i) => {
+      return row.map((column, j) => {
+        if (i === 0 || j === 0 || i === (this.pieces.length - 1) || j === (this.pieces[i].length - 1)) {
+          return new Piece(Types.WATER, -1);
+        } else {
+          return new Piece(null, -1);
+        }
+      }, this);
+    }, this);
+  }
+
+
+
+
+  //Initialization code
+  setNumbers() {
+    this.numbers = [ 8,8,6,6,12,11,11,10,10,9,9,5,5,4,4,3,3,2,0 ];
+  }
+
+  //Initialization code
+  setDocks() {
+    let docks = [];
+    //push first row
+    docks.push.apply(docks, this.pieces[0]);
+
+    //push right column
+    for (let i = 1; i < this.pieces.length - 1; i++) {
+      let j = this.pieces[i].length - 1;
+      docks.push(this.pieces[i][j]);
+    }
+
+    //push bottom row: reverse
+    for (let i = this.pieces[this.pieces.length - 1].length - 1; i >= 0; i--) {
+      docks.push(this.pieces[this.pieces.length - 1][i]);
+    }
+    //docks.push.apply(docks, this.pieces[this.pieces.length - 1]);
+
+    //push left column
+    for (let i = this.pieces.length - 2; i > 0; i--) {
+      docks.push(this.pieces[i][0]);
+    }
+
+    //either 1st or second block
+    let chance = Math.floor(Math.random() * 2);
+    for (let i = chance; i < docks.length; i+=2) docks[i].flag = true;
+    console.log(docks);
+
+    //create a new set of pieces: replace those that have been flagged with docks
+    this.pieces = this.pieces.map(row => row.map(piece => piece.flag ? new Dock(this.docks.pop()) : piece));
+  }
+
+  //Initialization code
+  setTypes() {
+    this.typesAvailable = [
+      this.makeTileCounter(4, Types.WHEAT),
+      this.makeTileCounter(4, Types.SHEEP),
+      this.makeTileCounter(4, Types.WOOD),
+      this.makeTileCounter(3, Types.BRICK),
+      this.makeTileCounter(3, Types.ORE),
+    ]
+    .map(arr => {
+      let temp = [];
+      for (let i = 0; i < arr.count; i++) {
+        temp = temp.concat(arr.type);
+      }
+      return temp;
+    })
+    .reduce((prev, curr) => prev.concat(curr)); //flatten array into list of types
+  }
+
+  //Initialization code
+  //helper method used to instantiate set of Types
+  makeTileCounter(count, type) {
+    return { count, type };
+  }
+
+  //find all neighbors of piece at location[i][j]
   findNeighbors(i, j) {
 
     Neighbors.enumerate().forEach(neighbor => {
@@ -108,34 +193,6 @@ export class Map {
         this.pieces[i][j].neighbors.push(this.pieces[yOffset][xOffset]);
       }
     });
-  }
-
-
-  setNumbers() {
-    this.numbers = [ 8,8,6,6,12,11,11,10,10,9,9,5,5,4,4,3,3,2,0 ];
-  }
-
-  setTypes() {
-    this.typesAvailable = [
-      this.makeTileCounter(4, Types.WHEAT),
-      this.makeTileCounter(4, Types.SHEEP),
-      this.makeTileCounter(4, Types.WOOD),
-      this.makeTileCounter(3, Types.BRICK),
-      this.makeTileCounter(3, Types.ORE),
-    ]
-    .map(arr => {
-      let temp = [];
-      for (let i = 0; i < arr.count; i++) {
-        temp = temp.concat(arr.type);
-      }
-      return temp;
-    })
-    .reduce((prev, curr) => prev.concat(curr)); //flatten array into list of types
-  }
-
-  //helper method used to instantiate set of Types
-  makeTileCounter(count, type) {
-    return { count, type };
   }
 
   checkNeighbors(cb) {
@@ -179,7 +236,7 @@ export class Map {
   }
 
 
-distribute(fr, to, func) {
+  distribute(fr, to, func) {
     for (let i = 1; i < to.length - 1; i++) {
       for (let j = 1; j < to[i].length - 1; j++) {
         func(fr, to, i, j);
@@ -187,13 +244,6 @@ distribute(fr, to, func) {
     }
   }
 
-  clearField(field) {
-    for (let i = 1; i < this.pieces.length - 1; i++) {
-      for (let j = 1; j < this.pieces[i].length - 1; j++) {
-        this.pieces[i][j][field] = null;
-      }
-    }
-  }
 
   randomizeTypes() {
     this.shufflePieces();
@@ -216,10 +266,11 @@ distribute(fr, to, func) {
   }
 
   randomDistro() {
-    this.count = 0;
+    if (process.env.NODE_ENV === 'test') this.count = 0;
     do {
       this.setNumbers();
       this.randomNumbers();
+      //if (process.env.NODE_ENV === 'test') this.count++;
     } while (!this.checkNumbers());
 
 
@@ -227,13 +278,9 @@ distribute(fr, to, func) {
     do {
       this.setTypes();
       this.randomizeTypes();
-      this.count++;
-
+      if (process.env.NODE_ENV === 'test') this.count++;
     } while (!this.checkTypes());
-  }
-
-  fairRandomDistro() {
-
+    console.log(this.pieces);
   }
 
   getPieces() {
@@ -249,44 +296,52 @@ export class Piece {
     this.type = type;
     this.number = number;
     this.neighbors = [];
-    this.visited = false;
   }
 
   //implement recursive checking strategy
 
 }
 
-if (env == 'test') {
-  let map = new Map()
-  let total = 0;
-  let i;
-  let std = [];
-  for (i = 0; i < 1000; i++) {
-    map.randomDistro()
-    std.push(map.count)
-    total += map.count;
-    map = new Map();
-  }
-  let avg = total / i
-  console.log(
-    Math.sqrt(
-        ( std.map(num => (num - avg) * (num - avg))
-          .reduce((prev, next) => prev + next) / std.length)
-        )
-)
-  console.log(total / i);
-}
 
-if (env == 'checkType') {
-  let map = new Map();
-  for (let i = 0; i < 1000; i++) {
-    map.setNumbers();
-    map.randomNumbers()
-    map.setTypes();
-    map.randomizeTypes()
-    let arr = map.pieces.reduce((prev, curr) => prev.concat(curr));
-    arr = arr.map(piece => piece.type);
-    console.log(arr);
+export class Dock extends Piece {
+  constructor(dockType) {
+    super(Types.WATER, -1);
+    this.dockType = dockType;
+    this.dockDir = null;
   }
-  //console.log(map);
+
+  calcDir(x, y, map) {
+    if (y === 0) {
+      if (x < map.pieces[y].length / 2) {
+        this.dockDir = Dir.BOTTOM_RIGHT;
+      } else {
+        this.dockDir = Dir.BOTTOM_LEFT;
+      }
+    } else if (y === map.pieces.length - 1) {
+      if (x < map.pieces[y].length / 2) {
+        this.dockDir = Dir.TOP_RIGHT;
+      } else {
+        this.dockDir = Dir.TOP_LEFT;
+      }
+    } else if (map.pieces[y].length - 2 > map.pieces.length / 2) {
+      if (x === 0) {
+        this.dockDir = Dir.RIGHT;
+      } else {
+        this.dockDir = Dir.LEFT;
+      }
+    } else if (x === 0) {
+      if (y < map.pieces.length / 2) {
+        this.dockDir = Dir.BOTTOM_RIGHT;
+      } else {
+        this.dockDir = Dir.TOP_RIGHT;
+      }
+    } else {
+      if (y < map.pieces.length / 2) {
+        this.dockDir = Dir.BOTTOM_LEFT;
+      } else {
+        this.dockDir = Dir.TOP_LEFT;
+      }
+    }
+
+  }
 }
