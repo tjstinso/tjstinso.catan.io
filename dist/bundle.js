@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "0ee82697555b8e3964d3"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "df3ad671c092fab1a556"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -2418,9 +2418,12 @@
 	      context.fillStyle = color;
 	      context.beginPath();
 	
-	      context.lineTo(width / 4, 0);
-	      context.lineTo(0, width / 2);
-	      context.lineTo(-width / 4, 0);
+	      var newWidth = 3 / 4 * width;
+	      var xDir = newWidth / 2;
+	      var yDir = newWidth * Math.sqrt(3) / 2;
+	      context.lineTo(xDir, yDir);
+	      context.lineTo(-xDir, yDir);
+	      context.lineTo(0, 0);
 	
 	      context.fill();
 	      context.restore();
