@@ -174,7 +174,7 @@ export class CatanMap extends Map {
   }
 }
 
-export class CatanPiece extends Piece {
+class CatanPiece extends Piece {
   constructor(type = null, number = 0) {
     super();
     this.type = type;
@@ -182,7 +182,7 @@ export class CatanPiece extends Piece {
   }
 }
 
-export class Land extends CatanPiece {
+class Land extends CatanPiece {
   constructor(type = null, number = 0) {
     super(null, 0);
     this.type = type;
@@ -190,7 +190,7 @@ export class Land extends CatanPiece {
   }
 }
 
-export class Dock extends CatanPiece {
+class Dock extends CatanPiece {
   constructor(dockType) {
     super(Types.WATER, -1);
     this.dockType = dockType;
