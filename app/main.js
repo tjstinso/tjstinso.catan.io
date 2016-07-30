@@ -1,4 +1,4 @@
-import { Map } from './model/map';
+import { CatanMap } from './model/CatanMap';
 
 import { MapView, PieceView } from './view/MapView';
 
@@ -7,7 +7,7 @@ import { MapView, PieceView } from './view/MapView';
   ele.width = `${750}`;
   ele.height = `${750}`;
   let ctx = document.getElementById('map').getContext('2d');
-  let map = new Map();
+  let map = new CatanMap();
   let mView = new MapView({x: 100, y: 175}, 50);
 
   //window.requestAnimationFrame(mView.draw);
@@ -23,6 +23,6 @@ import { MapView, PieceView } from './view/MapView';
 
   let button = document.getElementById('test-button');
   button.addEventListener('click', () => {
-    map = new Map();
+    map = new CatanMap();
     map.randomDistro();
   });

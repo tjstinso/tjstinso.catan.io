@@ -1,4 +1,4 @@
-import { Types } from '../model/map';
+import { Types } from '../model/CatanMap';
 
 
 export class MapView {
@@ -168,6 +168,7 @@ class DockView {
     context.restore();
 
   }
+
   static calcDir(dir) {
     switch(dir) {
       case "TOP_RIGHT":
