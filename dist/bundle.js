@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "d581794a71f75f6f0b04"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "693955dbcf579ad6a3fa"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -583,7 +583,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(2);
+	module.exports = __webpack_require__(3);
 
 
 /***/ },
@@ -595,76 +595,50 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.Dock = exports.Piece = exports.Map = exports.Dir = exports.Types = undefined;
+	exports.Dock = exports.Land = exports.CatanPiece = exports.CatanMap = exports.Types = undefined;
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _enum2 = __webpack_require__(3);
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+	
+	var _map = __webpack_require__(4);
+	
+	var _enum2 = __webpack_require__(2);
 	
 	var _enum3 = _interopRequireDefault(_enum2);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var env = ("development");
-	
-	//Generate constants
 	var Types = exports.Types = (0, _enum3.default)(['WHEAT', 'SHEEP', 'WOOD', 'BRICK', 'ORE', 'DESERT', 'WATER']);
 	
-	var Dir = exports.Dir = (0, _enum3.default)(['BOTTOM_RIGHT', 'BOTTOM_LEFT', 'TOP', 'BOTTOM', 'TOP_RIGHT', 'TOP_LEFT', 'RIGHT', 'LEFT']);
+	var CatanMap = exports.CatanMap = function (_Map) {
+	  _inherits(CatanMap, _Map);
 	
-	var Neighbors = (0, _enum3.default)([{ name: 'TOP_RIGHT', x: 0, y: -1 }, { name: 'RIGHT', x: 1, y: 0 }, { name: 'BOTTOM_RIGHT', x: 1, y: 1 }, { name: 'BOTTOM_LEFT', x: 0, y: 1 }, { name: 'LEFT', x: -1, y: 0 }, { name: 'TOP_LEFT', x: -1, y: -1 }]);
+	  function CatanMap() {
+	    _classCallCheck(this, CatanMap);
 	
-	var NeighborsNeg = (0, _enum3.default)([{ name: 'TOP_RIGHT', x: 1, y: -1 }, { name: 'RIGHT', x: 1, y: 0 }, { name: 'BOTTOM_RIGHT', x: 0, y: 1 }, { name: 'BOTTOM_LEFT', x: -1, y: 1 }, { name: 'LEFT', x: -1, y: 0 }, { name: 'TOP_LEFT', x: 0, y: -1 }]);
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(CatanMap).call(this));
 	
-	var DockType = (0, _enum3.default)(["3:1", "2:1"]);
-	
-	Array.prototype.shuffleSort = function () {
-	  for (var i = this.length - 1; i > 0; i--) {
-	    var j = Math.floor(Math.random() * (i + 1));
-	    var temp = this[i];
-	    this[i] = this[j];
-	    this[j] = temp;
-	  }
-	  return this;
-	};
-	
-	var Map = exports.Map = function () {
-	  function Map() {
-	    var _this = this;
-	
-	    _classCallCheck(this, Map);
-	
-	    this.numbers = [];
-	    this.typesAvailable = [];
-	    this.docks = [];
-	
-	    this.pieces = [[0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0]];
+	    _this.types = Types;
+	    _this.numbers = [];
+	    _this.typesAvailable = [];
+	    _this.docks = [];
 	
 	    //initialize array of dock types and shuffle array
-	    this.docks = [Types.WHEAT, Types.BRICK, Types.ORE, Types.WOOD, Types.SHEEP, 1, 1, 1, 1].shuffleSort();
+	    _this.docks = [Types.WHEAT, Types.BRICK, Types.ORE, Types.WOOD, Types.SHEEP, 1, 1, 1, 1].shuffleSort();
 	    //.map((dock, i) => i < 5 ? DockType["2:1"] : DockType["3:1"]).shuffleSort();
-	
-	    this.initPieces();
-	    //this.setDocks();
-	
-	    this.pieces.forEach(function (row, i) {
-	      row.forEach(function (piece, j) {
-	        //if (piece instanceof Dock) piece.calcDir(j, i, this);
-	        _this.findNeighbors(i, j);
-	      });
-	    });
+	    _this.initPieces();
+	    _get(Object.getPrototypeOf(CatanMap.prototype), 'initNeighbors', _this).call(_this);
+	    return _this;
 	  }
 	
-	  //Initialization code
-	
-	
-	  _createClass(Map, [{
+	  _createClass(CatanMap, [{
 	    key: 'initPieces',
 	    value: function initPieces() {
 	      var _this2 = this;
@@ -672,16 +646,13 @@
 	      this.pieces = this.pieces.map(function (row, i) {
 	        return row.map(function (column, j) {
 	          if (i === 0 || j === 0 || i === _this2.pieces.length - 1 || j === _this2.pieces[i].length - 1) {
-	            return new Piece(Types.WATER, -1);
+	            return new CatanPiece(Types.WATER, -1);
 	          } else {
-	            return new Piece(null, -1);
+	            return new CatanPiece(null, -1);
 	          }
 	        }, _this2);
 	      }, this);
 	    }
-	
-	    //Initialization code
-	
 	  }, {
 	    key: 'setNumbers',
 	    value: function setNumbers() {
@@ -752,7 +723,11 @@
 	        return prev.concat(curr);
 	      }); //flatten array into list of types
 	    }
-	
+	  }, {
+	    key: 'shufflePieces',
+	    value: function shufflePieces() {
+	      this.typesAvailable.shuffleSort();
+	    }
 	    //Initialization code
 	    //helper method used to instantiate set of Types
 	
@@ -761,98 +736,39 @@
 	    value: function makeTileCounter(count, type) {
 	      return { count: count, type: type };
 	    }
-	
-	    //find all neighbors of piece at location[i][j]
-	
-	  }, {
-	    key: 'findNeighbors',
-	    value: function findNeighbors(i, j) {
-	      var _this4 = this;
-	
-	      Neighbors.enumerate().forEach(function (neighbor) {
-	        var yOffset = void 0;
-	        var xOffset = void 0;
-	
-	        if (i === Math.floor(_this4.pieces.length / 2) && (neighbor == Dir.BOTTOM_LEFT || neighbor == Dir.BOTTOM_RIGHT)) {
-	          yOffset = i + NeighborsNeg[neighbor].y;
-	          xOffset = j + NeighborsNeg[neighbor].x;
-	        } else if (i > Math.floor(_this4.pieces.length / 2)) {
-	          yOffset = i + NeighborsNeg[neighbor].y;
-	          xOffset = j + NeighborsNeg[neighbor].x;
-	        } else {
-	          yOffset = i + Neighbors[neighbor].y;
-	          xOffset = j + Neighbors[neighbor].x;
-	        }
-	
-	        if (yOffset > 0 && yOffset < _this4.pieces.length - 1 && xOffset > 0 && xOffset < _this4.pieces[yOffset].length - 1) {
-	          _this4.pieces[i][j].neighbors.push(_this4.pieces[yOffset][xOffset]);
-	        }
-	      });
-	    }
-	  }, {
-	    key: 'checkNeighbors',
-	    value: function checkNeighbors(cb) {
-	
-	      for (var i = 1; i < this.pieces.length - 1; i++) {
-	        for (var j = 1; j < this.pieces[i].length - 1; j++) {
-	
-	          //iterate over neighbor nodes
-	          for (var k = 0; k < this.pieces[i][j].neighbors.length; k++) {
-	            if (!cb(this.pieces[i][j], this.pieces[i][j].neighbors[k])) {
-	              return false;
-	            }
-	          }
-	        }
-	      }
-	      return true;
-	    }
 	  }, {
 	    key: 'checkNumbers',
 	    value: function checkNumbers() {
-	      return this.checkNeighbors(function (piece, neighbor) {
+	      return _get(Object.getPrototypeOf(CatanMap.prototype), 'checkNeighbors', this).call(this, function (piece, neighbor) {
 	        return !((piece.number === 6 || piece.number === 8) && (neighbor.number === 6 || neighbor.number === 8));
 	      });
 	    }
 	  }, {
 	    key: 'checkTypes',
 	    value: function checkTypes() {
-	      return this.checkNeighbors(function (piece, neighbor) {
+	      return _get(Object.getPrototypeOf(CatanMap.prototype), 'checkNeighbors', this).call(this, function (piece, neighbor) {
 	        return piece['type'] !== neighbor['type'];
 	      });
 	    }
 	  }, {
-	    key: 'shufflePieces',
-	    value: function shufflePieces() {
-	      this.typesAvailable.shuffleSort();
-	    }
-	  }, {
-	    key: 'shuffleNumbers',
-	    value: function shuffleNumbers() {
-	      this.numbers.shuffleSort();
-	    }
-	  }, {
-	    key: 'distribute',
-	    value: function distribute(fr, to, func) {
-	      for (var i = 1; i < to.length - 1; i++) {
-	        for (var j = 1; j < to[i].length - 1; j++) {
-	          func(fr, to, i, j);
-	        }
-	      }
-	    }
-	  }, {
 	    key: 'randomizeTypes',
 	    value: function randomizeTypes() {
-	      var _this5 = this;
+	      var _this4 = this;
 	
 	      this.shufflePieces();
-	      this.distribute(this.typesAvailable, this.pieces, function (fr, to, i, j) {
+	      _get(Object.getPrototypeOf(CatanMap.prototype), 'distribute', this).call(this, this.typesAvailable, this.pieces, function (fr, to, i, j) {
 	
-	        if (to[i][j].number === 0 || _this5.typesAvailable.length === 0) {
+	        if (to[i][j].number === 0 || _this4.typesAvailable.length === 0) {
 	          to[i][j].type = Types.DESERT;
 	        } else {
 	          to[i][j].type = fr.pop();
 	        }
 	      });
+	    }
+	  }, {
+	    key: 'shuffleNumbers',
+	    value: function shuffleNumbers() {
+	      this.numbers.shuffleSort();
 	    }
 	  }, {
 	    key: 'randomNumbers',
@@ -883,42 +799,60 @@
 	        this.randomizeDocks();
 	      } while (false);
 	    }
-	  }, {
-	    key: 'getPieces',
-	    value: function getPieces() {
-	      return this.pieces;
-	    }
 	  }]);
 	
-	  return Map;
-	}();
+	  return CatanMap;
+	}(_map.Map);
 	
-	var Piece = exports.Piece = function Piece() {
-	  var type = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-	  var number = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+	var CatanPiece = exports.CatanPiece = function (_Piece) {
+	  _inherits(CatanPiece, _Piece);
 	
-	  _classCallCheck(this, Piece);
+	  function CatanPiece() {
+	    var type = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+	    var number = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
 	
-	  this.type = type;
-	  this.number = number;
-	  this.neighbors = [];
-	}
+	    _classCallCheck(this, CatanPiece);
 	
-	//implement recursive checking strategy
+	    var _this5 = _possibleConstructorReturn(this, Object.getPrototypeOf(CatanPiece).call(this));
 	
-	;
+	    _this5.type = type;
+	    _this5.number = number;
+	    return _this5;
+	  }
 	
-	var Dock = exports.Dock = function (_Piece) {
-	  _inherits(Dock, _Piece);
+	  return CatanPiece;
+	}(_map.Piece);
+	
+	var Land = exports.Land = function (_CatanPiece) {
+	  _inherits(Land, _CatanPiece);
+	
+	  function Land() {
+	    var type = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+	    var number = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+	
+	    _classCallCheck(this, Land);
+	
+	    var _this6 = _possibleConstructorReturn(this, Object.getPrototypeOf(Land).call(this, null, 0));
+	
+	    _this6.type = type;
+	    _this6.number = number;
+	    return _this6;
+	  }
+	
+	  return Land;
+	}(CatanPiece);
+	
+	var Dock = exports.Dock = function (_CatanPiece2) {
+	  _inherits(Dock, _CatanPiece2);
 	
 	  function Dock(dockType) {
 	    _classCallCheck(this, Dock);
 	
-	    var _this6 = _possibleConstructorReturn(this, Object.getPrototypeOf(Dock).call(this, Types.WATER, -1));
+	    var _this7 = _possibleConstructorReturn(this, Object.getPrototypeOf(Dock).call(this, Types.WATER, -1));
 	
-	    _this6.dockType = dockType;
-	    _this6.dockDir = null;
-	    return _this6;
+	    _this7.dockType = dockType;
+	    _this7.dockDir = null;
+	    return _this7;
 	  }
 	
 	  _createClass(Dock, [{
@@ -926,78 +860,43 @@
 	    value: function calcDir(x, y, map) {
 	      if (y === 0) {
 	        if (x < map.pieces[y].length / 2) {
-	          this.dockDir = Dir.BOTTOM_RIGHT;
+	          this.dockDir = map.Dir.BOTTOM_RIGHT;
 	        } else {
-	          this.dockDir = Dir.BOTTOM_LEFT;
+	          this.dockDir = map.Dir.BOTTOM_LEFT;
 	        }
 	      } else if (y === map.pieces.length - 1) {
 	        if (x < map.pieces[y].length / 2) {
-	          this.dockDir = Dir.TOP_RIGHT;
+	          this.dockDir = map.Dir.TOP_RIGHT;
 	        } else {
-	          this.dockDir = Dir.TOP_LEFT;
+	          this.dockDir = map.Dir.TOP_LEFT;
 	        }
 	      } else if (map.pieces[y].length - 2 > map.pieces.length / 2) {
 	        if (x === 0) {
-	          this.dockDir = Dir.RIGHT;
+	          this.dockDir = map.Dir.RIGHT;
 	        } else {
-	          this.dockDir = Dir.LEFT;
+	          this.dockDir = map.Dir.LEFT;
 	        }
 	      } else if (x === 0) {
 	        if (y < map.pieces.length / 2) {
-	          this.dockDir = Dir.BOTTOM_RIGHT;
+	          this.dockDir = map.Dir.BOTTOM_RIGHT;
 	        } else {
-	          this.dockDir = Dir.TOP_RIGHT;
+	          this.dockDir = map.Dir.TOP_RIGHT;
 	        }
 	      } else {
 	        if (y < map.pieces.length / 2) {
-	          this.dockDir = Dir.BOTTOM_LEFT;
+	          this.dockDir = map.Dir.BOTTOM_LEFT;
 	        } else {
-	          this.dockDir = Dir.TOP_LEFT;
+	          this.dockDir = map.Dir.TOP_LEFT;
 	        }
 	      }
 	    }
 	  }]);
 	
 	  return Dock;
-	}(Piece);
+	}(CatanPiece);
 
 /***/ },
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _map = __webpack_require__(1);
-	
-	var _MapView = __webpack_require__(4);
-	
-	//(() => {
-	var ele = document.getElementById('map');
-	ele.width = '' + 750;
-	ele.height = '' + 750;
-	var ctx = document.getElementById('map').getContext('2d');
-	var map = new _map.Map();
-	var mView = new _MapView.MapView({ x: 100, y: 175 }, 50);
-	
-	//window.requestAnimationFrame(mView.draw);
-	map.randomDistro();
-	
-	setInterval(function () {
-	  ctx.clearRect(0, 0, ele.width, ele.height);
-	  mView.draw(map);
-	}, 50);
-	//mView.draw();
-	
-	//PieceView.drawHex(ctx, {x: 50, y: 50}, 50);
-	
-	var button = document.getElementById('test-button');
-	button.addEventListener('click', function () {
-	  map = new _map.Map();
-	  map.randomDistro();
-	});
-
-/***/ },
-/* 3 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1048,7 +947,196 @@
 	module.exports = exports["default"];
 
 /***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _CatanMap = __webpack_require__(1);
+	
+	var _MapView = __webpack_require__(5);
+	
+	//(() => {
+	var ele = document.getElementById('map');
+	ele.width = '' + 750;
+	ele.height = '' + 750;
+	var ctx = document.getElementById('map').getContext('2d');
+	var map = new _CatanMap.CatanMap();
+	var mView = new _MapView.MapView({ x: 100, y: 175 }, 50);
+	
+	//window.requestAnimationFrame(mView.draw);
+	map.randomDistro();
+	
+	setInterval(function () {
+	  ctx.clearRect(0, 0, ele.width, ele.height);
+	  mView.draw(map);
+	}, 50);
+	//mView.draw();
+	
+	//PieceView.drawHex(ctx, {x: 50, y: 50}, 50);
+	
+	var button = document.getElementById('test-button');
+	button.addEventListener('click', function () {
+	  map = new _CatanMap.CatanMap();
+	  map.randomDistro();
+	});
+
+/***/ },
 /* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.Piece = exports.Map = exports.NeighborsNeg = exports.Neighbors = exports.Dir = undefined;
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _enum2 = __webpack_require__(2);
+	
+	var _enum3 = _interopRequireDefault(_enum2);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var env = ("development");
+	
+	var Dir = exports.Dir = (0, _enum3.default)(['BOTTOM_RIGHT', 'BOTTOM_LEFT', 'TOP_RIGHT', 'TOP_LEFT', 'RIGHT', 'LEFT']);
+	
+	var Neighbors = exports.Neighbors = (0, _enum3.default)([{ name: 'TOP_RIGHT', x: 0, y: -1 }, { name: 'RIGHT', x: 1, y: 0 }, { name: 'BOTTOM_RIGHT', x: 1, y: 1 }, { name: 'BOTTOM_LEFT', x: 0, y: 1 }, { name: 'LEFT', x: -1, y: 0 }, { name: 'TOP_LEFT', x: -1, y: -1 }]);
+	
+	var NeighborsNeg = exports.NeighborsNeg = (0, _enum3.default)([{ name: 'TOP_RIGHT', x: 1, y: -1 }, { name: 'RIGHT', x: 1, y: 0 }, { name: 'BOTTOM_RIGHT', x: 0, y: 1 }, { name: 'BOTTOM_LEFT', x: -1, y: 1 }, { name: 'LEFT', x: -1, y: 0 }, { name: 'TOP_LEFT', x: 0, y: -1 }]);
+	
+	var DockType = (0, _enum3.default)(["3:1", "2:1"]);
+	
+	Array.prototype.shuffleSort = function () {
+	  for (var i = this.length - 1; i > 0; i--) {
+	    var j = Math.floor(Math.random() * (i + 1));
+	    var temp = this[i];
+	    this[i] = this[j];
+	    this[j] = temp;
+	  }
+	  return this;
+	};
+	
+	var Map = exports.Map = function () {
+	  function Map() {
+	    _classCallCheck(this, Map);
+	
+	    this.Neighbors = Neighbors;
+	
+	    this.NeighborsNeg = NeighborsNeg;
+	
+	    this.Dir = Dir;
+	
+	    this.pieces = [[0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0]];
+	  }
+	
+	  _createClass(Map, [{
+	    key: 'initNeighbors',
+	    value: function initNeighbors() {
+	      var _this = this;
+	
+	      this.pieces.forEach(function (row, i) {
+	        row.forEach(function (piece, j) {
+	          //if (piece instanceof Dock) piece.calcDir(j, i, this);
+	          _this.findNeighbors(i, j);
+	        });
+	      });
+	    }
+	
+	    //Initialization code
+	
+	  }, {
+	    key: 'initPieces',
+	    value: function initPieces() {
+	      var _this2 = this;
+	
+	      this.pieces = this.pieces.map(function (row, i) {
+	        return row.map(function (column, j) {
+	          if (i === 0 || j === 0 || i === _this2.pieces.length - 1 || j === _this2.pieces[i].length - 1) {
+	            return new Piece(Types.WATER, -1);
+	          } else {
+	            return new Piece(null, -1);
+	          }
+	        }, _this2);
+	      }, this);
+	    }
+	
+	    //find all neighbors of piece at location[i][j]
+	
+	  }, {
+	    key: 'findNeighbors',
+	    value: function findNeighbors(i, j) {
+	      var _this3 = this;
+	
+	      this.Neighbors.enumerate().forEach(function (neighbor) {
+	        var yOffset = void 0;
+	        var xOffset = void 0;
+	
+	        if (i === Math.floor(_this3.pieces.length / 2) && (neighbor == Dir.BOTTOM_LEFT || neighbor == Dir.BOTTOM_RIGHT)) {
+	          yOffset = i + _this3.NeighborsNeg[neighbor].y;
+	          xOffset = j + _this3.NeighborsNeg[neighbor].x;
+	        } else if (i > Math.floor(_this3.pieces.length / 2)) {
+	          yOffset = i + _this3.NeighborsNeg[neighbor].y;
+	          xOffset = j + _this3.NeighborsNeg[neighbor].x;
+	        } else {
+	          yOffset = i + _this3.Neighbors[neighbor].y;
+	          xOffset = j + _this3.Neighbors[neighbor].x;
+	        }
+	
+	        if (yOffset > 0 && yOffset < _this3.pieces.length - 1 && xOffset > 0 && xOffset < _this3.pieces[yOffset].length - 1) {
+	          _this3.pieces[i][j].neighbors.push(_this3.pieces[yOffset][xOffset]);
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'checkNeighbors',
+	    value: function checkNeighbors(cb) {
+	
+	      for (var i = 1; i < this.pieces.length - 1; i++) {
+	        for (var j = 1; j < this.pieces[i].length - 1; j++) {
+	
+	          //iterate over neighbor nodes
+	          for (var k = 0; k < this.pieces[i][j].neighbors.length; k++) {
+	            if (!cb(this.pieces[i][j], this.pieces[i][j].neighbors[k])) {
+	              return false;
+	            }
+	          }
+	        }
+	      }
+	      return true;
+	    }
+	  }, {
+	    key: 'distribute',
+	    value: function distribute(fr, to, func) {
+	      for (var i = 1; i < to.length - 1; i++) {
+	        for (var j = 1; j < to[i].length - 1; j++) {
+	          func(fr, to, i, j);
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'getPieces',
+	    value: function getPieces() {
+	      return this.pieces;
+	    }
+	  }]);
+	
+	  return Map;
+	}();
+	
+	var Piece = exports.Piece = function Piece() {
+	  _classCallCheck(this, Piece);
+	
+	  this.neighbors = [];
+	};
+
+/***/ },
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1060,7 +1148,7 @@
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _map = __webpack_require__(1);
+	var _CatanMap = __webpack_require__(1);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -1151,7 +1239,7 @@
 	            context.fillText(column[j].number, x, y);
 	          }
 	
-	          if (column[j].type == _map.Types.WATER) {
+	          if (column[j].type == _CatanMap.Types.WATER) {
 	            this.drawDock(context, { x: x, y: y }, column[j]);
 	          }
 	        }
@@ -1175,19 +1263,19 @@
 	    key: 'setColor',
 	    value: function setColor(type) {
 	      switch (type) {
-	        case _map.Types.WHEAT:
+	        case _CatanMap.Types.WHEAT:
 	          return "lightgreen";
-	        case _map.Types.SHEEP:
+	        case _CatanMap.Types.SHEEP:
 	          return "green";
-	        case _map.Types.WOOD:
+	        case _CatanMap.Types.WOOD:
 	          return "brown";
-	        case _map.Types.BRICK:
+	        case _CatanMap.Types.BRICK:
 	          return "red";
-	        case _map.Types.ORE:
+	        case _CatanMap.Types.ORE:
 	          return "black";
-	        case _map.Types.DESERT:
+	        case _CatanMap.Types.DESERT:
 	          return "gray";
-	        case _map.Types.WATER:
+	        case _CatanMap.Types.WATER:
 	          return "blue";
 	      }
 	    }
