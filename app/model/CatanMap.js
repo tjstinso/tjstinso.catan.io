@@ -1,4 +1,4 @@
-import { Map, Piece } from './map';
+import { GameMap, Piece } from './map';
 import _enum from './enum';
 
 export const Types = _enum([
@@ -11,14 +11,16 @@ export const Types = _enum([
   'WATER'
 ]);
 
-export class CatanMap extends Map {
-  constructor() {
-    super();
+
+export class CatanMap extends GameMap {
+  constructor(diameter) {
+    super(diameter);
 
     this.types = Types;
     this.numbers = [];
     this.typesAvailable = [];
     this.docks = [];
+
 
     //initialize array of dock types and shuffle array
     this.docks = [Types.WHEAT, Types.BRICK, Types.ORE, Types.WOOD, Types.SHEEP, 1, 1, 1, 1].shuffleSort();
@@ -30,10 +32,11 @@ export class CatanMap extends Map {
   initPieces() {
     this.pieces = this.pieces.map((row, i) => {
       return row.map((column, j) => {
+        let point = this.pieces[i][j];
         if (i === 0 || j === 0 || i === (this.pieces.length - 1) || j === (this.pieces[i].length - 1)) {
-          return new CatanPiece(Types.WATER, -1);
+          return new CatanPiece(Types.WATER, -1, point);
         } else {
-          return new CatanPiece(null, -1);
+          return new CatanPiece(null, -1, point);
         }
       }, this);
     }, this);
@@ -175,24 +178,24 @@ export class CatanMap extends Map {
 }
 
 class CatanPiece extends Piece {
-  constructor(type = null, number = 0) {
-    super();
+  constructor(type = null, number = 0, point) {
+    super(point);
     this.type = type;
     this.number = number;
   }
 }
 
 class Land extends CatanPiece {
-  constructor(type = null, number = 0) {
-    super(null, 0);
+  constructor(type = null, number = 0, point) {
+    super(null, 0, point);
     this.type = type;
     this.number = number;
   }
 }
 
 class Dock extends CatanPiece {
-  constructor(dockType) {
-    super(Types.WATER, -1);
+  constructor(dockType, point) {
+    super(Types.WATER, -1, point);
     this.dockType = dockType;
     this.dockDir = null;
   }
