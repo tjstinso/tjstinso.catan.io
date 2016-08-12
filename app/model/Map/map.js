@@ -1,4 +1,6 @@
-import _enum from './enum';
+import _enum from '../../utilities/enum';
+import { ThreeDHexPoint as Point } from '../Point/Point';
+import { HashPoints } from '../Point/HashPoints';
 
 const env = process.env.NODE_ENV;
 
@@ -20,11 +22,6 @@ export const Neighbors = _enum([
   { name: 'TOP_LEFT', x: -1, y: 0 },
 ]);
 
-const DockType = _enum([
-  "3:1",
-  "2:1",
-]);
-
 Array.prototype.shuffleSort = function() {
   for (let i = this.length - 1; i > 0; i--) {
     let j = Math.floor(Math.random() * (i + 1));
@@ -35,92 +32,14 @@ Array.prototype.shuffleSort = function() {
   return this;
 }
 
-class Point {
-  constructor(x ,y) {
-    this.x = x;
-    this.y = y;
-  }
-
-  isEqual(point) {
-    return this.x === point.x && this.y === point.y;
-  }
-}
-
-/**
- *  Represent a 3d point on a hex board
- */
-class ThreeDHexPoint extends Point {
-  constructor(point) {
-    super(point.x, point.y);
-    this.z = -x - y;
-  }
-
-  isEqual(point) {
-    return super.isEqual(point) && this.z === point.z; //this is redundant for hex case
-  }
-}
-
-//Given a list of points, return a new list of 3DHexPoints.
-function convertTo3D(points) {
-  return points.map(row => {
-    return row.map(node => {
-      return new ThreeDHexPoint(node);
-    });
-  });
-}
-
 //Build a list of Points based a diameter.
-class HashPoints {
-  constructor(pieces) {
-    this.map = new Map();
-    this.hashNodes(pieces);
-  }
-
-  //flatten array and add to hashmap
-  //to be called in constructor
-  hashNodes(nodes) {
-    nodes.reduce((prev, curr) => prev.concat(curr))
-    .forEach(node => this.addToMap(node));
-  }
-
-  //Return 
-  getPointFromMap(point) {
-    let key = this.hash(point);
-
-    if (!this.map.get(key)) {
-      return null
-    }
-
-    while (!this.map.get(key).point.isEqual(point)) {
-      key++;
-    }
-    return this.map.get(key);
-  }
-
-  addToMap(piece) {
-    let key = this.hash(piece.point);
-    while (this.map.get(key)) { //all points on map should be unique
-      key++;
-    }
-    this.map.set(key, piece);
-  }
-
-  hash(point) {
-    return (point.y << 16) ^ point.x;
-  }
-
-  getMap() {
-    return this.map;
-  }
-}
-
 
 export class GameMap {
 
   constructor(diameter) {
     this.Neighbors = Neighbors;
     this.Dir = Dir;
-    this.pieces = this.buildNodes(diameter);
+    this.pieces = this.buildNodes(diameter)
     this.hashmap = {};
   }
 
@@ -207,10 +126,6 @@ export class Piece {
   constructor(point) {
     this.neighbors = [];
     this.point = point;
-  }
-
-  isEqual(piece) {
-    return this.point.x === piece.point.x && this.point.y === piece.point.y;
   }
 
 }

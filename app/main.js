@@ -1,4 +1,4 @@
-import { CatanMap } from './model/CatanMap';
+import { CatanMap } from './model/Map/CatanMap';
 
 import { MapView, PieceView } from './view/MapView';
 

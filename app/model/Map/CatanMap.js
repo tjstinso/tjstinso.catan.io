@@ -1,5 +1,5 @@
 import { GameMap, Piece } from './map';
-import _enum from './enum';
+import _enum from '../../utilities/enum';
 
 export const Types = _enum([
   'WHEAT',

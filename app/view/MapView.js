@@ -1,4 +1,4 @@
-import { Types } from '../model/CatanMap';
+import { Types } from '../model/Map/CatanMap';
 
 
 export class MapView {
