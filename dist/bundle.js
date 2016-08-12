@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "9d5721d1d7c6245728bc"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "5e7f8e4014ba9455c3ef"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -1242,7 +1242,7 @@
 	  _createClass(Point, [{
 	    key: 'isEqual',
 	    value: function isEqual(point) {
-	      return this.x === point.x && this.y === point.y;
+	      return point instanceof Point && this.x === point.x && this.y === point.y;
 	    }
 	  }]);
 	
@@ -1258,10 +1258,10 @@
 	var ThreeDHexPoint = exports.ThreeDHexPoint = function (_Point) {
 	  _inherits(ThreeDHexPoint, _Point);
 	
-	  function ThreeDHexPoint(point) {
+	  function ThreeDHexPoint(x, y) {
 	    _classCallCheck(this, ThreeDHexPoint);
 	
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ThreeDHexPoint).call(this, point.x, point.y));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ThreeDHexPoint).call(this, x, y));
 	
 	    _this.z = -_this.x - _this.y;
 	    return _this;
@@ -1283,10 +1283,6 @@
 	
 	  return ThreeDHexPoint;
 	}(Point);
-	
-	var a = new ThreeDHexPoint(new Point(3, 5));
-	var b = new ThreeDHexPoint(new Point(3, 5));
-	var c = new ThreeDHexPoint(new Point(0, 5));
 
 /***/ },
 /* 7 */
