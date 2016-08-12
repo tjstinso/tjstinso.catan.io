@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "cf4b4d6363e2e4f30f22"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "9d5721d1d7c6245728bc"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -957,7 +957,7 @@
 	
 	var _CatanMap = __webpack_require__(1);
 	
-	var _MapView = __webpack_require__(5);
+	var _MapView = __webpack_require__(7);
 	
 	//(() => {
 	var ele = document.getElementById('map');
@@ -995,19 +995,17 @@
 	});
 	exports.Piece = exports.GameMap = exports.Neighbors = exports.Dir = undefined;
 	
-	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _enum2 = __webpack_require__(2);
 	
 	var _enum3 = _interopRequireDefault(_enum2);
 	
+	var _Point = __webpack_require__(6);
+	
+	var _HashPoints = __webpack_require__(5);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -1016,8 +1014,6 @@
 	var Dir = exports.Dir = (0, _enum3.default)(['BOTTOM_RIGHT', 'BOTTOM_LEFT', 'TOP_RIGHT', 'TOP_LEFT', 'RIGHT', 'LEFT']);
 	
 	var Neighbors = exports.Neighbors = (0, _enum3.default)([{ name: 'TOP_RIGHT', x: -1, y: 1 }, { name: 'RIGHT', x: 0, y: 1 }, { name: 'BOTTOM_RIGHT', x: 1, y: 0 }, { name: 'BOTTOM_LEFT', x: 1, y: -1 }, { name: 'LEFT', x: 0, y: -1 }, { name: 'TOP_LEFT', x: -1, y: 0 }]);
-	
-	var DockType = (0, _enum3.default)(["3:1", "2:1"]);
 	
 	Array.prototype.shuffleSort = function () {
 	  for (var i = this.length - 1; i > 0; i--) {
@@ -1029,128 +1025,7 @@
 	  return this;
 	};
 	
-	var Point = function () {
-	  function Point(x, y) {
-	    _classCallCheck(this, Point);
-	
-	    this.x = x;
-	    this.y = y;
-	  }
-	
-	  _createClass(Point, [{
-	    key: 'isEqual',
-	    value: function isEqual(point) {
-	      return this.x === point.x && this.y === point.y;
-	    }
-	  }]);
-	
-	  return Point;
-	}();
-	
-	/**
-	 *  Represent a 3d point on a hex board
-	 */
-	
-	
-	var ThreeDHexPoint = function (_Point) {
-	  _inherits(ThreeDHexPoint, _Point);
-	
-	  function ThreeDHexPoint(point) {
-	    _classCallCheck(this, ThreeDHexPoint);
-	
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ThreeDHexPoint).call(this, point.x, point.y));
-	
-	    _this.z = -x - y;
-	    return _this;
-	  }
-	
-	  _createClass(ThreeDHexPoint, [{
-	    key: 'isEqual',
-	    value: function isEqual(point) {
-	      return _get(Object.getPrototypeOf(ThreeDHexPoint.prototype), 'isEqual', this).call(this, point) && this.z === point.z; //this is redundant for hex case
-	    }
-	  }]);
-	
-	  return ThreeDHexPoint;
-	}(Point);
-	
-	//Given a list of points, return a new list of 3DHexPoints.
-	
-	
-	function convertTo3D(points) {
-	  return points.map(function (row) {
-	    return row.map(function (node) {
-	      return new ThreeDHexPoint(node);
-	    });
-	  });
-	}
-	
 	//Build a list of Points based a diameter.
-	
-	var HashPoints = function () {
-	  function HashPoints(pieces) {
-	    _classCallCheck(this, HashPoints);
-	
-	    this.map = new Map();
-	    this.hashNodes(pieces);
-	  }
-	
-	  //flatten array and add to hashmap
-	  //to be called in constructor
-	
-	
-	  _createClass(HashPoints, [{
-	    key: 'hashNodes',
-	    value: function hashNodes(nodes) {
-	      var _this2 = this;
-	
-	      nodes.reduce(function (prev, curr) {
-	        return prev.concat(curr);
-	      }).forEach(function (node) {
-	        return _this2.addToMap(node);
-	      });
-	    }
-	
-	    //Return 
-	
-	  }, {
-	    key: 'getPointFromMap',
-	    value: function getPointFromMap(point) {
-	      var key = this.hash(point);
-	
-	      if (!this.map.get(key)) {
-	        return null;
-	      }
-	
-	      while (!this.map.get(key).point.isEqual(point)) {
-	        key++;
-	      }
-	      return this.map.get(key);
-	    }
-	  }, {
-	    key: 'addToMap',
-	    value: function addToMap(piece) {
-	      var key = this.hash(piece.point);
-	      while (this.map.get(key)) {
-	        //all points on map should be unique
-	        key++;
-	      }
-	      this.map.set(key, piece);
-	    }
-	  }, {
-	    key: 'hash',
-	    value: function hash(point) {
-	      return point.y << 16 ^ point.x;
-	    }
-	  }, {
-	    key: 'getMap',
-	    value: function getMap() {
-	      return this.map;
-	    }
-	  }]);
-	
-	  return HashPoints;
-	}();
 	
 	var GameMap = exports.GameMap = function () {
 	  function GameMap(diameter) {
@@ -1179,7 +1054,7 @@
 	
 	        for (var j = minY; j < width - Math.abs(minY); j++) {
 	          if (i + Math.floor(diameter / 2) >= nodes.length) nodes.push([]);
-	          nodes[i + Math.floor(diameter / 2)][j - minY] = new Point(i, j);
+	          nodes[i + Math.floor(diameter / 2)][j - minY] = new _Point.ThreeDHexPoint(i, j);
 	        }
 	      }
 	      return nodes;
@@ -1187,13 +1062,13 @@
 	  }, {
 	    key: 'initNeighbors',
 	    value: function initNeighbors() {
-	      var _this3 = this;
+	      var _this = this;
 	
-	      this.hashmap = new HashPoints(this.pieces);
+	      this.hashmap = new _HashPoints.HashPoints(this.pieces);
 	      this.pieces.forEach(function (row, i) {
 	        row.forEach(function (piece, j) {
 	          //if (piece instanceof Dock) piece.calcDir(j, i, this);
-	          _this3.findNeighbors(i, j);
+	          _this.findNeighbors(i, j);
 	        });
 	      });
 	    }
@@ -1203,16 +1078,16 @@
 	  }, {
 	    key: 'findNeighbors',
 	    value: function findNeighbors(i, j) {
-	      var _this4 = this;
+	      var _this2 = this;
 	
 	      this.Neighbors.enumerate().forEach(function (neighbor) {
 	        var yOffset = void 0;
 	        var xOffset = void 0;
-	        var piece = _this4.pieces[i][j];
-	        var point = new Point(piece.point.x + _this4.Neighbors[neighbor].x, piece.point.y + _this4.Neighbors[neighbor].y);
-	        var check = _this4.hashmap.getPointFromMap(point);
+	        var piece = _this2.pieces[i][j];
+	        var point = new _Point.ThreeDHexPoint(piece.point.x + _this2.Neighbors[neighbor].x, piece.point.y + _this2.Neighbors[neighbor].y);
+	        var check = _this2.hashmap.getPointFromMap(point);
 	        if (check !== null) {
-	          _this4.pieces[i][j].neighbors.push(check);
+	          _this2.pieces[i][j].neighbors.push(check);
 	        }
 	      });
 	    }
@@ -1252,26 +1127,169 @@
 	  return GameMap;
 	}();
 	
-	var Piece = exports.Piece = function () {
-	  function Piece(point) {
-	    _classCallCheck(this, Piece);
+	var Piece = exports.Piece = function Piece(point) {
+	  _classCallCheck(this, Piece);
 	
-	    this.neighbors = [];
-	    this.point = point;
-	  }
-	
-	  _createClass(Piece, [{
-	    key: 'isEqual',
-	    value: function isEqual(piece) {
-	      return this.point.x === piece.point.x && this.point.y === piece.point.y;
-	    }
-	  }]);
-
-	  return Piece;
-	}();
+	  this.neighbors = [];
+	  this.point = point;
+	};
 
 /***/ },
 /* 5 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var HashPoints = exports.HashPoints = function () {
+	  function HashPoints(pieces) {
+	    _classCallCheck(this, HashPoints);
+	
+	    this.map = new Map();
+	    this.hashNodes(pieces);
+	  }
+	
+	  //flatten array and add to hashmap
+	  //to be called in constructor
+	
+	
+	  _createClass(HashPoints, [{
+	    key: "hashNodes",
+	    value: function hashNodes(nodes) {
+	      var _this = this;
+	
+	      nodes.reduce(function (prev, curr) {
+	        return prev.concat(curr);
+	      }).forEach(function (node) {
+	        return _this.addToMap(node);
+	      });
+	    }
+	
+	    //Return 
+	
+	  }, {
+	    key: "getPointFromMap",
+	    value: function getPointFromMap(point) {
+	      var key = this.hash(point);
+	
+	      if (!this.map.get(key)) {
+	        return null;
+	      }
+	
+	      while (!this.map.get(key).point.isEqual(point)) {
+	        key++;
+	      }
+	      return this.map.get(key);
+	    }
+	  }, {
+	    key: "addToMap",
+	    value: function addToMap(piece) {
+	      var key = this.hash(piece.point);
+	      while (this.map.get(key)) {
+	        //all points on map should be unique
+	        key++;
+	      }
+	      this.map.set(key, piece);
+	    }
+	  }, {
+	    key: "hash",
+	    value: function hash(point) {
+	      return point.y << 16 ^ point.x;
+	    }
+	  }, {
+	    key: "getMap",
+	    value: function getMap() {
+	      return this.map;
+	    }
+	  }]);
+
+	  return HashPoints;
+	}();
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var Point = exports.Point = function () {
+	  function Point(x, y) {
+	    _classCallCheck(this, Point);
+	
+	    this.x = x;
+	    this.y = y;
+	  }
+	
+	  _createClass(Point, [{
+	    key: 'isEqual',
+	    value: function isEqual(point) {
+	      return this.x === point.x && this.y === point.y;
+	    }
+	  }]);
+	
+	  return Point;
+	}();
+	
+	/**
+	 *  Represent a 3d point on a hex board
+	 *  Z point is implicit, do not need to check for equality anywhere on the board.
+	 */
+	
+	
+	var ThreeDHexPoint = exports.ThreeDHexPoint = function (_Point) {
+	  _inherits(ThreeDHexPoint, _Point);
+	
+	  function ThreeDHexPoint(point) {
+	    _classCallCheck(this, ThreeDHexPoint);
+	
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ThreeDHexPoint).call(this, point.x, point.y));
+	
+	    _this.z = -_this.x - _this.y;
+	    return _this;
+	  }
+	
+	  _createClass(ThreeDHexPoint, [{
+	    key: 'distanceFrom',
+	    value: function distanceFrom(point) {
+	      var _this2 = this;
+	
+	      if (point instanceof ThreeDHexPoint) {
+	        var calc = function calc(field) {
+	          return Math.abs(_this2[field] - point[field]);
+	        };
+	        return (calc('x') + calc('y') + calc('z')) / 2;
+	      }
+	    }
+	  }]);
+	
+	  return ThreeDHexPoint;
+	}(Point);
+	
+	var a = new ThreeDHexPoint(new Point(3, 5));
+	var b = new ThreeDHexPoint(new Point(3, 5));
+	var c = new ThreeDHexPoint(new Point(0, 5));
+
+/***/ },
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
