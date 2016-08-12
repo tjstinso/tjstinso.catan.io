@@ -5,7 +5,7 @@ export class Point {
   }
 
   isEqual(point) {
-    return this.x === point.x && this.y === point.y;
+    return point instanceof Point && this.x === point.x && this.y === point.y;
   }
 }
 
@@ -14,8 +14,8 @@ export class Point {
  *  Z point is implicit, do not need to check for equality anywhere on the board.
  */
 export class ThreeDHexPoint extends Point {
-  constructor(point) {
-    super(point.x, point.y);
+  constructor(x, y) {
+    super(x, y);
     this.z = -this.x - this.y;
   }
 
@@ -26,8 +26,4 @@ export class ThreeDHexPoint extends Point {
     }
   }
 }
-
-let a = new ThreeDHexPoint(new Point(3,5));
-let b = new ThreeDHexPoint(new Point(3,5));
-let c = new ThreeDHexPoint(new Point(0,5));
 
