@@ -154,11 +154,18 @@ export class CatanMap extends GameMap {
   }
 
   randomDistro() {
+    this.setNumbers();
+    this.randomNumbers();
+    this.setTypes();
+    this.randomizeTypes();
+    this.randomizeDocks();
+  }
+
+  randomFairDistro() {
     if (process.env.NODE_ENV === 'test') this.count = 0;
     do {
       this.setNumbers();
       this.randomNumbers();
-      //if (process.env.NODE_ENV === 'test') this.count++;
     } while (!this.checkNumbers());
 
 

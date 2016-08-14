@@ -26,9 +26,7 @@ export class MapView {
   }
 
   calcY(xOffset, yOffset) {
-    //return this.origin.y + yOffset * this.width * 2
     let y = this.origin.y + yOffset * this.width * Math.sqrt(3);
-    //let y = this.origin.y //+ yOffset * Math.sqrt(3) * this.width;
     switch (xOffset) {
       case 0:
         return y
@@ -48,8 +46,7 @@ export class MapView {
     }
   }
 
-  draw(map) {
-    let context = document.getElementById('map').getContext('2d');
+  draw(map, context) {
     context.save();
     context.font = `${this.width / 3}px Verdana`;
     let pieces = map.pieces;
@@ -61,7 +58,6 @@ export class MapView {
 
         let x = this.calcY(i, j);
         context.fillStyle = this.setColor(column[j].type);
-
 
         PieceView.drawHex(context, {x, y}, this.width)
         this.drawDock(context, {x, y}, column[j]);
@@ -123,6 +119,7 @@ export class MapView {
 
 export class PieceView {
 
+  //width is width of leg
   static drawHex(context, origin, width) {
     context.save();
     let ratio = width * Math.sqrt(3) / 2
