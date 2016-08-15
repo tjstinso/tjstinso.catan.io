@@ -11,26 +11,55 @@ const OptionsHeader = ({
   )
 }
 
-class OptionItem extends Component {
-  constructor(props) {
-    super(props);
-  }
+const Reroll = ({
+  clickHandler
+}) => {
+  return (
+    <button onClick={clickHandler} className="btn waves-effect waves-light" type="submit" name="action">Reroll
+      <i className="material-icons right">replay</i>
+    </button>
+  )
+}
 
-  click(e) {
+const RadioOptionItem = ({
+  id,
+  text,
+  click,
+  checked,
+}) => {
+  const onClick = (e) => {
     if (e.target.value === "on") {
-      this.props.click(this.props.text);
+      click(text);
+    }
+  }
+  return (
+    <p>
+      <input checked={checked} onClick={(e) => onClick(e)}  name="group1" type="radio" id={`radio-button-${id}`} /> 
+      <label htmlFor={`radio-button-${id}`} >{text}</label>
+    </p>
+  )
+}
+
+const CheckboxItem = ({
+  id,
+  text,
+  click,
+  checked,
+}) => {
+
+  const onClick = e => {
+    console.log(e.target.value);
+    if (e.target.value === 'on') {
+      click(text);
     }
   }
 
-  render() {
-    const { id, text } = this.props;
-    return (
-      <p>
-        <input onClick={(e) => this.click(e)} ref='check' name="group1" type="radio" id={`radio-button-${id}`} /> 
-        <label htmlFor={`radio-button-${id}`} >{text}</label>
-      </p>
-    )
-  }
+  return (
+    <p>
+      <input checked={checked} onClick={e => onClick(e) }type="checkbox" id={`checkbox-id-${id}`} />
+      <label htmlFor={`checkbox-id-${id}`}>{text}</label>
+    </p>
+  )
 }
 
 export default class Options extends Component {
@@ -39,28 +68,55 @@ export default class Options extends Component {
   }
 
   optionProps(item) {
-    const { selectUniqueOption, gameOptions } = this.props;
+    const { map, selectUniqueOption } = this.props;
     return {
       text: item,
       click: (val) => {
         selectUniqueOption(val);
-      }
+      },
+      checked:(() => {
+        return map.selectedOptions.includes(item);
+      })()
+    }
+  }
+
+  checkboxProps(item) {
+    const { map, selectMap, removeOption } = this.props;
+    return {
+      text: item,
+      click: (val) => {
+        if (map.selectedOptions.includes(item))
+          removeOption(val);
+        else
+          selectMap(val);
+      },
+      checked: (() => {
+        return map.selectedOptions.includes(item);
+      })()
     }
   }
 
   render() {
-    const { gameOptions } = this.props;
+    const { map, reroll } = this.props;
 
     return (
       <div className="option-container" >
         <OptionsHeader />
         <form action="#">
           { 
-            gameOptions.options.map((option, i) => {
-              return <OptionItem id={i} key={i} { ...this.optionProps(option) }/>
+            map.presetOptions.map((option, i) => {
+              return <RadioOptionItem id={i} key={i} { ...this.optionProps(option) }/>
             })
           }
         </form>
+        <form action="#">
+          {
+            map.options.map((option, i) => {
+              return <CheckboxItem id={i} key={i} { ...this.checkboxProps(option) }/>
+            })
+          }
+        </form>
+        <Reroll clickHandler={reroll}/>
       </div>
     )
 
@@ -68,10 +124,5 @@ export default class Options extends Component {
 }
 
 Option.propTypes = {
-  /**
-   * 
-   *
-   * @returns {undefined}
-   */
-  gameptions: PropTypes.object,
+
 }

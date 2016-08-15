@@ -99,19 +99,19 @@ export class MapView {
   setColor(type) {
     switch(type) {
       case Types.WHEAT:
-        return '#F6C63C';
+        return '#FFD230';
       case Types.SHEEP:
-        return '#A9C444';
+        return '#A9D14E';
       case Types.WOOD:
-        return '#7D8425';
+        return '#39A547';
       case Types.BRICK:
-        return '#78351B';
+        return '#D67C48';
       case Types.ORE:
-        return '#666954';
+        return '#7A7A7A';
       case Types.DESERT:
-        return '#F8E193';
+        return '#FFFDBD';
       case Types.WATER:
-        return '#00AAD4';
+        return '#44ABD5';
     }
   }
 
