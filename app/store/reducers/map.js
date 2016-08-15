@@ -18,17 +18,17 @@ const initialState = {
     'NUMBERS',
   ],
   presetOptions: [
-    'fair random',
-    'random'
+    'FAIR RANDOM',
+    'RANDOM'
   ],
   selectedOptions: [
-    'fair random',
+    'FAIR RANDOM',
   ],
   rules: {
-    'fair random': (map) => {
+    'FAIR RANDOM': (map) => {
       map.randomFairDistro();
     },
-    'random': (map) => {
+    'RANDOM': (map) => {
       map.randomDistro();
     },
     'custom': (map, arr) => {

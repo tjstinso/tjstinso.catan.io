@@ -162,7 +162,7 @@ export class CatanMap extends GameMap {
   }
 
   checkAllNumbers(isCheck) {
-    if (isCheck) {
+    if (!isCheck) {
       return true;
     } else {
       return super.checkNeighbors((piece, neighbor) => {
