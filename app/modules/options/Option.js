@@ -2,12 +2,10 @@ import React, { Component, PropTypes } from 'react';
 import './Options.css';
 
 const OptionsHeader = ({
-
+  text
 }) => {
   return (
-    <div>
-      Select Your Options
-    </div>
+    <div>{text}</div>
   )
 }
 
@@ -101,7 +99,9 @@ export default class Options extends Component {
 
     return (
       <div className="option-container" >
-        <OptionsHeader />
+        <h4>Options </h4>
+
+        <OptionsHeader text={"Select Preset"}/>
         <form action="#">
           { 
             map.presetOptions.map((option, i) => {
@@ -109,6 +109,8 @@ export default class Options extends Component {
             })
           }
         </form>
+
+        <OptionsHeader text={"Select Custom"}/>
         <form action="#">
           {
             map.options.map((option, i) => {
@@ -116,6 +118,7 @@ export default class Options extends Component {
             })
           }
         </form>
+
         <Reroll clickHandler={reroll}/>
       </div>
     )
