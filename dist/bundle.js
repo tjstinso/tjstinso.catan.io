@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "7a1af8e767dd9d980cc8"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "bc884207d4f5ba88385f"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -2551,7 +2551,7 @@
 /* 328 */
 /***/ function(module, exports, __webpack_require__) {
 
-	eval("exports = module.exports = __webpack_require__(184)();\n// imports\n\n\n// module\nexports.push([module.id, \".option-container {\\n}\\n\\n@media (max-width: 992){\\n  .options-container{\\n\\n  }\\n}\\n\\n@media (max-width: 600px) {\\n  .option-header {\\n    width: 100%;\\n    float: left;\\n    padding-top: 20px;\\n    margin-bottom: 15px;\\n  }\\n\\n  .radio-item {\\n    text-overflow: none;\\n    margin-bottom: 15px;\\n    width: 33%;\\n    display: inline-block;\\n  }\\n\\n  .radio-item-secondary {\\n    width: 50% !important;\\n  }\\n\\n  .option-button {\\n    position: absolute;\\n    bottom: 100px;\\n    left: 50%;\\n    transform: translateX(-50%);\\n  }\\n}\\n\", \"\"]);\n\n// exports\n\n\n/*****************\n ** WEBPACK FOOTER\n ** ./~/css-loader!./app/modules/options/Options.css\n ** module id = 328\n ** module chunks = 0\n **/\n//# sourceURL=webpack:///./app/modules/options/Options.css?./~/css-loader");
+	eval("exports = module.exports = __webpack_require__(184)();\n// imports\n\n\n// module\nexports.push([module.id, \".option-container {\\n}\\n\\n@media (max-width: 992){\\n  .options-container{\\n\\n  }\\n}\\n\\n@media (max-width: 600px) {\\n  .option-header {\\n    width: 100%;\\n    float: left;\\n    padding-top: 20px;\\n    margin-bottom: 15px;\\n  }\\n\\n  .radio-item {\\n    white-space: nowrap;\\n    text-overflow: none;\\n    margin-bottom: 15px;\\n    width: 33%;\\n    display: inline-block;\\n  }\\n\\n  .radio-item-secondary {\\n    width: 50% !important;\\n  }\\n\\n  .option-button {\\n    position: absolute;\\n    bottom: 100px;\\n    left: 50%;\\n    transform: translateX(-50%);\\n  }\\n}\\n\", \"\"]);\n\n// exports\n\n\n/*****************\n ** WEBPACK FOOTER\n ** ./~/css-loader!./app/modules/options/Options.css\n ** module id = 328\n ** module chunks = 0\n **/\n//# sourceURL=webpack:///./app/modules/options/Options.css?./~/css-loader");
 
 /***/ },
 /* 329 */
