@@ -1,19 +1,27 @@
 import { connect } from 'react-redux';
 import Options from './Option';
-import { setMap } from '../../store/reducers/map';
+import { removeOption, setMap, reroll, setUnique } from '../../store/reducers/map';
 
 function mapStateToProps(state) {
-  const { gameOptions } = state;
+  const { map } = state;
   return {
-    gameOptions,
+    map
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     selectUniqueOption: (option) => {
-      console.log(option)
-      dispatch(setMap([option]));
+      dispatch(setUnique(option));
+    },
+    selectMap: (options) => {
+      dispatch(setMap(options));
+    },
+    removeOption: (option) => {
+      dispatch(removeOption(option));
+    },
+    reroll: () => {
+      dispatch(reroll());
     }
   }
 }

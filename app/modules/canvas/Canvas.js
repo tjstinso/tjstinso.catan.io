@@ -63,11 +63,11 @@ export default class Canvas extends Component {
     const { width } = this.props.view.map;
 
     return (
-      <div ref="parent" style={{
+      <div className="valign-wrapper" ref="parent" style={{
         width: '100%',
         height: '100%',
       }} >
-        <canvas ref="myCanvas" />
+        <canvas className="valign" ref="myCanvas" />
       </div>
     )
   }
