@@ -1,9 +1,15 @@
-var express = require('express');
-var app = express();
+var webpack = require('webpack');
+var WebpackDevServer = require('webpack-dev-server');
+var config = require('./webpack.config');
 
-app.use('/dist', express.static(__dirname + "/dist"));
-app.use('/', function(req, res) {
-  res.sendFile(__dirname + '/app/index.html');
-})
+new WebpackDevServer(webpack(config), {
+  publicPath: config.output.publicPath,
+  hot: true,
+  historyApiFallback: true
+}).listen(3000, 'localhost', function (err, result) {
+  if (err) {
+    return console.log(err);
+  }
 
-app.listen(3000);
+  console.log('Listening at http://localhost:3000/');
+});
