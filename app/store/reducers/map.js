@@ -9,12 +9,12 @@ const initialState = {
     return map;
   })(),
   options: [
-    'wheat',
-    'brick', 
-    'ore', 
-    'sheep', 
-    'wood',
-    'dock',
+    'WHEAT',
+    'BRICK', 
+    'ORE', 
+    'SHEEP', 
+    'WOOD',
+    'DOCK',
   ],
   presetOptions: [
     'fair random',
@@ -30,19 +30,8 @@ const initialState = {
     'random': (map) => {
       map.randomDistro();
     },
-    'brick':  (map) => { 
-    },
-    'ore': (map) => {
-    },
-    'wheat':  (map) => { 
-    },
-    'sheep': (map) => {
-    },
-    'desert': (map) => {
-    },
-    'wood': (map) => {
-    },
-    'dock': (map) => {
+    'custom': (map, arr) => {
+      map.customDistro(arr);
     },
   },
 }
@@ -94,9 +83,11 @@ export default function(state=initialState, action) {
 
     case REROLL:
       map = new Map(7);
-      state.selectedOptions.forEach(option => {
-        state.rules[option](map);
-      })
+      if (state.selectedOptions.filter(option => state.presetOptions.includes(option)).length > 0) {
+        state.rules[state.selectedOptions[0]](map);
+      } else {
+        state.rules.custom(map, state.selectedOptions);
+      }
       return Object.assign({}, { ...state }, { map });
 
     case REMOVE_OPTION:
