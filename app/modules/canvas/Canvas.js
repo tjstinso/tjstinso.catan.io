@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import './Canvas.css';
 
 export default class Canvas extends Component {
 
@@ -63,9 +64,7 @@ export default class Canvas extends Component {
     const { width } = this.props.view.map;
 
     return (
-      <div className="valign-wrapper" ref="parent" style={{
-        width: '100%',
-        height: '100%',
+      <div className="canvas-first-parent valign-wrapper" ref="parent" style={{
       }} >
         <canvas className="valign" ref="myCanvas" />
       </div>
