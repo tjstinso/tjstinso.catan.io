@@ -9,14 +9,14 @@ export default class App extends Component {
     return(
       <div className="">
         <Header />
-        <div className="container">
+        <div className="top-level-container container">
           <div className="row" style={{
             height: '100%',
           }}>
-            <div className="option-parent col s12 m2 l2">
+            <div className="option-parent col s12 m12 l2">
               <Options />
             </div>
-            <div className="canvas-parent col s12 m9 l9">
+            <div className="canvas-parent col s12 m12 l9">
               <Canvas />
             </div>
           </div>
