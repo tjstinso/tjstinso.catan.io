@@ -138,7 +138,6 @@ export class CatanMap extends GameMap {
       } else {
         to[i][j].type = fr.pop();
       }
-
     });
   }
 
@@ -151,6 +150,37 @@ export class CatanMap extends GameMap {
     this.distribute(this.numbers, this.pieces, (fr, to, i, j) => {
       to[i][j].number = fr.pop();
     });
+  }
+
+  checkCustomTypes(arr) {
+    return super.checkNeighbors((piece, neighbor) => {
+      if (arr.includes(piece.type)) {
+        return piece.type !== neighbor.type;
+      }
+      return true;
+    });
+  }
+
+  checkAllNumbers(isCheck) {
+    if (isCheck) {
+      return true;
+    } else {
+      return super.checkNeighbors((piece, neighbor) => {
+        return piece.number !== neighbor.number;
+      });
+    }
+  }
+
+  customDistro(arr) {
+    do {
+      this.setNumbers();
+      this.randomNumbers();
+    } while (!this.checkAllNumbers(arr.includes("NUMBERS")));
+    do {
+      this.setTypes();
+      this.randomizeTypes();
+    } while (!this.checkCustomTypes(arr.filter(item => item !== "NUMBERS")));
+    this.randomizeDocks();
   }
 
   randomDistro() {
