@@ -15,6 +15,14 @@ const initialState = {
   selectedOptions: [
     'fair random',
   ],
+  rules: {
+    'fair random': (map) => {
+      map.randomFairDistro();
+    },
+    'random': (map) => {
+      map.randomDistro();
+    }
+  },
 }
 
 const SET_OPTIONS = 'SET_OPTIONS';
@@ -37,8 +45,11 @@ export default function(state=initialState, action) {
   switch(action.type) {
     case SET_MAP:
       let map = new Map(7);
-      map.randomDistro();
-      return Object.assign({}, ...state, map );
+      let options = action.options;
+      options.forEach(option => {
+        state.rules[option](map);
+      });
+      return Object.assign({}, { ...state }, { map }, { selectedOptions: options });
     case SET_OPTIONS:
       return Object.assign({}, { ...state });
     case SET_UNIQUE: 
