@@ -2,7 +2,7 @@ import { MapView } from '../../view/MapView'
 
 
 const initialState = {
-  map: {},
+  map: new MapView({x:0,y:0}, 0),
   height: "",
   width: "",
   hexSize: "",
@@ -26,8 +26,8 @@ export default function view(state = initialState, action) {
       let hexSize = size / 7 / Math.sqrt(3);
       let height = 10 * size;
       let width = 7 * Math.sqrt(3) * size;
-      let newView = new MapView({x:  3 / 2 * hexSize, y:  7 / 2 * hexSize}, hexSize, map);
-      return Object.assign({}, ...state, { map: newView }, { hexSize }, { height }, { width });
+      let newView = new MapView({x:  3 / 2 * hexSize, y:  7 / 2 * hexSize}, hexSize, action.map);
+      return Object.assign({}, { ...state }, { map: newView }, { hexSize }, { height }, { width });
     default:
       return state;
   }

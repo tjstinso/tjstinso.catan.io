@@ -14,9 +14,9 @@ function mapDispatchToState(dispatch) {
     updateMap: () => {
       dispatch(setMap());
     },
-    updateSize: (size) => {
+    updateSize: (size, map) => {
       let hexSize = size / 7 / Math.sqrt(3);
-        dispatch(setSize(size));
+      dispatch(setSize(size, map));
     },
   }
 }

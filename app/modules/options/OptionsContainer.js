@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Options from './Option';
-import { setOptions, setUnique } from '../../store/reducers/map';
+import { setMap } from '../../store/reducers/map';
 
 function mapStateToProps(state) {
   const { gameOptions } = state;
@@ -12,7 +12,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     selectUniqueOption: (option) => {
-      dispatch(setUnique(option));
+      console.log(option)
+      dispatch(setMap([option]));
     }
   }
 }
