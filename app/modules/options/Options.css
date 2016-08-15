@@ -16,6 +16,7 @@
   }
 
   .radio-item {
+    white-space: nowrap;
     text-overflow: none;
     margin-bottom: 15px;
     width: 33%;
