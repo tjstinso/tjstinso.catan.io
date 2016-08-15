@@ -15,8 +15,8 @@
     margin-bottom: 15px;
   }
 
+
   .radio-item {
-    white-space: nowrap;
     text-overflow: none;
     margin-bottom: 15px;
     width: 33%;
@@ -33,4 +33,8 @@
     left: 50%;
     transform: translateX(-50%);
   }
+}
+
+form p {
+  white-space: nowrap !important;
 }
