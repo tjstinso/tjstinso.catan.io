@@ -13,7 +13,7 @@ const Reroll = ({
   clickHandler
 }) => {
   return (
-    <button onClick={clickHandler} className="btn waves-effect waves-light" type="submit" name="action">Reroll
+    <button onClick={clickHandler} className="option-button btn waves-effect waves-light" type="submit" name="action">Reroll
       <i className="material-icons right">replay</i>
     </button>
   )
@@ -31,7 +31,7 @@ const RadioOptionItem = ({
     }
   }
   return (
-    <p>
+    <p className="radio-item radio-item-secondary">
       <input checked={checked} onClick={(e) => onClick(e)}  name="group1" type="radio" id={`radio-button-${id}`} /> 
       <label htmlFor={`radio-button-${id}`} >{text}</label>
     </p>
@@ -53,7 +53,7 @@ const CheckboxItem = ({
   }
 
   return (
-    <p>
+    <p className="radio-item">
       <input checked={checked} onClick={e => onClick(e) }type="checkbox" id={`checkbox-id-${id}`} />
       <label htmlFor={`checkbox-id-${id}`}>{text}</label>
     </p>

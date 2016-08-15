@@ -13,10 +13,10 @@ export default class App extends Component {
           <div className="row" style={{
             height: '100%',
           }}>
-            <div className="option-parent col s2 m2 l2">
+            <div className="option-parent col s12 m2 l2">
               <Options />
             </div>
-            <div className="col s9 m9 l9">
+            <div className="canvas-parent col s12 m9 l9">
               <Canvas />
             </div>
           </div>

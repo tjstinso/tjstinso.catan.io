@@ -6,3 +6,30 @@
 
   }
 }
+
+@media (max-width: 600px) {
+  .option-header {
+    width: 100%;
+    float: left;
+    padding-top: 20px;
+    margin-bottom: 15px;
+  }
+
+  .radio-item {
+    text-overflow: none;
+    margin-bottom: 15px;
+    width: 33%;
+    display: inline-block;
+  }
+
+  .radio-item-secondary {
+    width: 50% !important;
+  }
+
+  .option-button {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}

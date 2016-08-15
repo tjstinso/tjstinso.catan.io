@@ -6,9 +6,17 @@
     flex-direction: column;
   }
 }
+@media (max-width: 600px) {
+
+}
+
+@media (min-width: 601px) {
   .option-parent {
     height: 100%;
     display:flex;
     justify-content: center;
     flex-direction: column;
   }
+}
+
+
