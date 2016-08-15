@@ -15,6 +15,7 @@ const initialState = {
     'SHEEP', 
     'WOOD',
     'DOCK',
+    'NUMBERS',
   ],
   presetOptions: [
     'fair random',

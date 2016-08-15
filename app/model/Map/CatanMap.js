@@ -161,13 +161,25 @@ export class CatanMap extends GameMap {
     });
   }
 
+  checkAllNumbers(isCheck) {
+    if (isCheck) {
+      return true;
+    } else {
+      return super.checkNeighbors((piece, neighbor) => {
+        return piece.number !== neighbor.number;
+      });
+    }
+  }
+
   customDistro(arr) {
-    this.setNumbers();
-    this.randomNumbers();
+    do {
+      this.setNumbers();
+      this.randomNumbers();
+    } while (!this.checkAllNumbers(arr.includes("NUMBERS")));
     do {
       this.setTypes();
       this.randomizeTypes();
-    } while (!this.checkCustomTypes(arr));
+    } while (!this.checkCustomTypes(arr.filter(item => item !== "NUMBERS")));
     this.randomizeDocks();
   }
 
