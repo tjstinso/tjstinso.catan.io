@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "9b184d97188612a4f09f"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "86920b09b220204e67f4"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -2569,7 +2569,7 @@
 /* 331 */
 /***/ function(module, exports, __webpack_require__) {
 
-	eval("exports = module.exports = __webpack_require__(184)();\n// imports\n\n\n// module\nexports.push([module.id, \"@media only screen and (min-width:  993px) {\\n  .option-parent {\\n\\n    display: flex;\\n    justify-content: center;\\n    flex-direction: column;\\n  }\\n\\n  .top-level-container {\\n  }\\n}\\n@media only screen and (max-device-width: 768px) {\\n  .option-parent {\\n    margin-top: 100px;\\n  }\\n}\\n\\n\\n/*\\n@media (min-width: 601px) {\\n  .option-parent {\\n    height: 100%;\\n    display:flex;\\n    justify-content: center;\\n    flex-direction: column;\\n  }\\n}\\n*/\\n\\n\", \"\"]);\n\n// exports\n\n\n/*****************\n ** WEBPACK FOOTER\n ** ./~/css-loader!./app/modules/appStyle.css\n ** module id = 331\n ** module chunks = 0\n **/\n//# sourceURL=webpack:///./app/modules/appStyle.css?./~/css-loader");
+	eval("exports = module.exports = __webpack_require__(184)();\n// imports\n\n\n// module\nexports.push([module.id, \"@media only screen and (min-width:  993px) {\\n  .option-parent {\\n\\n    height: 100%;\\n    display: flex;\\n    justify-content: center;\\n    flex-direction: column;\\n  }\\n\\n  .top-level-container {\\n  }\\n}\\n@media only screen and (max-device-width: 768px) {\\n  .option-parent {\\n    margin-top: 100px;\\n  }\\n}\\n\\n\\n/*\\n@media (min-width: 601px) {\\n  .option-parent {\\n    height: 100%;\\n    display:flex;\\n    justify-content: center;\\n    flex-direction: column;\\n  }\\n}\\n*/\\n\\n\", \"\"]);\n\n// exports\n\n\n/*****************\n ** WEBPACK FOOTER\n ** ./~/css-loader!./app/modules/appStyle.css\n ** module id = 331\n ** module chunks = 0\n **/\n//# sourceURL=webpack:///./app/modules/appStyle.css?./~/css-loader");
 
 /***/ }
 /******/ ]);
