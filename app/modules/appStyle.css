@@ -1,7 +1,7 @@
 @media only screen and (min-width:  993px) {
   .option-parent {
-    display:;
-    margin-top:15%;
+
+    display: flex;
     justify-content: center;
     flex-direction: column;
   }
