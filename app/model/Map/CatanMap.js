@@ -164,14 +164,10 @@ export class CatanMap extends GameMap {
     });
   }
 
-  checkAllNumbers(isCheck) {
-    if (!isCheck) {
-      return true;
-    } else {
-      return super.checkNeighbors((piece, neighbor) => {
-        return piece.number !== neighbor.number;
-      });
-    }
+  checkAllNumbers() {
+    return super.checkNeighbors((piece, neighbor) => {
+      return piece.number !== neighbor.number;
+    });
   }
 
 
@@ -179,7 +175,9 @@ export class CatanMap extends GameMap {
 
     //decide how to check water
     const numberCheck = (() => {
-      if (arr.includes("NUMBERS")) {
+      if (arr.includes("NUMBERS") && arr.includes("6 AND 8")) {
+        return () => this.checkAllNumbers() && this.checkSixEight();
+      } else if (arr.includes("NUMBERS")) {
         return () => this.checkAllNumbers();
       } else if (arr.includes("6 AND 8")) {
         return () => this.checkSixEight();
