@@ -44,9 +44,21 @@
   }
 }
 
-@media only screen and (max-device-width: 768px) {
-  .option-button {
+@media only screen and (max-device-width: 500px) {
+  html {
+    font-size: 2em;
   }
+  .option-button {
+    padding: .5em 2rem !important;
+  }
+
+  .option-button {
+    height: auto;
+  }
+
+  form p {
+  }
+
 }
 @media only screen and (max-width 992px) {
 
