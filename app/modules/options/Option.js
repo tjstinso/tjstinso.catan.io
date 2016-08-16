@@ -5,7 +5,7 @@ const OptionsHeader = ({
   text
 }) => {
   return (
-    <div>{text}</div>
+    <div className="option-option-header">{text}</div>
   )
 }
 
@@ -114,7 +114,6 @@ export default class Options extends Component {
 
     return (
       <div className="option-container" >
-        <h4>Options </h4>
 
         <OptionsHeader text={"Select Preset"}/>
         <form action="#">

@@ -8,6 +8,10 @@
 }
 
 @media only screen and (max-device-width: 768px), (max-width: 992px) {
+  .option-container {
+    text-align: center;
+  }
+
   .option-header {
     width: 100%;
     float: left;
@@ -15,8 +19,17 @@
     margin-bottom: 15px;
   }
 
+  h4, .option-option-header {
+    text-align: left;
+    margin-left: 35px;
+  }
+
+  .option-option-header:first-of-type {
+    margin-top: 25px;
+  }
 
   .radio-item {
+    text-align:center;
     text-overflow: none;
     margin-bottom: 15px;
     width: 33%;
