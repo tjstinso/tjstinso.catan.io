@@ -95,11 +95,7 @@ export default function(state=initialState, action) {
 
     case REROLL:
       map = new Map(7);
-      if (state.mode !== "CUSTOM") {
-        state.rules[state.mode](map);
-      } else {
-        state.rules.custom(map, state.selectedOptions);
-      }
+      state.rules[state.mode](map, state.selectedOptions);
       return Object.assign({}, { ...state }, { map });
 
     case REMOVE_OPTION:
