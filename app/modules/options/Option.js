@@ -46,7 +46,6 @@ const CheckboxItem = ({
 }) => {
 
   const onClick = e => {
-    console.log(e.target.value);
     if (e.target.value === 'on') {
       click(text);
     }
@@ -94,6 +93,22 @@ export default class Options extends Component {
     }
   }
 
+  renderOptions() {
+    const { map } = this.props;
+    return map.mode === 'CUSTOM' ? (
+      <div>
+        <OptionsHeader text={"Select Custom"}/>
+        <form action="#">
+          {
+            map.options.map((option, i) => {
+              return <CheckboxItem id={i} key={i} { ...this.checkboxProps(option) }/>
+            })
+          }
+        </form>
+      </div>
+    ) : null 
+  }
+
   render() {
     const { map, reroll } = this.props;
 
@@ -109,15 +124,8 @@ export default class Options extends Component {
             })
           }
         </form>
+        { this.renderOptions() }
 
-        <OptionsHeader text={"Select Custom"}/>
-        <form action="#">
-          {
-            map.mode === 'CUSTOM' ? map.options.map((option, i) => {
-              return <CheckboxItem id={i} key={i} { ...this.checkboxProps(option) }/>
-            }) : null
-          }
-        </form>
 
         <Reroll clickHandler={reroll}/>
       </div>
