@@ -16,6 +16,7 @@ const initialState = {
     'WOOD',
     'DOCK',
     'NUMBERS',
+    '6 AND 8'
   ],
   presetOptions: [
     'FAIR RANDOM',

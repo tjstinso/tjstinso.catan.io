@@ -51,6 +51,21 @@ export class CatanMap extends GameMap {
 
     //initialize array of dock types and shuffle array
     this.docks = [Types.WHEAT, Types.BRICK, Types.ORE, Types.WOOD, Types.SHEEP, 1, 1, 1, 1].shuffleSort();
+    let docks = this.getWaterPieces();
+    //either 1st or second block
+    let chance = Math.floor(Math.random() * 2);
+    for (let i = chance; i < docks.length; i+=2) docks[i].flag = true;
+
+    //create a new set of pieces: replace those that have been flagged with docks
+    this.pieces = this.pieces.map(row => row.map(piece => piece.flag ? new Dock(this.docks.pop()) : piece));
+    
+    //calculate dock direction
+    this.pieces.forEach((row, i) => row.forEach((piece, j) => {
+      if (piece instanceof Dock) piece.calcDir(j, i, this);
+    }));
+  }
+
+  getWaterPieces() {
     let docks = [];
     //push first row
     docks.push.apply(docks, this.pieces[0]);
@@ -72,20 +87,8 @@ export class CatanMap extends GameMap {
       docks.push(this.pieces[i][0]);
     }
 
-    //either 1st or second block
-    let chance = Math.floor(Math.random() * 2);
-    for (let i = chance; i < docks.length; i+=2) docks[i].flag = true;
-
-    //create a new set of pieces: replace those that have been flagged with docks
-    this.pieces = this.pieces.map(row => row.map(piece => piece.flag ? new Dock(this.docks.pop()) : piece));
-
-    //calculate dock direction
-    this.pieces.forEach((row, i) => row.forEach((piece, j) => {
-      if (piece instanceof Dock) piece.calcDir(j, i, this);
-    }));
-
+    return docks;
   }
-
 
   //Initialization code
   setTypes() {
@@ -116,7 +119,7 @@ export class CatanMap extends GameMap {
     return { count, type };
   }
 
-  checkNumbers() {
+  checkSixEight() {
     return super.checkNeighbors((piece, neighbor) => {
       return !((piece.number === 6 || piece.number === 8) &&
         (neighbor.number === 6 || neighbor.number === 8));
@@ -171,11 +174,24 @@ export class CatanMap extends GameMap {
     }
   }
 
+
   customDistro(arr) {
+
+    //decide how to check water
+    const numberCheck = (() => {
+      if (arr.includes("NUMBERS")) {
+        return () => this.checkAllNumbers();
+      } else if (arr.includes("6 AND 8")) {
+        return () => this.checkSixEight();
+      } else {
+        return () => true;
+      }
+    })()
+
     do {
       this.setNumbers();
       this.randomNumbers();
-    } while (!this.checkAllNumbers(arr.includes("NUMBERS")));
+    } while (!numberCheck())
     do {
       this.setTypes();
       this.randomizeTypes();
@@ -196,7 +212,7 @@ export class CatanMap extends GameMap {
     do {
       this.setNumbers();
       this.randomNumbers();
-    } while (!this.checkNumbers());
+    } while (!this.checkSixEight());
 
 
     let test = false;
@@ -208,9 +224,10 @@ export class CatanMap extends GameMap {
 
     do {
       this.randomizeDocks();
-    } while(false);
-
-
+    } while(
+        false
+        //!this.checkDocks());
+      )
   }
 }
 
