@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Options from './Option';
-import { removeOption, setMap, reroll, setUnique } from '../../store/reducers/map';
+import { setMode, removeOption, setMap, reroll, setUnique } from '../../store/reducers/map';
 
 function mapStateToProps(state) {
   const { map } = state;
@@ -11,8 +11,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    selectUniqueOption: (option) => {
-      dispatch(setUnique(option));
+    setMode: (mode) => {
+      dispatch(setMode(mode));
     },
     selectMap: (options) => {
       dispatch(setMap(options));

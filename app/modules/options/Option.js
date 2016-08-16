@@ -66,14 +66,14 @@ export default class Options extends Component {
   }
 
   optionProps(item) {
-    const { map, selectUniqueOption } = this.props;
+    const { map, setMode } = this.props;
     return {
       text: item,
       click: (val) => {
-        selectUniqueOption(val);
+        setMode(val);
       },
       checked:(() => {
-        return map.selectedOptions.includes(item);
+        return map.mode === item;
       })()
     }
   }
@@ -113,9 +113,9 @@ export default class Options extends Component {
         <OptionsHeader text={"Select Custom"}/>
         <form action="#">
           {
-            map.options.map((option, i) => {
+            map.mode === 'CUSTOM' ? map.options.map((option, i) => {
               return <CheckboxItem id={i} key={i} { ...this.checkboxProps(option) }/>
-            })
+            }) : null
           }
         </form>
 
