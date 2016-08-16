@@ -2,6 +2,7 @@
   .canvas-first-parent {
     height: 60%;
     width: auto;
+    justify-content: center;
   }
 }
 
