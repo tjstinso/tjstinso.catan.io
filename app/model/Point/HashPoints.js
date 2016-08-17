@@ -14,7 +14,8 @@ export class HashPoints {
   //Return 
   getPointFromMap(point) {
     let key = this.hash(point);
-
+    //console.log(key);
+    //console.log(this.map);
     if (!this.map.get(key)) {
       return null
     }

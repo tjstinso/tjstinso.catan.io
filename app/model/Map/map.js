@@ -32,6 +32,7 @@ Array.prototype.shuffleSort = function() {
   return this;
 }
 
+
 //Build a list of Points based a diameter.
 
 export class GameMap {
@@ -41,8 +42,64 @@ export class GameMap {
     this.Dir = Dir;
     this.pieces = this.buildNodes(diameter)
     this.hashmap = {};
+    this.vertexes = [];
   }
 
+  //each hex has 6 vertexes, in this there will be unique vertexes, as such 
+  //we can just create a list of unique vertexes
+  //does not get the outer most layer of vertexes
+  getVertexes(cb) {
+
+    //returns 3 hexes associated to one vertex
+    const calcVert = (i,j, dirOne, dirTwo) => {
+      return cb([
+        this.pieces[i][j],
+        this.hashmap.getPointFromMap(new Point(this.pieces[i][j].point.x + Neighbors[dirOne].x, this.pieces[i][j].point.y + Neighbors[dirOne].y)),
+        this.hashmap.getPointFromMap(new Point(this.pieces[i][j].point.x + Neighbors[dirTwo].x, this.pieces[i][j].point.y + Neighbors[dirTwo].y)),
+      ])
+    }
+    const calcTopLeft = (i, j) => calcVert(i, j, Dir.LEFT, Dir.TOP_LEFT);
+    const calcTop = (i, j) => calcVert(i, j, Dir.TOP_LEFT, Dir.TOP_RIGHT);
+    const calcTopRight = (i, j) => calcVert(i, j, Dir.TOP_RIGHT, Dir.RIGHT);
+    const calcBottomLeft = (i, j) => calcVert(i, j, Dir.LEFT, Dir.BOTTOM_LEFT);
+    const calcBottom = (i, j) => calcVert(i, j, Dir.BOTTOM_LEFT, Dir.BOTTOM_RIGHT);
+    const calcBottomRight = (i, j) => calcVert(i, j, Dir.RIGHT, Dir.BOTTOM_RIGHT);
+
+    let vertexes = [];
+    for (let i = 1; i < this.pieces.length - 1; i++) { 
+      let one = [], two = [], three = [], four = []; // array to hold each row of vertexes
+      for (let j = 1; j < this.pieces[i].length - 1; j++) {
+        if (i < Math.floor(this.pieces.length / 2)) {
+          one.push( calcTop(i, j) );
+          two.push( calcTopLeft(i, j));
+          if (j === this.pieces[i].length - 2) { //have to get the corners
+            two.push(calcTopRight(i, j));
+          }
+
+        } else if (i === Math.floor(this.pieces.length / 2)) {
+          one.push( calcTop(i, j) );
+          two.push( calcTopLeft(i, j));
+          three.push(calcBottomLeft(i, j));
+          four.push(calcBottom(i, j));
+          if (j === this.pieces[i].length - 2) {
+            two.push(calcTopRight(i, j));
+            three.push(calcBottomRight(i, j));
+          }
+        } else {
+          one.push(calcBottomLeft(i, j));
+          two.push(calcBottom(i, j));
+          if (j === this.pieces[i].length - 2) {
+            one.push(calcBottomRight(i, j));
+          }
+        }
+      }
+      vertexes.push(one, two);
+      if (i === Math.floor(this.pieces.length / 2)) {
+        vertexes.push(three, four);
+      }
+    }
+    return vertexes; //this is an array of arrays of arrays
+  }
 
   buildNodes(diameter) {
     let nodes = [];

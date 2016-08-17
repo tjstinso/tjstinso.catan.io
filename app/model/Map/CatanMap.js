@@ -1,5 +1,6 @@
 import { GameMap, Piece } from './map';
 import _enum from '../../utilities/enum';
+import { Point } from '../Point/Point'
 
 export const Types = _enum([
   'WHEAT',
@@ -36,7 +37,7 @@ export class CatanMap extends GameMap {
         if (i === 0 || j === 0 || i === (this.pieces.length - 1) || j === (this.pieces[i].length - 1)) {
           return new CatanPiece(Types.WATER, -1, point);
         } else {
-          return new CatanPiece(null, -1, point);
+          return new Land(null, -1, point);
         }
       }, this);
     }, this);
@@ -57,7 +58,7 @@ export class CatanMap extends GameMap {
     for (let i = chance; i < docks.length; i+=2) docks[i].flag = true;
 
     //create a new set of pieces: replace those that have been flagged with docks
-    this.pieces = this.pieces.map(row => row.map(piece => piece.flag ? new Dock(this.docks.pop()) : piece));
+    this.pieces = this.pieces.map(row => row.map(piece => piece.flag ? new Dock(this.docks.pop(), piece.point) : piece));
     
     //calculate dock direction
     this.pieces.forEach((row, i) => row.forEach((piece, j) => {
@@ -225,7 +226,18 @@ export class CatanMap extends GameMap {
     } while(
         false
         //!this.checkDocks());
-      )
+      );
+
+    let vertexes = super.getVertexes((arr) => {
+      let x = arr.reduce((prev, curr) => prev + curr.point.x, 0);
+      let y = arr.reduce((prev, curr) => prev + curr.point.y, 0);
+      let val = arr.reduce((prev, curr) => curr.number >= 0 ? curr.number + prev: prev, 0);
+      return {
+        point: new Point(x / 3, y / 3),
+        val, 
+      }
+    });
+    console.log(JSON.stringify(vertexes), vertexes.reduce((prev, curr) => prev.concat(curr)).length);
   }
 }
 
@@ -242,6 +254,9 @@ class Land extends CatanPiece {
     super(null, 0, point);
     this.type = type;
     this.number = number;
+  }
+  getPip(val) {
+
   }
 }
 
@@ -287,3 +302,6 @@ class Dock extends CatanPiece {
 
   }
 }
+
+let map = new CatanMap(7);
+map.randomFairDistro();
