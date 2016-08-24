@@ -7,35 +7,25 @@ export class HashPoints {
   //flatten array and add to hashmap
   //to be called in constructor
   hashNodes(nodes) {
-    nodes.reduce((prev, curr) => prev.concat(curr))
-    .forEach(node => this.addToMap(node));
+    nodes.forEach((row, i) => {
+      row.forEach((piece, j) => {
+        this.addToMap(piece.point, i, j);
+      })
+    })
   }
 
   //Return 
-  getPointFromMap(point) {
-    let key = this.hash(point);
-    //console.log(key);
-    //console.log(this.map);
-    if (!this.map.get(key)) {
-      return null
+  getPointFromMap(point, pieces) {
+    const indexes = this.map.get(JSON.stringify(point));
+    if (indexes) {
+      let { i, j } = indexes;
+      return pieces[i][j];
     }
-
-    while (!this.map.get(key).point.isEqual(point)) {
-      key++;
-    }
-    return this.map.get(key);
+    return null;
   }
 
-  addToMap(piece) {
-    let key = this.hash(piece.point);
-    while (this.map.get(key)) { //all points on map should be unique
-      key++;
-    }
-    this.map.set(key, piece);
-  }
-
-  hash(point) {
-    return (point.y << 16) ^ point.x;
+  addToMap(point, i, j) {
+    this.map.set(JSON.stringify(point), {i, j});
   }
 
   getMap() {

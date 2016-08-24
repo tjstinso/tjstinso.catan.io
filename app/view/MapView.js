@@ -13,18 +13,6 @@ export class MapView {
     return this.origin.x + xOffset * this.width * 3 / 2
   }
 
-  invX(xOffset) {
-    return this.origin.x + xOffset * this.width * (3/2) - this.width;
-  }
-
-  invY(xOffset, yOffset) {
-    this.origin + xOffset * this.width
-  }
-
-  invX(xOffset, yOffset) {
-    this.origin.x + xOffset * this.width * (3/2) - this.width;
-  }
-
   calcY(xOffset, yOffset) {
     let y = this.origin.y + yOffset * this.width * Math.sqrt(3);
     switch (xOffset) {
