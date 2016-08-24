@@ -21,6 +21,7 @@ const initialState = {
   presetOptions: [
     'FAIR RANDOM',
     'RANDOM',
+    'UNIFORM',
     'CUSTOM',
   ],
   mode: "FAIR RANDOM",
@@ -36,6 +37,9 @@ const initialState = {
     'CUSTOM': (map, arr) => {
       map.customDistro(arr);
     },
+    'UNIFORM': (map) => {
+      map.uniformDistro();
+    }
   },
 }
 
