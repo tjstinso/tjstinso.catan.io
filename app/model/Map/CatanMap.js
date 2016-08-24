@@ -35,6 +35,7 @@ export class CatanMap extends GameMap {
     return map;
   }
 
+
   checkPipUniformity() {
     const cc = val => val * (val - 1) / 2;
     let map = this.mapChitToPip();
@@ -88,9 +89,6 @@ export class CatanMap extends GameMap {
     return chisq > 1;
   }
 
-  uniformDistro() {
-      
-  }
 
   getVertexes() {
     return super.getVertexes(arr => {
@@ -301,6 +299,20 @@ export class CatanMap extends GameMap {
         false
         //!this.checkDocks());
       );
+
+  }
+
+  uniformDistro() {
+    do {
+      this.randomizeDocks();
+      this.setNumbers();
+      this.randomNumbers()
+    } while(!this.checkPipUniformity());
+
+    do {
+      this.setTypes();
+      this.randomizeTypes();
+    } while(!this.checkTypeUniformity());
 
   }
 }
