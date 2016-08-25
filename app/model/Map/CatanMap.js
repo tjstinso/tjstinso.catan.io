@@ -10,11 +10,12 @@ export const Types = _enum([
   'BRICK',
   'ORE',
   'DESERT',
-  'WATER'
+  'WATER',
 ]);
 
 
 export class CatanMap extends GameMap {
+
   constructor(diameter) {
     super(diameter);
     this.types = Types;
@@ -27,6 +28,8 @@ export class CatanMap extends GameMap {
     this.initNeighbors(); //need to change to handle rferences instead of unique points
   }
 
+  // Create a mapping from chits to pips
+  // Note: Water chits are mapped to 0
   mapChitToPip() {
     let map = new Map();
     let valueList = [0, 0, 1, 2, 3, 4, 5, 5, 4, 3, 2, 1,];
@@ -36,18 +39,32 @@ export class CatanMap extends GameMap {
   }
 
 
+  // Check distribution
   checkPipUniformity() {
+    const checkDockDir = (dock, comparePiece) => {
+      return dock instanceof Dock && dock.checkNeighbor(dock.dockDir, comparePiece);
+    }
+
     const cc = val => val * (val - 1) / 2;
+
     let map = this.mapChitToPip();
     let pips = super.getVertexes(arr => {
-      let pipArr = arr.map(val => val instanceof Dock ? 2 : map.get(val.number)); //replace chit values with pip count
-      return (pipArr.reduce((prev, curr) => prev + curr, 0)); //add those pip values together
+      return cc(arr.reduce((prev, curr) => {
+        if (curr instanceof Dock) {
+          let directionCheck = arr.map(piece => checkDockDir(curr, piece));
+          if (directionCheck.includes(true)) {
+            return prev + 2;
+          } else {
+            return prev;
+          }
+        } else {
+          return prev + map.get(curr.number);
+        }
+      }, 0));
     })
     .reduce((prev, curr) => prev.concat(curr)) //reduce to single dimensional array
     .reduce((prev, curr) => prev + curr, 0); //add all pip values to list
-    
-    console.log(pips);
-    return pips < 1100;
+    return pips < 1300;
   }
 
   checkTypeUniformity() {
@@ -89,8 +106,11 @@ export class CatanMap extends GameMap {
     return chisq > 1;
   }
 
-
   getVertexes() {
+    const checkIfDockFacing = (neighbor) => {
+      
+    }
+
     return super.getVertexes(arr => {
       let x = arr.reduce((prev, curr) => prev + curr.geoPoint.x, 0);
       let y = arr.reduce((prev, curr) => prev + curr.geoPoint.y, 0);
@@ -199,6 +219,15 @@ export class CatanMap extends GameMap {
     });
   }
 
+  checkTwoTwelve() {
+    return super.checkNeighbors((piece, neighbor) => {
+      return !((piece.number === 2 || piece.number === 12) &&
+        (neighbor.number === 2 || neighbor.number === 12));
+    });
+  }
+
+  
+
   checkTypes() {
     return super.checkNeighbors((piece, neighbor) => {
       return piece['type'] !== neighbor['type'];
@@ -229,6 +258,7 @@ export class CatanMap extends GameMap {
   }
 
   checkCustomTypes(arr) {
+    if (arr.length === 0) return true;
     return super.checkNeighbors((piece, neighbor) => {
       if (arr.includes(piece.type)) {
         return piece.type !== neighbor.type;
@@ -247,27 +277,52 @@ export class CatanMap extends GameMap {
   customDistro(arr) {
 
     //decide how to check water
-    const numberCheck = (() => {
-      if (arr.includes("NUMBERS") && arr.includes("6 AND 8")) {
-        return () => this.checkAllNumbers() && this.checkSixEight();
-      } else if (arr.includes("NUMBERS")) {
-        return () => this.checkAllNumbers();
-      } else if (arr.includes("6 AND 8")) {
-        return () => this.checkSixEight();
-      } else {
-        return () => true;
+    const numberCheck = () => {
+      if (arr.includes('NUMBERS')) {
+        if (!this.checkAllNumbers()) return false;
       }
-    })()
 
+      if (arr.includes("6 AND 8")) {
+        if (!this.checkSixEight()) return false;
+      }
+
+      if (arr.includes("2 AND 12")) {
+        if (!this.checkTwoTwelve()) return false;
+      }
+
+      if (arr.includes('PIP UNIFORMITY')) {
+        if (!this.checkPipUniformity()) return false;
+      }
+      return true;
+    }
+
+    const typeCheck = () => {
+
+      //strings to ignore
+      const filter = [
+        'NUMBERS',
+        '6 AND 8',
+        '2 AND 12',
+        'PIP UNIFORMITY',
+        'PIP / RESROUCE'
+      ];
+
+      if (arr.includes('PIP / RESROUCE')) {
+        if (!this.checkTypeUniformity()) return false;
+      }
+
+      return this.checkCustomTypes(arr.filter(item => !filter.includes(item)));
+    }
+
+    this.randomizeDocks();
     do {
       this.setNumbers();
       this.randomNumbers();
-    } while (!numberCheck())
+    } while (!numberCheck());
     do {
       this.setTypes();
       this.randomizeTypes();
-    } while (!this.checkCustomTypes(arr.filter(item => item !== "NUMBERS")));
-    this.randomizeDocks();
+    } while (!typeCheck());
   }
 
   randomDistro() {
@@ -285,7 +340,6 @@ export class CatanMap extends GameMap {
       this.randomNumbers();
     } while (!this.checkSixEight());
 
-
     let test = false;
     do {
       this.setTypes();
@@ -297,22 +351,7 @@ export class CatanMap extends GameMap {
       this.randomizeDocks();
     } while(
         false
-        //!this.checkDocks());
       );
-
-  }
-
-  uniformDistro() {
-    do {
-      this.randomizeDocks();
-      this.setNumbers();
-      this.randomNumbers()
-    } while(!this.checkPipUniformity());
-
-    do {
-      this.setTypes();
-      this.randomizeTypes();
-    } while(!this.checkTypeUniformity());
 
   }
 }
@@ -330,9 +369,6 @@ class Land extends CatanPiece {
     super(null, 0, point);
     this.type = type;
     this.number = number;
-  }
-  getPip(val) {
-
   }
 }
 
@@ -380,14 +416,14 @@ class Dock extends CatanPiece {
   }
 }
 
-//for (let i = 0; i < 10; i++) {
-  let map = new CatanMap(7);
-  map.setNumbers();
-  map.randomNumbers();
-  map.setTypes();
-  map.randomizeTypes();
-  map.randomizeDocks();
-
-  console.log(map.pieces);
-
-map.checkPipUniformity();
+////for (let i = 0; i < 10; i++) {
+//  let map = new CatanMap(7);
+//  map.setNumbers();
+//  map.randomNumbers();
+//  map.setTypes();
+//  map.randomizeTypes();
+//  map.randomizeDocks();
+//
+//  console.log(map.pieces);
+//
+//map.checkPipUniformity();

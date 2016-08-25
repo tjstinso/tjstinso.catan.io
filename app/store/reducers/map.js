@@ -16,12 +16,14 @@ const initialState = {
     'WOOD',
     'DOCK',
     'NUMBERS',
-    '6 AND 8'
+    '6 AND 8',
+    '2 AND 12',
+    'PIP UNIFORMITY',
+    'PIP / RESROUCE',
   ],
   presetOptions: [
     'FAIR RANDOM',
     'RANDOM',
-    'UNIFORM',
     'CUSTOM',
   ],
   mode: "FAIR RANDOM",
