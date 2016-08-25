@@ -39,16 +39,23 @@ export class CatanMap extends GameMap {
   }
 
 
-  // Check distribution
+  // Check distribution of pips across board
   checkPipUniformity() {
+
+    //helper function to check if dock is facing a piece
     const checkDockDir = (dock, comparePiece) => {
       return dock instanceof Dock && dock.checkNeighbor(dock.dockDir, comparePiece);
     }
 
+    // MATT WHAT DOES THIS DO?
     const cc = val => val * (val - 1) / 2;
 
     let map = this.mapChitToPip();
-    let pips = super.getVertexes(arr => {
+
+    //create hex representation of vertexes
+    //check the pip value at each vertex, docks count as 2
+    //each vertex is represented only by cc(value of pips in adjacent hexagons)
+    return super.getVertexes(arr => {
       return cc(arr.reduce((prev, curr) => {
         if (curr instanceof Dock) {
           let directionCheck = arr.map(piece => checkDockDir(curr, piece));
@@ -63,8 +70,7 @@ export class CatanMap extends GameMap {
       }, 0));
     })
     .reduce((prev, curr) => prev.concat(curr)) //reduce to single dimensional array
-    .reduce((prev, curr) => prev + curr, 0); //add all pip values to list
-    return pips < 1300;
+    .reduce((prev, curr) => prev + curr, 0) < 1300; //add all pip values to list and compare against val
   }
 
   checkTypeUniformity() {
@@ -106,22 +112,8 @@ export class CatanMap extends GameMap {
     return chisq > 1;
   }
 
-  getVertexes() {
-    const checkIfDockFacing = (neighbor) => {
-      
-    }
-
-    return super.getVertexes(arr => {
-      let x = arr.reduce((prev, curr) => prev + curr.geoPoint.x, 0);
-      let y = arr.reduce((prev, curr) => prev + curr.geoPoint.y, 0);
-      let pip = arr.reduce((prev, curr) => curr.number >= 0 ? curr.number + prev: prev, 0);
-      return {
-        point: new Point(x / 3, y / 3),
-        pip, 
-      }
-    });
-  }
-
+  // Initialize piece types.
+  // Distribute the types across the board. Does not include docks.
   initPieces() {
     this.pieces = this.pieces.map((row, i) => {
       return row.map((column, j) => {
@@ -135,6 +127,7 @@ export class CatanMap extends GameMap {
     }, this);
   }
 
+  //Set the chit values of the map
   setNumbers() {
     this.numbers = [ 8,8,6,6,12,11,11,10,10,9,9,5,5,4,4,3,3,2,0 ];
   }
@@ -158,6 +151,9 @@ export class CatanMap extends GameMap {
     }));
   }
 
+  
+  //Take the outer ring of hexagons and and add to single dimensional array.
+  //the hexes are listed in clockwise order.
   getWaterPieces() {
     let docks = [];
     //push first row
@@ -184,7 +180,11 @@ export class CatanMap extends GameMap {
   }
 
   //Initialization code
+  //create an array of types
   setTypes() {
+    //for each type, return an array of types eg. 
+    //[ [ wheat, wheat, wheat ],
+    // [ sheep, sheep, sheep, sheep, ] ... ]
     this.typesAvailable = [
       this.makeTileCounter(4, Types.WHEAT),
       this.makeTileCounter(4, Types.SHEEP),
@@ -197,7 +197,7 @@ export class CatanMap extends GameMap {
       for (let i = 0; i < arr.count; i++) {
         temp = temp.concat(arr.type);
       }
-      return temp;
+      return temp; 
     })
     .reduce((prev, curr) => prev.concat(curr)); //flatten array into list of types
   }
@@ -226,8 +226,6 @@ export class CatanMap extends GameMap {
     });
   }
 
-  
-
   checkTypes() {
     return super.checkNeighbors((piece, neighbor) => {
       return piece['type'] !== neighbor['type'];
@@ -237,7 +235,6 @@ export class CatanMap extends GameMap {
   randomizeTypes() {
     this.shufflePieces();
     this.distribute(this.typesAvailable, this.pieces, (fr, to, i, j) => {
-
       if (to[i][j].number === 0 || this.typesAvailable.length === 0) {
         to[i][j].type = Types.DESERT;
       } else {
@@ -415,15 +412,3 @@ class Dock extends CatanPiece {
 
   }
 }
-
-////for (let i = 0; i < 10; i++) {
-//  let map = new CatanMap(7);
-//  map.setNumbers();
-//  map.randomNumbers();
-//  map.setTypes();
-//  map.randomizeTypes();
-//  map.randomizeDocks();
-//
-//  console.log(map.pieces);
-//
-//map.checkPipUniformity();
