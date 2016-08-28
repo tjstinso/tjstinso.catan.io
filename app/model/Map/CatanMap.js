@@ -55,7 +55,7 @@ export class CatanMap extends GameMap {
     //create hex representation of vertexes
     //check the pip value at each vertex, docks count as 2
     //each vertex is represented only by cc(value of pips in adjacent hexagons)
-    return super.getVertexes(arr => {
+    let pips = super.getVertexes(arr => {
       return cc(arr.reduce((prev, curr) => {
         if (curr instanceof Dock) {
           let directionCheck = arr.map(piece => checkDockDir(curr, piece));
@@ -70,7 +70,9 @@ export class CatanMap extends GameMap {
       }, 0));
     })
     .reduce((prev, curr) => prev.concat(curr)) //reduce to single dimensional array
-    .reduce((prev, curr) => prev + curr, 0) < 1300; //add all pip values to list and compare against val
+    .reduce((prev, curr) => prev + curr, 0);// < 1300; //add all pip values to list and compare against val
+    //console.log(pips);
+    return pips < 1300;
   }
 
   checkTypeUniformity() {
@@ -135,9 +137,18 @@ export class CatanMap extends GameMap {
   //Initialization code: randomize the palcement of docks amongst water pieces
   randomizeDocks() {
 
+    this.pieces = this.pieces.map((row, i) => row.map((piece, j) => {
+      if (piece.type === "WATER") {
+        return CatanPiece.copyConstructor(piece);
+      } else {
+        return piece;
+      }
+    }));
+
+    let docks = this.getWaterPieces();
+
     //initialize array of dock types and shuffle array
     this.docks = [Types.WHEAT, Types.BRICK, Types.ORE, Types.WOOD, Types.SHEEP, 1, 1, 1, 1].shuffleSort();
-    let docks = this.getWaterPieces();
     //either 1st or second block
     let chance = Math.floor(Math.random() * 2);
     for (let i = chance; i < docks.length; i+=2) docks[i].flag = true;
@@ -151,6 +162,15 @@ export class CatanMap extends GameMap {
     }));
   }
 
+  checkRepeatDocks() {
+    let docks = this.getWaterPieces().filter(item => item instanceof Dock);
+    for (let i = 0; i < docks.length - 1; i++) {
+      if (docks[i].dockType === 1 && docks[i+1].dockType === 1) {
+        return false;
+      }
+    }
+    return !(docks[0].dockType === 1 && docks[docks.length - 1].dockType === 1);
+  }
   
   //Take the outer ring of hexagons and and add to single dimensional array.
   //the hexes are listed in clockwise order.
@@ -243,6 +263,36 @@ export class CatanMap extends GameMap {
     });
   }
 
+  terrainDispersion() {
+    const cc = val => val * (val - 1) / 2;
+    let phi = 0;
+    const types = [
+      Types.WHEAT,
+      Types.SHEEP,
+      Types.WOOD,
+      Types.BRICK,
+      Types.ORE,
+    ];
+    let outer = this.pieces.reduce((prev, curr) => prev.concat(curr));
+    //outer.forEach(item => { console.log(item.geoPoint); })
+    types.forEach(type => {
+      let hexes = outer.filter(piece => piece.type === type);
+      //console.log(hexes);
+
+      let phiTemp = 0;
+      for (let i = 0; i < hexes.length - 1; i++) {
+        for (let j = i + 1; j < hexes.length; j++) {
+          phiTemp += 1 / (Math.pow(hexes[i].geoPoint.x - hexes[j].geoPoint.x, 2) + Math.pow(hexes[i].geoPoint.y - hexes[j].geoPoint.y, 2));
+        }
+      }
+
+      phi += Math.sqrt(phiTemp / cc(hexes.length)) / types.length;
+    });
+    //console.log(phi);
+    return phi < .5;
+  }
+
+
   shuffleNumbers() {
     this.numbers.shuffleSort();
   }
@@ -290,6 +340,10 @@ export class CatanMap extends GameMap {
       if (arr.includes('PIP UNIFORMITY')) {
         if (!this.checkPipUniformity()) return false;
       }
+
+      if (arr.includes('DOCK')) {
+        if (!this.checkRepeatDocks()) return false;
+      }
       return true;
     }
 
@@ -301,25 +355,33 @@ export class CatanMap extends GameMap {
         '6 AND 8',
         '2 AND 12',
         'PIP UNIFORMITY',
-        'PIP / RESROUCE'
+        'PIP / RESOURCE',
+        'DOCK',
       ];
 
-      if (arr.includes('PIP / RESROUCE')) {
+      if (arr.includes('PIP / RESOURCE')) {
         if (!this.checkTypeUniformity()) return false;
+      }
+
+      if (arr.includes('DISPERSION')) {
+        if (!this.terrainDispersion()) return false;
       }
 
       return this.checkCustomTypes(arr.filter(item => !filter.includes(item)));
     }
+    let count = 0;
 
-    this.randomizeDocks();
     do {
+      this.randomizeDocks();
       this.setNumbers();
       this.randomNumbers();
     } while (!numberCheck());
     do {
       this.setTypes();
       this.randomizeTypes();
+      count++;
     } while (!typeCheck());
+    console.log(count);
   }
 
   randomDistro() {
@@ -358,6 +420,12 @@ class CatanPiece extends Piece {
     super(point);
     this.type = type;
     this.number = number;
+  }
+
+  static copyConstructor(piece) {
+    let newPiece = new CatanPiece(piece.type, piece.number, piece.point);
+    newPiece.neighbors = piece.neighbors;
+    return newPiece;
   }
 }
 
@@ -412,3 +480,4 @@ class Dock extends CatanPiece {
 
   }
 }
+

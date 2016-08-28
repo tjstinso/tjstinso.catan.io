@@ -1,0 +1,11 @@
+.catan-header {
+  height: 60px;
+  width: 100%;
+  /*
+    background-color: hsl(200,35%,90%);
+    background-color: hsl(193,75%,40%);
+   */
+  background-color: #EBB389;
+}
+
+
