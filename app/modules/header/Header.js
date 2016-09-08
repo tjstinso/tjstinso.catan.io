@@ -1,19 +1,23 @@
 import React from 'react';
+import './Header.css';
 
 const Header = ({
 }) => {
   return (
-    <div className="navbar-fixed">
-      <nav>
-        <div className="nav-wrapper">
-          <a href="#" className="brand-logo">Catan</a>
-          <ul id="nav-mobile" className="right hide-on-med-and-down">
-            <li><a href=""></a></li>
-            <li><a href=""></a></li>
-            <li><a href=""></a></li>
-          </ul>
-        </div>
-      </nav>
+    <div className="catan-header row" style={{
+      marginBottom: '0px',
+    }}>
+      <div className="col s3" style={{
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "column",
+        textAlign: "center",
+        height: "100%",
+        fontSize: "24px",
+      }}>
+        Catan
+      </div>
+      
     </div>
   )
 }

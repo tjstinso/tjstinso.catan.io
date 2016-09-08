@@ -51,10 +51,13 @@ export class GameMap {
       let x, y;
       if (i <= Math.floor(this.pieces.length / 2)) {
         x = i * -1 / 2 + j * 1;
+
       } else {
         x = -Math.floor(this.pieces.length / 2) / 2 + (i - Math.floor(this.pieces.length / 2)) / 2 + j * 1;
+
       }
-      y = i / 2;
+      y = i * Math.sqrt(3) / 2;
+
       piece.geoPoint = new Point(x, y);
     }));
   }
@@ -164,7 +167,10 @@ export class GameMap {
       let point = new Point(piece.point.x + this.Neighbors[neighbor].x, piece.point.y + this.Neighbors[neighbor].y);
       let check = this.hashmap.getPointFromMap(point, this.pieces);
       if (check !== null) {
-        this.pieces[i][j].neighbors.push(check);
+        this.pieces[i][j].neighbors.push(
+          () => this.hashmap.getPointFromMap(point, this.pieces)
+            //check
+        );
       }
     });
   }
@@ -179,7 +185,7 @@ export class GameMap {
       for (let j = 1; j < this.pieces[i].length - 1; j++) {
         //iterate over neighbor nodes
         for (let k = 0; k < this.pieces[i][j].neighbors.length; k++) {
-          if (!cb(this.pieces[i][j], this.pieces[i][j].neighbors[k])) {
+          if (!cb(this.pieces[i][j], this.pieces[i][j].neighbors[k]())) {
             return false;
           }
         }

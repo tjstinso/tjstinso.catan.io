@@ -19,7 +19,8 @@ const initialState = {
     '6 AND 8',
     '2 AND 12',
     'PIP UNIFORMITY',
-    'PIP / RESROUCE',
+    'PIP / RESOURCE',
+    'DISPERSION',
   ],
   presetOptions: [
     'FAIR RANDOM',
