@@ -67,7 +67,7 @@ export class GameMap {
     //returns 3 hexes associated to one vertex
     const calcVert = (i,j, dirOne, dirTwo) => {
       return cb([
-        this.pieces[i][j],
+        this.pieces[i][j], //first item in array is always real
         this.hashmap.getPointFromMap(new Point(this.pieces[i][j].point.x + Neighbors[dirOne].x, this.pieces[i][j].point.y + Neighbors[dirOne].y), this.pieces),
         this.hashmap.getPointFromMap(new Point(this.pieces[i][j].point.x + Neighbors[dirTwo].x, this.pieces[i][j].point.y + Neighbors[dirTwo].y), this.pieces),
       ])
@@ -210,4 +210,18 @@ export class Piece {
     this.point = point;
   }
 
+  //check if piece is neighbor in direction
+  checkNeighbor(dir, piece) {
+    return piece.point.isEqual(new Point(this.point.x + Neighbors[dir].x, this.point.y + Neighbors[dir].y));
+  }
+
 }
+
+//export const Neighbors = _enum([
+//  { name: 'TOP_RIGHT', x: -1, y: 1 },
+//  { name: 'RIGHT', x: 0, y: 1 },
+//  { name: 'BOTTOM_RIGHT', x: 1, y: 0 },
+//  { name: 'BOTTOM_LEFT', x: 1, y: -1 },
+//  { name: 'LEFT', x: 0, y: -1 },
+//  { name: 'TOP_LEFT', x: -1, y: 0 },
+//]);
